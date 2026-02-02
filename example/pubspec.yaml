@@ -1,0 +1,22 @@
+name: unified_flutter_features_example
+description: Example app demonstrating unified Flutter features
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: '>=2.19.0 <4.0.0'
+  flutter: ">=3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  unified_flutter_features:
+    path: ../
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
