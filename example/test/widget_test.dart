@@ -14,7 +14,15 @@ void main() {
 
     expect(find.text('Unified Features Demo'), findsOneWidget);
     expect(find.text('Shared Features'), findsOneWidget);
-    expect(find.text('Bağlantı Durumu'), findsOneWidget);
     expect(find.text('Buton Galerisi'), findsOneWidget);
+    expect(find.text('Tarih Seç'), findsOneWidget);
+    expect(find.text('Tarih Aralığı'), findsOneWidget);
+    expect(find.text('Dialog'), findsOneWidget);
+    expect(find.text('Metin Giriş'), findsOneWidget);
+    expect(find.text('Yükle'), findsOneWidget);
+    expect(find.text('Başarılı'), findsOneWidget);
+    expect(find.text('Hata'), findsOneWidget);
+    expect(find.text('Yükleme Butonu'), findsOneWidget);
+    expect(find.text('Onay Dialog'), findsOneWidget);
   });
 }
