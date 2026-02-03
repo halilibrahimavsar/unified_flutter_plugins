@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../core/constants/app_colors.dart';
+import '../common/ibo_glass_surface.dart';
+import '../common/ibo_quick_menu_style.dart';
 
 class IboDateQuickOption {
   final String label;
@@ -31,12 +34,17 @@ class IboDatePicker {
     String? confirmText,
     List<IboDateQuickOption>? quickOptions,
     bool normalizeToStartOfDay = false,
+    ThemeData? pickerTheme,
+    IboQuickMenuStyle? quickMenuStyle,
+    String quickMenuActionText = 'Takvimden Seç',
   }) async {
     if (quickOptions != null && quickOptions.isNotEmpty) {
       final action = await _showQuickMenu(
         context,
         quickOptions: quickOptions,
         title: helpText ?? 'Tarih Seç',
+        style: quickMenuStyle,
+        actionText: quickMenuActionText,
       );
       if (action == null) {
         return null;
@@ -60,6 +68,12 @@ class IboDatePicker {
       confirmText: confirmText ?? 'Tamam',
       fieldLabelText: 'Seçilen Tarih',
       fieldHintText: 'Ay/Gün/Yıl',
+      builder: (context, child) {
+        return Theme(
+          data: pickerTheme ?? _defaultPickerTheme(context),
+          child: child ?? const SizedBox.shrink(),
+        );
+      },
     );
     if (selected == null) {
       return null;
@@ -76,12 +90,17 @@ class IboDatePicker {
     bool Function(DateTime)? selectableDayPredicate,
     List<IboDateQuickOption>? quickOptions,
     bool normalizeToStartOfDay = false,
+    ThemeData? pickerTheme,
+    IboQuickMenuStyle? quickMenuStyle,
+    String quickMenuActionText = 'Takvimden Seç',
   }) async {
     if (quickOptions != null && quickOptions.isNotEmpty) {
       final action = await _showQuickMenu(
         context,
         quickOptions: quickOptions,
         title: 'Tarih Seç',
+        style: quickMenuStyle,
+        actionText: quickMenuActionText,
       );
       if (action == null) {
         return null;
@@ -102,6 +121,12 @@ class IboDatePicker {
       lastDate: maximumDate ?? DateTime(2100),
       initialEntryMode: initialEntryMode,
       selectableDayPredicate: selectableDayPredicate,
+      builder: (context, child) {
+        return Theme(
+          data: pickerTheme ?? _defaultPickerTheme(context),
+          child: child ?? const SizedBox.shrink(),
+        );
+      },
     );
     if (selected == null) {
       return null;
@@ -113,38 +138,71 @@ class IboDatePicker {
     BuildContext context, {
     required List<IboDateQuickOption> quickOptions,
     required String title,
+    IboQuickMenuStyle? style,
+    required String actionText,
   }) async {
+    final resolvedStyle = style ?? const IboQuickMenuStyle();
     return showModalBottomSheet<_QuickDateAction>(
       context: context,
       showDragHandle: true,
+      backgroundColor: Colors.transparent,
       builder: (context) {
         return SafeArea(
-          child: ListView(
-            shrinkWrap: true,
-            children: [
-              ListTile(
-                title: Text(
-                  title,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-              for (final option in quickOptions)
-                ListTile(
-                  title: Text(option.label),
-                  onTap:
-                      () => Navigator.of(context).pop(
-                        _QuickDateAction.select(option.date),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: IboGlassSurface(
+              style: resolvedStyle.glassStyle,
+              child: Material(
+                color: Colors.transparent,
+                child: ListView(
+                  shrinkWrap: true,
+                  padding: resolvedStyle.listPadding,
+                  children: [
+                    ListTile(
+                      title: Text(
+                        title,
+                        style: resolvedStyle.titleStyle ??
+                            const TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 16,
+                            ),
                       ),
+                    ),
+                    for (final option in quickOptions)
+                      ListTile(
+                        contentPadding: resolvedStyle.itemPadding,
+                        title: Text(
+                          option.label,
+                          style: resolvedStyle.optionStyle,
+                        ),
+                        onTap:
+                            () => Navigator.of(context).pop(
+                              _QuickDateAction.select(option.date),
+                            ),
+                      ),
+                    const Divider(height: 1),
+                    ListTile(
+                      contentPadding: resolvedStyle.itemPadding,
+                      leading: Icon(
+                        resolvedStyle.actionIcon,
+                        color:
+                            resolvedStyle.actionIconColor ??
+                            AppColors.primary,
+                      ),
+                      title: Text(
+                        actionText,
+                        style: resolvedStyle.actionStyle ??
+                            const TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                      onTap:
+                          () => Navigator.of(context).pop(
+                            const _QuickDateAction.openPicker(),
+                          ),
+                    ),
+                  ],
                 ),
-              const Divider(height: 1),
-              ListTile(
-                leading: const Icon(Icons.calendar_today),
-                title: const Text('Takvimden Seç'),
-                onTap:
-                    () =>
-                        Navigator.of(context).pop(const _QuickDateAction.openPicker()),
               ),
-            ],
+            ),
           ),
         );
       },
@@ -153,5 +211,21 @@ class IboDatePicker {
 
   static DateTime _startOfDay(DateTime date) {
     return DateTime(date.year, date.month, date.day);
+  }
+
+  static ThemeData _defaultPickerTheme(BuildContext context) {
+    final base = Theme.of(context);
+    final scheme = ColorScheme.fromSeed(
+      seedColor: AppColors.primary,
+      brightness: base.brightness,
+    );
+    return base.copyWith(
+      colorScheme: scheme,
+      dialogTheme: const DialogTheme(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(18)),
+        ),
+      ),
+    );
   }
 }

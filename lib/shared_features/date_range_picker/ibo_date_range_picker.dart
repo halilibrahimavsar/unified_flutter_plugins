@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../core/constants/app_colors.dart';
+import '../common/ibo_glass_surface.dart';
+import '../common/ibo_quick_menu_style.dart';
 
 class IboDateRangeQuickOption {
   final String label;
@@ -31,12 +34,17 @@ class IboDateRangePicker {
     String? cancelText,
     List<IboDateRangeQuickOption>? quickOptions,
     bool includeFullDays = false,
+    ThemeData? pickerTheme,
+    IboQuickMenuStyle? quickMenuStyle,
+    String quickMenuActionText = 'Takvimden Seç',
   }) async {
     if (quickOptions != null && quickOptions.isNotEmpty) {
       final action = await _showQuickMenu(
         context,
         quickOptions: quickOptions,
         title: helpText ?? 'Tarih Aralığı Seç',
+        style: quickMenuStyle,
+        actionText: quickMenuActionText,
       );
       if (action == null) {
         return null;
@@ -62,6 +70,12 @@ class IboDateRangePicker {
       helpText: helpText ?? 'Tarih Aralığı Seç',
       saveText: saveText ?? 'Kaydet',
       cancelText: cancelText ?? 'İptal',
+      builder: (context, child) {
+        return Theme(
+          data: pickerTheme ?? _defaultPickerTheme(context),
+          child: child ?? const SizedBox.shrink(),
+        );
+      },
     );
     if (selected == null) {
       return null;
@@ -73,38 +87,71 @@ class IboDateRangePicker {
     BuildContext context, {
     required List<IboDateRangeQuickOption> quickOptions,
     required String title,
+    IboQuickMenuStyle? style,
+    required String actionText,
   }) async {
+    final resolvedStyle = style ?? const IboQuickMenuStyle();
     return showModalBottomSheet<_QuickRangeAction>(
       context: context,
       showDragHandle: true,
+      backgroundColor: Colors.transparent,
       builder: (context) {
         return SafeArea(
-          child: ListView(
-            shrinkWrap: true,
-            children: [
-              ListTile(
-                title: Text(
-                  title,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-              for (final option in quickOptions)
-                ListTile(
-                  title: Text(option.label),
-                  onTap:
-                      () => Navigator.of(context).pop(
-                        _QuickRangeAction.select(option.range),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: IboGlassSurface(
+              style: resolvedStyle.glassStyle,
+              child: Material(
+                color: Colors.transparent,
+                child: ListView(
+                  shrinkWrap: true,
+                  padding: resolvedStyle.listPadding,
+                  children: [
+                    ListTile(
+                      title: Text(
+                        title,
+                        style: resolvedStyle.titleStyle ??
+                            const TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 16,
+                            ),
                       ),
+                    ),
+                    for (final option in quickOptions)
+                      ListTile(
+                        contentPadding: resolvedStyle.itemPadding,
+                        title: Text(
+                          option.label,
+                          style: resolvedStyle.optionStyle,
+                        ),
+                        onTap:
+                            () => Navigator.of(context).pop(
+                              _QuickRangeAction.select(option.range),
+                            ),
+                      ),
+                    const Divider(height: 1),
+                    ListTile(
+                      contentPadding: resolvedStyle.itemPadding,
+                      leading: Icon(
+                        resolvedStyle.actionIcon,
+                        color:
+                            resolvedStyle.actionIconColor ??
+                            AppColors.primary,
+                      ),
+                      title: Text(
+                        actionText,
+                        style: resolvedStyle.actionStyle ??
+                            const TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                      onTap:
+                          () => Navigator.of(context).pop(
+                            const _QuickRangeAction.openPicker(),
+                          ),
+                    ),
+                  ],
                 ),
-              const Divider(height: 1),
-              ListTile(
-                leading: const Icon(Icons.date_range),
-                title: const Text('Takvimden Seç'),
-                onTap:
-                    () =>
-                        Navigator.of(context).pop(const _QuickRangeAction.openPicker()),
               ),
-            ],
+            ),
           ),
         );
       },
@@ -123,5 +170,21 @@ class IboDateRangePicker {
       999,
     );
     return DateTimeRange(start: start, end: end);
+  }
+
+  static ThemeData _defaultPickerTheme(BuildContext context) {
+    final base = Theme.of(context);
+    final scheme = ColorScheme.fromSeed(
+      seedColor: AppColors.primary,
+      brightness: base.brightness,
+    );
+    return base.copyWith(
+      colorScheme: scheme,
+      dialogTheme: const DialogTheme(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(18)),
+        ),
+      ),
+    );
   }
 }

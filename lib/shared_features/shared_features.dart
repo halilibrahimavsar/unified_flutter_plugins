@@ -4,6 +4,8 @@ export 'date_picker/ibo_date_picker.dart';
 export 'date_range_picker/ibo_date_range_picker.dart';
 export 'dialog/ibo_dialog.dart';
 export 'glass_button/ibo_glass_button.dart';
+export 'common/ibo_glass_surface.dart';
+export 'common/ibo_quick_menu_style.dart';
 
 // Connection Monitor
 export '../features/connection_monitor/connection_cubit.dart';
