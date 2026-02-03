@@ -30,6 +30,7 @@ class IboDateRangePicker {
     String? saveText,
     String? cancelText,
     List<IboDateRangeQuickOption>? quickOptions,
+    bool includeFullDays = false,
   }) async {
     if (quickOptions != null && quickOptions.isNotEmpty) {
       final action = await _showQuickMenu(
@@ -41,11 +42,15 @@ class IboDateRangePicker {
         return null;
       }
       if (!action.openPicker) {
-        return action.range;
+        final selected = action.range;
+        if (selected == null) {
+          return null;
+        }
+        return includeFullDays ? _normalizeToFullDays(selected) : selected;
       }
     }
 
-    return await showDateRangePicker(
+    final selected = await showDateRangePicker(
       context: context,
       initialDateRange: initialDateRange ??
           DateTimeRange(
@@ -58,6 +63,10 @@ class IboDateRangePicker {
       saveText: saveText ?? 'Kaydet',
       cancelText: cancelText ?? 'İptal',
     );
+    if (selected == null) {
+      return null;
+    }
+    return includeFullDays ? _normalizeToFullDays(selected) : selected;
   }
 
   static Future<_QuickRangeAction?> _showQuickMenu(
@@ -100,5 +109,19 @@ class IboDateRangePicker {
         );
       },
     );
+  }
+
+  static DateTimeRange _normalizeToFullDays(DateTimeRange range) {
+    final start = DateTime(range.start.year, range.start.month, range.start.day);
+    final end = DateTime(
+      range.end.year,
+      range.end.month,
+      range.end.day,
+      23,
+      59,
+      59,
+      999,
+    );
+    return DateTimeRange(start: start, end: end);
   }
 }

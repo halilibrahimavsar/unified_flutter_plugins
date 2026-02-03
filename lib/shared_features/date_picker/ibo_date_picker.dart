@@ -30,6 +30,7 @@ class IboDatePicker {
     String? cancelText,
     String? confirmText,
     List<IboDateQuickOption>? quickOptions,
+    bool normalizeToStartOfDay = false,
   }) async {
     if (quickOptions != null && quickOptions.isNotEmpty) {
       final action = await _showQuickMenu(
@@ -41,11 +42,15 @@ class IboDatePicker {
         return null;
       }
       if (!action.openPicker) {
-        return action.date;
+        final selected = action.date;
+        if (selected == null) {
+          return null;
+        }
+        return normalizeToStartOfDay ? _startOfDay(selected) : selected;
       }
     }
 
-    return await showDatePicker(
+    final selected = await showDatePicker(
       context: context,
       initialDate: initialDate ?? DateTime.now(),
       firstDate: firstDate ?? DateTime(2000),
@@ -56,6 +61,10 @@ class IboDatePicker {
       fieldLabelText: 'Seçilen Tarih',
       fieldHintText: 'Ay/Gün/Yıl',
     );
+    if (selected == null) {
+      return null;
+    }
+    return normalizeToStartOfDay ? _startOfDay(selected) : selected;
   }
 
   static Future<DateTime?> pickDateWithConstraints(
@@ -66,6 +75,7 @@ class IboDatePicker {
     DatePickerEntryMode initialEntryMode = DatePickerEntryMode.calendar,
     bool Function(DateTime)? selectableDayPredicate,
     List<IboDateQuickOption>? quickOptions,
+    bool normalizeToStartOfDay = false,
   }) async {
     if (quickOptions != null && quickOptions.isNotEmpty) {
       final action = await _showQuickMenu(
@@ -77,11 +87,15 @@ class IboDatePicker {
         return null;
       }
       if (!action.openPicker) {
-        return action.date;
+        final selected = action.date;
+        if (selected == null) {
+          return null;
+        }
+        return normalizeToStartOfDay ? _startOfDay(selected) : selected;
       }
     }
 
-    return await showDatePicker(
+    final selected = await showDatePicker(
       context: context,
       initialDate: initialDate ?? DateTime.now(),
       firstDate: minimumDate ?? DateTime(1900),
@@ -89,6 +103,10 @@ class IboDatePicker {
       initialEntryMode: initialEntryMode,
       selectableDayPredicate: selectableDayPredicate,
     );
+    if (selected == null) {
+      return null;
+    }
+    return normalizeToStartOfDay ? _startOfDay(selected) : selected;
   }
 
   static Future<_QuickDateAction?> _showQuickMenu(
@@ -131,5 +149,9 @@ class IboDatePicker {
         );
       },
     );
+  }
+
+  static DateTime _startOfDay(DateTime date) {
+    return DateTime(date.year, date.month, date.day);
   }
 }
