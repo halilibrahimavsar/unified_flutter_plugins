@@ -212,6 +212,7 @@ class ConnectionNotificationService {
 class ConnectionNotificationHandler extends StatefulWidget {
   final Widget child;
   final bool showNotifications;
+  final bool showConnectedNotification;
   final String? connectedTitle;
   final String? connectedBody;
   final String? disconnectedTitle;
@@ -221,6 +222,7 @@ class ConnectionNotificationHandler extends StatefulWidget {
     super.key,
     required this.child,
     this.showNotifications = true,
+    this.showConnectedNotification = true,
     this.connectedTitle,
     this.connectedBody,
     this.disconnectedTitle,
@@ -275,10 +277,12 @@ class _ConnectionNotificationHandlerState
         switch (state.status) {
           case ConnectionStatus.connected:
             _notificationService.clearDisconnectedNotification();
-            _notificationService.showConnectedNotification(
-              title: widget.connectedTitle,
-              body: widget.connectedBody,
-            );
+            if (widget.showConnectedNotification) {
+              _notificationService.showConnectedNotification(
+                title: widget.connectedTitle,
+                body: widget.connectedBody,
+              );
+            }
             break;
 
           case ConnectionStatus.disconnected:
