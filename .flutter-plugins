@@ -2,3 +2,11 @@
 connectivity_plus=/home/garuda/.pub-cache/hosted/pub.dev/connectivity_plus-7.0.0/
 flutter_local_notifications=/home/garuda/.pub-cache/hosted/pub.dev/flutter_local_notifications-17.2.4/
 flutter_local_notifications_linux=/home/garuda/.pub-cache/hosted/pub.dev/flutter_local_notifications_linux-4.0.1/
+path_provider_linux=/home/garuda/.pub-cache/hosted/pub.dev/path_provider_linux-2.2.1/
+path_provider_windows=/home/garuda/.pub-cache/hosted/pub.dev/path_provider_windows-2.3.0/
+shared_preferences=/home/garuda/.pub-cache/hosted/pub.dev/shared_preferences-2.5.3/
+shared_preferences_android=/home/garuda/.pub-cache/hosted/pub.dev/shared_preferences_android-2.4.13/
+shared_preferences_foundation=/home/garuda/.pub-cache/hosted/pub.dev/shared_preferences_foundation-2.5.4/
+shared_preferences_linux=/home/garuda/.pub-cache/hosted/pub.dev/shared_preferences_linux-2.4.1/
+shared_preferences_web=/home/garuda/.pub-cache/hosted/pub.dev/shared_preferences_web-2.4.3/
+shared_preferences_windows=/home/garuda/.pub-cache/hosted/pub.dev/shared_preferences_windows-2.4.1/

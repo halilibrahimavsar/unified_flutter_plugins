@@ -4,6 +4,7 @@ import 'package:unified_flutter_features/shared_features/shared_features.dart';
 import 'package:unified_flutter_features/core/constants/app_spacing.dart';
 import 'pages/connection_monitor_page.dart';
 import 'pages/slider_2d_navigation_page.dart';
+import 'pages/amount_visibility_example.dart';
 
 void main() {
   runApp(const UnifiedFeaturesDemoApp());
@@ -112,6 +113,22 @@ class DemoPage extends StatelessWidget {
                   label: const Text('2D Slider Navigation'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.secondary,
+                    foregroundColor: Colors.white,
+                  ),
+                ),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AmountVisibilityExample(),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.visibility),
+                  label: const Text('Amount Visibility'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
                     foregroundColor: Colors.white,
                   ),
                 ),
