@@ -3,13 +3,29 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'connection_state.dart';
 
+/// A BLoC/Cubit that monitors internet connectivity status using connectivity_plus.
+///
+/// Example usage:
+/// ```dart
+/// BlocProvider(
+///   create: (_) => ConnectionCubit(),
+///   child: BlocBuilder<ConnectionCubit, MyConnectionState>(
+///     builder: (context, state) {
+///       return DefaultConnectionIndicator(connectionState: state);
+///     },
+///   ),
+/// )
+/// ```
 class ConnectionCubit extends Cubit<MyConnectionState> {
   final Connectivity _connectivity;
   late StreamSubscription<List<ConnectivityResult>> _connectivitySubscription;
 
+  /// Creates a [ConnectionCubit] instance.
+  ///
+  /// [connectivity] Optional connectivity instance for testing.
   ConnectionCubit({Connectivity? connectivity})
-    : _connectivity = connectivity ?? Connectivity(),
-      super(const MyConnectionState(status: ConnectionStatus.checking)) {
+      : _connectivity = connectivity ?? Connectivity(),
+        super(const MyConnectionState(status: ConnectionStatus.checking)) {
     _initializeConnectionCheck();
   }
 
@@ -62,11 +78,18 @@ class ConnectionCubit extends Cubit<MyConnectionState> {
     }
   }
 
+  /// Manually triggers a connection check.
+  ///
+  /// Sets status to [ConnectionStatus.checking] first, then performs the check.
   Future<void> manualCheck() async {
     emit(state.copyWith(status: ConnectionStatus.checking));
     await checkInitialConnection();
   }
 
+  /// Converts connectivity results to a human-readable string.
+  ///
+  /// [results] List of connectivity results to convert.
+  /// Returns a comma-separated string of connection types.
   String getConnectionTypeString(List<ConnectivityResult> results) {
     if (results.isEmpty) return 'Bilinmiyor';
 

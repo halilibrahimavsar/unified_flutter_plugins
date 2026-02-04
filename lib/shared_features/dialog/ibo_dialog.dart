@@ -61,7 +61,37 @@ class IboDialogStyle {
   }
 }
 
+/// A customizable dialog widget with glass effect styling and predefined dialog types.
+///
+/// Example usage:
+/// ```dart
+/// final confirmed = await IboDialog.showConfirmation(
+///   context,
+///   'Confirm',
+///   'Do you confirm this action?',
+/// );
+///
+/// final text = await IboDialog.showTextInput(
+///   context,
+///   'Note',
+///   'Enter something',
+/// );
+///
+/// await IboDialog.showInfo(context, 'Info', 'Operation completed');
+/// ```
 class IboDialog {
+  /// Shows a confirmation dialog with OK and Cancel buttons.
+  ///
+  /// [context] The build context to show the dialog in.
+  /// [title] The dialog title.
+  /// [message] The confirmation message.
+  /// [confirmText] Text for the confirm button (default: 'Tamam').
+  /// [cancelText] Text for the cancel button (default: 'İptal').
+  /// [barrierDismissible] Whether dialog can be dismissed by tapping outside.
+  /// [style] Custom styling options.
+  /// [icon] Optional icon to display in the dialog.
+  ///
+  /// Returns true if confirmed, false if cancelled, null if dismissed.
   static Future<bool?> showConfirmation(
     BuildContext context,
     String title,
@@ -105,6 +135,15 @@ class IboDialog {
     );
   }
 
+  /// Shows an info dialog with a single close button.
+  ///
+  /// [context] The build context to show the dialog in.
+  /// [title] The dialog title.
+  /// [message] The info message to display.
+  /// [closeText] Text for the close button (default: 'Tamam').
+  /// [barrierDismissible] Whether dialog can be dismissed by tapping outside.
+  /// [style] Custom styling options.
+  /// [icon] Optional icon to display in the dialog.
   static Future<void> showInfo(
     BuildContext context,
     String title,
@@ -142,6 +181,21 @@ class IboDialog {
     );
   }
 
+  /// Shows a text input dialog with a text field and confirm/cancel buttons.
+  ///
+  /// [context] The build context to show the dialog in.
+  /// [title] The dialog title.
+  /// [hintText] Hint text for the input field.
+  /// [initialValue] Initial value for the text field.
+  /// [confirmText] Text for the confirm button (default: 'Tamam').
+  /// [cancelText] Text for the cancel button (default: 'İptal').
+  /// [keyboardType] Keyboard type for the text field.
+  /// [maxLines] Maximum lines for the text field.
+  /// [obscureText] Whether to obscure the text (for passwords).
+  /// [style] Custom styling options.
+  /// [icon] Optional icon to display in the dialog.
+  ///
+  /// Returns the entered text or null if cancelled.
   static Future<String?> showTextInput(
     BuildContext context,
     String title,
@@ -234,6 +288,12 @@ class IboDialog {
     );
   }
 
+  /// Shows a loading dialog with a progress indicator and message.
+  ///
+  /// [context] The build context to show the dialog in.
+  /// [message] The loading message to display (default: 'Yükleniyor...').
+  /// [barrierDismissible] Whether dialog can be dismissed (default: false).
+  /// [style] Custom styling options.
   static Future<void> showLoadingDialog(
     BuildContext context, {
     String message = 'Yükleniyor...',
@@ -274,6 +334,9 @@ class IboDialog {
     );
   }
 
+  /// Dismisses the currently shown loading dialog.
+  ///
+  /// [context] The build context containing the loading dialog.
   static void dismissLoadingDialog(BuildContext context) {
     Navigator.of(context).pop();
   }

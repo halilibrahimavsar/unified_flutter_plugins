@@ -48,30 +48,86 @@ class IboGlassButtonStyle {
   }
 }
 
+/// A customizable glass effect button with press animations and styling options.
+///
+/// Example usage:
+/// ```dart
+/// IboGlassButton(
+///   text: 'Click',
+///   onPressed: () {},
+/// );
+/// ```
 class IboGlassButton extends StatefulWidget {
+  /// The text to display on the button. Ignored if [child] is provided.
   final String text;
+
+  /// Callback when the button is pressed.
   final VoidCallback? onPressed;
+
+  /// Background color of the button.
   final Color? backgroundColor;
+
+  /// Text/icon color of the button.
   final Color? foregroundColor;
+
+  /// Gradient background instead of solid color.
   final Gradient? gradient;
+
+  /// Fixed width of the button.
   final double? width;
+
+  /// Fixed height of the button.
   final double? height;
+
+  /// Border radius of the button.
   final BorderRadius? borderRadius;
+
+  /// Custom child widget instead of text.
   final Widget? child;
+
+  /// Padding inside the button.
   final EdgeInsetsGeometry? padding;
+
+  /// Custom border for the button.
   final BoxBorder? border;
+
+  /// Custom box shadows.
   final List<BoxShadow>? boxShadow;
+
+  /// Blur sigma for glass effect.
   final double? blurSigma;
+
+  /// Whether to use glass effect.
   final bool useGlassEffect;
+
+  /// Border color.
   final Color? borderColor;
+
+  /// Border width.
   final double? borderWidth;
+
+  /// Glow/shadow color.
   final Color? glowColor;
+
+  /// Glow blur radius.
   final double? glowBlur;
+
+  /// Glow spread radius.
   final double? glowSpread;
+
+  /// Splash color for touch feedback.
   final Color? splashColor;
+
+  /// Hover color.
   final Color? hoverColor;
+
+  /// Focus color.
   final Color? focusColor;
+
+  /// Highlight color.
   final Color? highlightColor;
+
+  /// Additional styling options.
   final IboGlassButtonStyle? style;
 
   const IboGlassButton({
@@ -114,8 +170,7 @@ class _IboGlassButtonState extends State<IboGlassButton> {
     final resolvedStyle = widget.style ?? const IboGlassButtonStyle();
     final resolvedRadius = widget.borderRadius ?? BorderRadius.circular(16);
     final baseBackground = widget.backgroundColor ?? AppColors.surface;
-    final resolvedGradient =
-        widget.gradient ??
+    final resolvedGradient = widget.gradient ??
         LinearGradient(
           colors: [
             baseBackground.withValues(alpha: 0.35),
@@ -127,13 +182,11 @@ class _IboGlassButtonState extends State<IboGlassButton> {
     final resolvedBorder = widget.border ??
         Border.all(
           color:
-              widget.borderColor ??
-              AppColors.primary.withValues(alpha: 0.45),
+              widget.borderColor ?? AppColors.primary.withValues(alpha: 0.45),
           width: widget.borderWidth ?? 1,
         );
     final resolvedGlowColor = widget.glowColor ?? AppColors.secondary;
-    final resolvedShadows =
-        widget.boxShadow ??
+    final resolvedShadows = widget.boxShadow ??
         [
           BoxShadow(
             color: resolvedGlowColor.withValues(alpha: 0.28),
@@ -147,15 +200,12 @@ class _IboGlassButtonState extends State<IboGlassButton> {
           ),
         ];
     final isEnabled = widget.onPressed != null;
-    final effectiveForeground =
-        widget.foregroundColor ??
+    final effectiveForeground = widget.foregroundColor ??
         resolvedStyle.textStyle?.color ??
         Colors.black87;
-    final disabledForeground =
-        resolvedStyle.disabledForegroundColor ??
+    final disabledForeground = resolvedStyle.disabledForegroundColor ??
         effectiveForeground.withValues(alpha: 0.55);
-    final disabledBackground =
-        resolvedStyle.disabledBackgroundColor ??
+    final disabledBackground = resolvedStyle.disabledBackgroundColor ??
         baseBackground.withValues(alpha: 0.18);
     final resolvedGlassStyle = resolvedStyle.glassStyle.copyWith(
       gradient: resolvedGradient,
@@ -164,8 +214,9 @@ class _IboGlassButtonState extends State<IboGlassButton> {
       borderColor: resolvedBorder is Border
           ? resolvedBorder.top.color
           : widget.borderColor,
-      borderWidth:
-          resolvedBorder is Border ? resolvedBorder.top.width : widget.borderWidth,
+      borderWidth: resolvedBorder is Border
+          ? resolvedBorder.top.width
+          : widget.borderWidth,
       shadows: resolvedShadows,
       useGlassEffect: widget.useGlassEffect,
       blurSigma: widget.blurSigma,
@@ -181,76 +232,128 @@ class _IboGlassButtonState extends State<IboGlassButton> {
         curve: resolvedStyle.animationCurve,
         opacity: isEnabled ? 1 : 0.6,
         child: Container(
-      width: widget.width,
-      height: widget.height,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: resolvedRadius,
-          onTap: isEnabled ? widget.onPressed : null,
-          onHighlightChanged: (value) {
-            if (!isEnabled) return;
-            setState(() => _pressed = value);
-          },
-          splashColor: widget.splashColor,
-          hoverColor: widget.hoverColor,
-          focusColor: widget.focusColor,
-          highlightColor: widget.highlightColor,
-          child: IboGlassSurface(
-            width: widget.width,
-            height: widget.height,
-            style: resolvedGlassStyle,
-            child: Center(
-              child: Padding(
-                padding: widget.padding ?? resolvedStyle.padding,
-                child: widget.child ??
-                    Text(
-                      widget.text,
-                      textAlign: TextAlign.center,
-                      style: (resolvedStyle.textStyle ??
-                              const TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                                letterSpacing: 0.2,
-                              ))
-                          .copyWith(
+          width: widget.width,
+          height: widget.height,
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: resolvedRadius,
+              onTap: isEnabled ? widget.onPressed : null,
+              onHighlightChanged: (value) {
+                if (!isEnabled) return;
+                setState(() => _pressed = value);
+              },
+              splashColor: widget.splashColor,
+              hoverColor: widget.hoverColor,
+              focusColor: widget.focusColor,
+              highlightColor: widget.highlightColor,
+              child: IboGlassSurface(
+                width: widget.width,
+                height: widget.height,
+                style: resolvedGlassStyle,
+                child: Center(
+                  child: Padding(
+                    padding: widget.padding ?? resolvedStyle.padding,
+                    child: widget.child ??
+                        Text(
+                          widget.text,
+                          textAlign: TextAlign.center,
+                          style: (resolvedStyle.textStyle ??
+                                  const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16,
+                                    letterSpacing: 0.2,
+                                  ))
+                              .copyWith(
                             color: isEnabled
                                 ? effectiveForeground
                                 : disabledForeground,
                           ),
-                    ),
+                        ),
+                  ),
+                ),
               ),
             ),
           ),
         ),
       ),
-    ),
-      ),
     );
   }
 }
 
+/// A glass effect button that shows a loading indicator during async operations.
+///
+/// Example usage:
+/// ```dart
+/// IboLoadingButton(
+///   text: 'Save',
+///   onPressed: () async {
+///     // async operation
+///   },
+/// );
+/// ```
 class IboLoadingButton extends StatefulWidget {
+  /// The text to display on the button. Ignored if [child] is provided.
   final String text;
+
+  /// Async callback when the button is pressed.
   final Future<void> Function() onPressed;
+
+  /// Background color of the button.
   final Color? backgroundColor;
+
+  /// Text/icon color of the button.
   final Color? foregroundColor;
+
+  /// Gradient background instead of solid color.
   final Gradient? gradient;
+
+  /// Fixed width of the button.
   final double? width;
+
+  /// Fixed height of the button.
   final double? height;
+
+  /// Border radius of the button.
   final BorderRadius? borderRadius;
+
+  /// Custom child widget instead of text.
   final Widget? child;
+
+  /// Padding inside the button.
   final EdgeInsetsGeometry? padding;
+
+  /// Blur sigma for glass effect.
   final double? blurSigma;
+
+  /// Whether to use glass effect.
   final bool useGlassEffect;
+
+  /// Border color.
   final Color? borderColor;
+
+  /// Border width.
   final double? borderWidth;
+
+  /// Glow/shadow color.
   final Color? glowColor;
+
+  /// Glow blur radius.
   final double? glowBlur;
+
+  /// Glow spread radius.
   final double? glowSpread;
+
+  /// Splash color for touch feedback.
   final Color? splashColor;
+
+  /// Hover color.
   final Color? hoverColor;
+
+  /// Focus color.
   final Color? focusColor;
+
+  /// Highlight color.
   final Color? highlightColor;
 
   const IboLoadingButton({

@@ -110,7 +110,35 @@ class IboSnackbarStyle {
   }
 }
 
+/// A customizable snackbar widget with glass effect and predefined styles.
+///
+/// Example usage:
+/// ```dart
+/// IboSnackbar.showSuccess(context, 'Operation successful!');
+/// IboSnackbar.showError(context, 'An error occurred');
+/// IboSnackbar.showWarning(context, 'Warning');
+///
+/// IboSnackbar.show(
+///   context,
+///   'Detailed message',
+///   title: 'Title',
+///   subtitle: 'Subtitle',
+///   style: const IboSnackbarStyle(icon: Icons.info),
+/// );
+/// ```
 class IboSnackbar {
+  /// Shows a customizable snackbar with glass effect styling.
+  ///
+  /// [context] The build context to show the snackbar in.
+  /// [message] The main message to display.
+  /// [title] Optional title text.
+  /// [subtitle] Optional subtitle text.
+  /// [content] Optional custom content widget instead of text.
+  /// [backgroundColor] Background color override.
+  /// [behavior] SnackBar behavior (floating or fixed).
+  /// [duration] How long to display the snackbar.
+  /// [action] Optional action button.
+  /// [style] Custom styling options.
   static void show(
     BuildContext context,
     String message, {
@@ -257,6 +285,11 @@ class IboSnackbar {
     );
   }
 
+  /// Shows a success snackbar with green background and check icon.
+  ///
+  /// [context] The build context to show the snackbar in.
+  /// [message] The success message to display.
+  /// [style] Optional custom styling.
   static void showSuccess(
     BuildContext context,
     String message, {
@@ -270,6 +303,11 @@ class IboSnackbar {
     );
   }
 
+  /// Shows an error snackbar with red background and error icon.
+  ///
+  /// [context] The build context to show the snackbar in.
+  /// [message] The error message to display.
+  /// [style] Optional custom styling.
   static void showError(
     BuildContext context,
     String message, {
@@ -283,6 +321,11 @@ class IboSnackbar {
     );
   }
 
+  /// Shows a warning snackbar with yellow background and warning icon.
+  ///
+  /// [context] The build context to show the snackbar in.
+  /// [message] The warning message to display.
+  /// [style] Optional custom styling.
   static void showWarning(
     BuildContext context,
     String message, {
@@ -296,6 +339,9 @@ class IboSnackbar {
     );
   }
 
+  /// Dismisses the currently shown snackbar.
+  ///
+  /// [context] The build context containing the snackbar.
   static void dismiss(BuildContext context) {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
   }

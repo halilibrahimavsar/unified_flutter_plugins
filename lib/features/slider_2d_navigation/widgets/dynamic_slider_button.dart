@@ -10,11 +10,70 @@ import 'slider_knob.dart';
 // MAIN SLIDER WIDGET
 // ============================================================================
 
+/// A 2D navigation slider with state transitions and mini button/sub-menu support.
+///
+/// Example usage:
+/// ```dart
+/// class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
+///   late final AnimationController _controller;
+///
+///   @override
+///   void initState() {
+///     super.initState();
+///     _controller = AnimationController(vsync: this, value: 0.0);
+///   }
+///
+///   @override
+///   void dispose() {
+///     _controller.dispose();
+///     super.dispose();
+///   }
+///
+///   @override
+///   Widget build(BuildContext context) {
+///     return DynamicSlider(
+///       controller: _controller,
+///       onStateTap: (state) {
+///         // triggered when state changes
+///       },
+///       miniButtons: {
+///         SliderState.savedMoney: [
+///           MiniButtonData(
+///             icon: Icons.add,
+///             label: 'Add',
+///             color: Colors.green,
+///             onTap: () {},
+///           ),
+///         ],
+///       },
+///       subMenuItems: {
+///         SliderState.transactions: [
+///           SubMenuItem(
+///             icon: Icons.list,
+///             label: 'All Transactions',
+///             onTap: () {},
+///             isDefault: true,
+///           ),
+///         ],
+///       },
+///     );
+///   }
+/// }
+/// ```
 class DynamicSlider extends StatefulWidget {
+  /// Animation controller that controls the slider position (0.0 to 1.0).
   final AnimationController controller;
+
+  /// Callback when the slider value changes during dragging.
   final ValueChanged<double>? onValueChanged;
+
+  /// Callback when a slider state is tapped or becomes active.
   final ValueChanged<SliderState>? onStateTap;
+
+  /// Mini buttons that appear when tapping the knob for specific states.
   final Map<SliderState, List<MiniButtonData>> miniButtons;
+
+  /// Sub-menu items that appear in vertical carousel for specific states.
   final Map<SliderState, List<SubMenuItem>> subMenuItems;
 
   const DynamicSlider({

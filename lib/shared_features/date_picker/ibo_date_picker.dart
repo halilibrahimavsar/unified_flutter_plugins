@@ -3,8 +3,15 @@ import '../../core/constants/app_colors.dart';
 import '../common/ibo_glass_surface.dart';
 import '../common/ibo_quick_menu_style.dart';
 
+/// Represents a quick date selection option with label and date.
+///
+/// Used in date picker dialogs to provide pre-defined date options like "Today",
+/// "Yesterday", etc.
 class IboDateQuickOption {
+  /// The display label for this quick option.
   final String label;
+
+  /// The date value for this quick option.
   final DateTime date;
 
   const IboDateQuickOption({
@@ -23,7 +30,35 @@ class _QuickDateAction {
         openPicker = true;
 }
 
+/// A customizable date picker with quick selection options and glass effect styling.
+///
+/// Example usage:
+/// ```dart
+/// final date = await IboDatePicker.pickDate(
+///   context,
+///   quickOptions: [
+///     IboDateQuickOption(label: 'Today', date: DateTime.now()),
+///   ],
+///   normalizeToStartOfDay: true,
+/// );
+/// ```
 class IboDatePicker {
+  /// Shows a date picker dialog with optional quick selection options.
+  ///
+  /// [context] The build context to show the date picker in.
+  /// [initialDate] The initially selected date.
+  /// [firstDate] The earliest selectable date.
+  /// [lastDate] The latest selectable date.
+  /// [helpText] Help text displayed in the picker dialog.
+  /// [cancelText] Text for the cancel button.
+  /// [confirmText] Text for the confirm button.
+  /// [quickOptions] List of quick date selection options.
+  /// [normalizeToStartOfDay] Whether to normalize selected date to start of day.
+  /// [pickerTheme] Custom theme for the date picker.
+  /// [quickMenuStyle] Style for the quick options menu.
+  /// [quickMenuActionText] Text for the "Open Picker" action.
+  ///
+  /// Returns the selected date or null if cancelled.
   static Future<DateTime?> pickDate(
     BuildContext context, {
     DateTime? initialDate,
@@ -81,6 +116,23 @@ class IboDatePicker {
     return normalizeToStartOfDay ? _startOfDay(selected) : selected;
   }
 
+  /// Shows a date picker with advanced constraints and selectable day predicate.
+  ///
+  /// Similar to [pickDate] but with additional constraint options.
+  ///
+  /// [context] The build context to show the date picker in.
+  /// [initialDate] The initially selected date.
+  /// [minimumDate] The minimum selectable date.
+  /// [maximumDate] The maximum selectable date.
+  /// [initialEntryMode] The initial entry mode of the picker.
+  /// [selectableDayPredicate] Function to determine if a day is selectable.
+  /// [quickOptions] List of quick date selection options.
+  /// [normalizeToStartOfDay] Whether to normalize selected date to start of day.
+  /// [pickerTheme] Custom theme for the date picker.
+  /// [quickMenuStyle] Style for the quick options menu.
+  /// [quickMenuActionText] Text for the "Open Picker" action.
+  ///
+  /// Returns the selected date or null if cancelled.
   static Future<DateTime?> pickDateWithConstraints(
     BuildContext context, {
     DateTime? initialDate,
@@ -175,10 +227,9 @@ class IboDatePicker {
                           option.label,
                           style: resolvedStyle.optionStyle,
                         ),
-                        onTap:
-                            () => Navigator.of(context).pop(
-                              _QuickDateAction.select(option.date),
-                            ),
+                        onTap: () => Navigator.of(context).pop(
+                          _QuickDateAction.select(option.date),
+                        ),
                       ),
                     const Divider(height: 1),
                     ListTile(
@@ -186,18 +237,16 @@ class IboDatePicker {
                       leading: Icon(
                         resolvedStyle.actionIcon,
                         color:
-                            resolvedStyle.actionIconColor ??
-                            AppColors.primary,
+                            resolvedStyle.actionIconColor ?? AppColors.primary,
                       ),
                       title: Text(
                         actionText,
                         style: resolvedStyle.actionStyle ??
                             const TextStyle(fontWeight: FontWeight.w600),
                       ),
-                      onTap:
-                          () => Navigator.of(context).pop(
-                            const _QuickDateAction.openPicker(),
-                          ),
+                      onTap: () => Navigator.of(context).pop(
+                        const _QuickDateAction.openPicker(),
+                      ),
                     ),
                   ],
                 ),
