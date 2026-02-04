@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/constants/app_spacing.dart';
 
 class IboGlassStyle {
   final Gradient? gradient;
@@ -22,7 +23,7 @@ class IboGlassStyle {
     this.borderWidth = 1,
     this.borderRadius = const BorderRadius.all(Radius.circular(20)),
     this.shadows,
-    this.padding = const EdgeInsets.all(16),
+    this.padding = AppSpacing.mediumAll,
     this.useGlassEffect = true,
     this.blurSigma = 12,
     this.backgroundOpacity = 0.72,

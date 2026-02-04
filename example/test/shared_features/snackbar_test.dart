@@ -33,15 +33,19 @@ void main() {
     await tester.pump();
 
     expect(find.text('Başarılı'), findsOneWidget);
-    final successBar = tester.widget<SnackBar>(find.byType(SnackBar));
-    expect(successBar.backgroundColor, AppColors.success);
+    final successSurface = tester.widget<IboGlassSurface>(
+      find.byType(IboGlassSurface),
+    );
+    expect(successSurface.style.backgroundColor, AppColors.success);
 
     await tester.tap(find.text('error'));
     await tester.pump();
 
     expect(find.text('Hata'), findsOneWidget);
     expect(find.text('Başarılı'), findsNothing);
-    final errorBar = tester.widget<SnackBar>(find.byType(SnackBar));
-    expect(errorBar.backgroundColor, AppColors.error);
+    final errorSurface = tester.widget<IboGlassSurface>(
+      find.byType(IboGlassSurface),
+    );
+    expect(errorSurface.style.backgroundColor, AppColors.error);
   });
 }

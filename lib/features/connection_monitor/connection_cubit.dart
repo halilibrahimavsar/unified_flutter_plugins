@@ -40,10 +40,7 @@ class ConnectionCubit extends Cubit<MyConnectionState> {
 
   void _handleConnectivityChange(List<ConnectivityResult> results) {
     final hasConnection = results.any(
-      (result) =>
-          result == ConnectivityResult.wifi ||
-          result == ConnectivityResult.ethernet ||
-          result == ConnectivityResult.mobile,
+      (result) => result != ConnectivityResult.none,
     );
 
     if (hasConnection) {

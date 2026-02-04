@@ -11,7 +11,7 @@ class ConnectionMonitorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ConnectionCubit()..checkInitialConnection(),
+      create: (context) => ConnectionCubit(),
       child: Builder(
         builder: (context) => ConnectionNotificationHandler(
           child: Scaffold(
@@ -84,7 +84,7 @@ class ConnectionMonitorPage extends StatelessWidget {
                             connectedWidget: Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                color: Colors.green.withOpacity(0.2),
+                                color: Colors.green.withValues(alpha: 0.2),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: const Row(
@@ -102,7 +102,7 @@ class ConnectionMonitorPage extends StatelessWidget {
                             disconnectedWidget: Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                color: Colors.red.withOpacity(0.2),
+                                color: Colors.red.withValues(alpha: 0.2),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: const Row(
@@ -118,7 +118,7 @@ class ConnectionMonitorPage extends StatelessWidget {
                             checkingWidget: Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                color: Colors.orange.withOpacity(0.2),
+                                color: Colors.orange.withValues(alpha: 0.2),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: const Row(

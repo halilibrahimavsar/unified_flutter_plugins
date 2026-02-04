@@ -93,7 +93,7 @@ void main() {
 
     // Test with null onPressed
     await tester.pumpWidget(
-      MaterialApp(
+      const MaterialApp(
         home: Scaffold(
           body: IboGlassButton(
             text: 'Null Callback',

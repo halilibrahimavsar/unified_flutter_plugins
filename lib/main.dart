@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:unified_flutter_features/core/constants/app_colors.dart';
 import 'package:unified_flutter_features/shared_features/shared_features.dart';
+import 'package:unified_flutter_features/core/constants/app_spacing.dart';
 
 void main() {
   runApp(const UnifiedFeaturesDemoApp());
@@ -86,7 +87,7 @@ class _DemoPageState extends State<DemoPage> with TickerProviderStateMixin {
   Widget _buildSharedFeaturesSection() {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: AppSpacing.mediumAll,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -135,7 +136,7 @@ class _DemoPageState extends State<DemoPage> with TickerProviderStateMixin {
   Widget _buildButtonsGallery() {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: AppSpacing.mediumAll,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -180,6 +181,7 @@ class _DemoPageState extends State<DemoPage> with TickerProviderStateMixin {
                         backgroundColor: AppColors.primary,
                         onPressed: () async {
                           await Future.delayed(const Duration(seconds: 2));
+                          if (!mounted) return;
                           IboSnackbar.showSuccess(
                             context,
                             'Yükleme tamamlandı!',
@@ -198,6 +200,7 @@ class _DemoPageState extends State<DemoPage> with TickerProviderStateMixin {
                             'Onay Gerekli',
                             'Bu işlemi gerçekleştirmek istediğinizden emin misiniz?',
                           );
+                          if (!mounted) return;
                           if (confirmed == true) {
                             IboSnackbar.showSuccess(
                               context,
@@ -222,6 +225,7 @@ class _DemoPageState extends State<DemoPage> with TickerProviderStateMixin {
       context,
       quickOptions: _buildDateQuickOptions(),
     );
+    if (!mounted) return;
     if (date != null) {
       IboSnackbar.showSuccess(
         context,
@@ -235,6 +239,7 @@ class _DemoPageState extends State<DemoPage> with TickerProviderStateMixin {
       context,
       quickOptions: _buildDateRangeQuickOptions(),
     );
+    if (!mounted) return;
     if (range != null) {
       IboSnackbar.showSuccess(
         context,
@@ -258,6 +263,7 @@ class _DemoPageState extends State<DemoPage> with TickerProviderStateMixin {
       'Metin Girişi',
       'Lütfen adınızı girin',
     );
+    if (!mounted) return;
     if (text != null && text.isNotEmpty) {
       IboSnackbar.showSuccess(context, 'Merhaba $text!');
     }

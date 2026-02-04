@@ -6,7 +6,7 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:unified_flutter_features/main.dart';
+import 'package:unified_flutter_features_example/main.dart';
 
 void main() {
   testWidgets('Demo app renders main sections', (WidgetTester tester) async {
@@ -22,7 +22,7 @@ void main() {
     expect(find.text('Yükle'), findsOneWidget);
     expect(find.text('Başarılı'), findsOneWidget);
     expect(find.text('Hata'), findsOneWidget);
-    expect(find.text('Yükleme Butonu'), findsOneWidget);
     expect(find.text('Onay Dialog'), findsOneWidget);
+    expect(find.text('Bilgi'), findsOneWidget);
   });
 }

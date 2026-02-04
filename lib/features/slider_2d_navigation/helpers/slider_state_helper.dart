@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:unified_flutter_features/core/constants/app_colors.dart';
 import '../models/slider_models.dart';
 
 class SliderStateHelper {
@@ -11,11 +12,11 @@ class SliderStateHelper {
   static Color getColorForState(SliderState state) {
     switch (state) {
       case SliderState.savedMoney:
-        return const Color(0xFF43A047);
+        return AppColors.sliderSuccess;
       case SliderState.transactions:
-        return const Color(0xFF1E88E5);
+        return AppColors.sliderInfo;
       case SliderState.debt:
-        return const Color(0xFFE53935);
+        return AppColors.sliderError;
     }
   }
 

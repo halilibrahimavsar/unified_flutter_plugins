@@ -54,9 +54,14 @@ void main() {
   });
 
   group('ConnectionNotificationHandler', () {
-    testWidgets('should render without errors', (
-      WidgetTester tester,
-    ) async {
+    Future<void> pumpHandler(
+      WidgetTester tester, {
+      bool showNotifications = false,
+      String? connectedTitle,
+      String? disconnectedTitle,
+      String? connectedBody,
+      String? disconnectedBody,
+    }) async {
       final controller = StreamController<List<ConnectivityResult>>();
       final cubit = ConnectionCubit(
         connectivity: FakeConnectivity(
@@ -73,48 +78,32 @@ void main() {
         MaterialApp(
           home: BlocProvider.value(
             value: cubit,
-            child: const ConnectionNotificationHandler(
-              showNotifications: false,
-              child: Scaffold(body: Text('test')),
+            child: ConnectionNotificationHandler(
+              showNotifications: showNotifications,
+              connectedTitle: connectedTitle,
+              disconnectedTitle: disconnectedTitle,
+              connectedBody: connectedBody,
+              disconnectedBody: disconnectedBody,
+              child: const Scaffold(body: Text('test')),
             ),
           ),
         ),
       );
 
       await tester.pump();
+    }
 
+    testWidgets('should render without errors', (
+      WidgetTester tester,
+    ) async {
+      await pumpHandler(tester);
       expect(find.text('test'), findsOneWidget);
     });
 
     testWidgets('should respect showNotifications flag', (
       WidgetTester tester,
     ) async {
-      final controller = StreamController<List<ConnectivityResult>>();
-      final cubit = ConnectionCubit(
-        connectivity: FakeConnectivity(
-          controller: controller,
-          current: [ConnectivityResult.none],
-        ),
-      );
-      addTearDown(() async {
-        await cubit.close();
-        await controller.close();
-      });
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: BlocProvider.value(
-            value: cubit,
-            child: const ConnectionNotificationHandler(
-              showNotifications: false,
-              child: Scaffold(body: Text('test')),
-            ),
-          ),
-        ),
-      );
-
-      await tester.pump();
-
+      await pumpHandler(tester, showNotifications: false);
       expect(find.text('test'), findsOneWidget);
     });
 
@@ -122,34 +111,11 @@ void main() {
       WidgetTester tester,
     ) async {
       const customTitle = 'Custom Title';
-      final controller = StreamController<List<ConnectivityResult>>();
-      final cubit = ConnectionCubit(
-        connectivity: FakeConnectivity(
-          controller: controller,
-          current: [ConnectivityResult.none],
-        ),
+      await pumpHandler(
+        tester,
+        connectedTitle: customTitle,
+        disconnectedTitle: customTitle,
       );
-      addTearDown(() async {
-        await cubit.close();
-        await controller.close();
-      });
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: BlocProvider.value(
-            value: cubit,
-            child: ConnectionNotificationHandler(
-              showNotifications: false,
-              connectedTitle: customTitle,
-              disconnectedTitle: customTitle,
-              child: const Scaffold(body: Text('test')),
-            ),
-          ),
-        ),
-      );
-
-      await tester.pump();
-
       expect(find.text('test'), findsOneWidget);
     });
 
@@ -157,34 +123,11 @@ void main() {
       WidgetTester tester,
     ) async {
       const customBody = 'Custom Body';
-      final controller = StreamController<List<ConnectivityResult>>();
-      final cubit = ConnectionCubit(
-        connectivity: FakeConnectivity(
-          controller: controller,
-          current: [ConnectivityResult.none],
-        ),
+      await pumpHandler(
+        tester,
+        connectedBody: customBody,
+        disconnectedBody: customBody,
       );
-      addTearDown(() async {
-        await cubit.close();
-        await controller.close();
-      });
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: BlocProvider.value(
-            value: cubit,
-            child: ConnectionNotificationHandler(
-              showNotifications: false,
-              connectedBody: customBody,
-              disconnectedBody: customBody,
-              child: const Scaffold(body: Text('test')),
-            ),
-          ),
-        ),
-      );
-
-      await tester.pump();
-
       expect(find.text('test'), findsOneWidget);
     });
   });

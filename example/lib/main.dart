@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:unified_flutter_features/core/constants/app_colors.dart';
 import 'package:unified_flutter_features/shared_features/shared_features.dart';
+import 'package:unified_flutter_features/core/constants/app_spacing.dart';
 import 'pages/connection_monitor_page.dart';
 import 'pages/slider_2d_navigation_page.dart';
 
@@ -69,7 +70,7 @@ class DemoPage extends StatelessWidget {
   Widget _buildNewFeaturesSection(BuildContext context) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: AppSpacing.mediumAll,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -125,7 +126,7 @@ class DemoPage extends StatelessWidget {
   Widget _buildSharedFeaturesSection(BuildContext context) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: AppSpacing.mediumAll,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -174,7 +175,7 @@ class DemoPage extends StatelessWidget {
   Widget _buildButtonsGallery(BuildContext context) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: AppSpacing.mediumAll,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -223,6 +224,7 @@ class DemoPage extends StatelessWidget {
                             'Onay Gerekli',
                             'Bu işlemi gerçekleştirmek istediğinizden emin misiniz?',
                           );
+                          if (!context.mounted) return;
                           if (confirmed == true) {
                             IboSnackbar.showSuccess(
                               context,
@@ -261,6 +263,7 @@ class DemoPage extends StatelessWidget {
       context,
       quickOptions: _buildDateQuickOptions(),
     );
+    if (!context.mounted) return;
     if (date != null) {
       IboSnackbar.showSuccess(
         context,
@@ -274,6 +277,7 @@ class DemoPage extends StatelessWidget {
       context,
       quickOptions: _buildDateRangeQuickOptions(),
     );
+    if (!context.mounted) return;
     if (range != null) {
       IboSnackbar.showSuccess(
         context,
@@ -297,6 +301,7 @@ class DemoPage extends StatelessWidget {
       'Metin Girişi',
       'Lütfen adınızı girin',
     );
+    if (!context.mounted) return;
     if (text != null && text.isNotEmpty) {
       IboSnackbar.showSuccess(context, 'Merhaba $text!');
     }

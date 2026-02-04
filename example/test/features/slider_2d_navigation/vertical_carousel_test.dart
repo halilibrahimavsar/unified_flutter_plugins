@@ -112,8 +112,8 @@ void main() {
           home: Scaffold(
             body: VerticalCarousel(
               controller: controller,
-              children: testChildren,
               physics: customPhysics,
+              children: testChildren,
             ),
           ),
         ),
@@ -224,8 +224,8 @@ void main() {
           home: Scaffold(
             body: VerticalCarousel(
               controller: controller,
-              children: testChildren,
               onItemTapped: null,
+              children: testChildren,
             ),
           ),
         ),

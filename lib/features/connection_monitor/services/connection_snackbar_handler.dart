@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:unified_flutter_features/core/constants/app_spacing.dart';
 import 'package:unified_flutter_features/features/connection_monitor/connection_cubit.dart';
 import 'package:unified_flutter_features/features/connection_monitor/connection_state.dart';
 
@@ -68,7 +69,7 @@ class _ConnectionSnackbarHandlerState extends State<ConnectionSnackbarHandler> {
                 behavior: widget.behavior ?? SnackBarBehavior.floating,
                 duration:
                     widget.connectedDuration ?? const Duration(seconds: 2),
-                margin: const EdgeInsets.all(16),
+                margin: AppSpacing.mediumAll,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -98,7 +99,7 @@ class _ConnectionSnackbarHandlerState extends State<ConnectionSnackbarHandler> {
                 behavior: widget.behavior ?? SnackBarBehavior.floating,
                 duration:
                     widget.disconnectedDuration ?? const Duration(seconds: 3),
-                margin: const EdgeInsets.all(16),
+                margin: AppSpacing.mediumAll,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -139,7 +140,7 @@ class _ConnectionSnackbarHandlerState extends State<ConnectionSnackbarHandler> {
                 backgroundColor: widget.backgroundColor ?? Colors.orange,
                 behavior: widget.behavior ?? SnackBarBehavior.floating,
                 duration: const Duration(seconds: 2),
-                margin: const EdgeInsets.all(16),
+                margin: AppSpacing.mediumAll,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
