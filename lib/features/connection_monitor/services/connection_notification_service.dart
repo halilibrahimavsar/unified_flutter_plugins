@@ -14,8 +14,9 @@ class ConnectionNotificationService {
   final FlutterLocalNotificationsPlugin _notifications =
       FlutterLocalNotificationsPlugin();
   bool _initialized = false;
+  bool _permissionGranted = false;
 
-  Future<void> initialize() async {
+  Future<void> initialize({bool requestPermission = false}) async {
     if (_initialized) return;
 
     const AndroidInitializationSettings initializationSettingsAndroid =
@@ -36,34 +37,93 @@ class ConnectionNotificationService {
       onDidReceiveNotificationResponse: _onNotificationTap,
     );
 
-    await _requestPermissionsIfNeeded();
+    if (requestPermission) {
+      _permissionGranted = await _requestPermissionsIfNeeded();
+    } else {
+      _permissionGranted = await _areNotificationsEnabled();
+    }
 
     _initialized = true;
   }
 
-  Future<void> _requestPermissionsIfNeeded() async {
+  Future<bool> _requestPermissionsIfNeeded() async {
+    var granted = true;
+
     final androidNotifications =
         _notifications.resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>();
-    await androidNotifications?.requestNotificationsPermission();
+    if (androidNotifications != null) {
+      try {
+        final result = await androidNotifications
+            .requestNotificationsPermission()
+            .timeout(const Duration(seconds: 3));
+        granted = result ?? granted;
+      } on TimeoutException {
+        granted = false;
+      } catch (_) {
+        granted = false;
+      }
+    }
 
     final iosNotifications =
         _notifications.resolvePlatformSpecificImplementation<
             IOSFlutterLocalNotificationsPlugin>();
-    await iosNotifications?.requestPermissions(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
+    if (iosNotifications != null) {
+      try {
+        final result = await iosNotifications.requestPermissions(
+          alert: true,
+          badge: true,
+          sound: true,
+        );
+        granted = granted && (result ?? true);
+      } catch (_) {
+        granted = false;
+      }
+    }
 
     final macosNotifications =
         _notifications.resolvePlatformSpecificImplementation<
             MacOSFlutterLocalNotificationsPlugin>();
-    await macosNotifications?.requestPermissions(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
+    if (macosNotifications != null) {
+      try {
+        final result = await macosNotifications.requestPermissions(
+          alert: true,
+          badge: true,
+          sound: true,
+        );
+        granted = granted && (result ?? true);
+      } catch (_) {
+        granted = false;
+      }
+    }
+
+    return granted;
+  }
+
+  Future<bool> _areNotificationsEnabled() async {
+    final androidNotifications =
+        _notifications.resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
+    if (androidNotifications != null) {
+      try {
+        final enabled = await androidNotifications.areNotificationsEnabled();
+        return enabled ?? false;
+      } catch (_) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  bool get permissionGranted => _permissionGranted;
+
+  Future<bool> requestPermission() async {
+    if (!_initialized) {
+      await initialize(requestPermission: false);
+    }
+    _permissionGranted = await _requestPermissionsIfNeeded();
+    return _permissionGranted;
   }
 
   void _onNotificationTap(NotificationResponse response) {
@@ -75,7 +135,8 @@ class ConnectionNotificationService {
     String? body,
     String? payload,
   }) async {
-    if (!_initialized) await initialize();
+    if (!_initialized) await initialize(requestPermission: false);
+    if (!_permissionGranted) return;
 
     const AndroidNotificationDetails androidDetails =
         AndroidNotificationDetails(
@@ -106,7 +167,8 @@ class ConnectionNotificationService {
     String? body,
     String? payload,
   }) async {
-    if (!_initialized) await initialize();
+    if (!_initialized) await initialize(requestPermission: false);
+    if (!_permissionGranted) return;
 
     const AndroidNotificationDetails androidDetails =
         AndroidNotificationDetails(
@@ -171,7 +233,7 @@ class ConnectionNotificationHandler extends StatefulWidget {
 }
 
 class _ConnectionNotificationHandlerState
-    extends State<ConnectionNotificationHandler> {
+    extends State<ConnectionNotificationHandler> with WidgetsBindingObserver {
   final ConnectionNotificationService _notificationService =
       ConnectionNotificationService();
   MyConnectionState? lastState;
@@ -179,9 +241,27 @@ class _ConnectionNotificationHandlerState
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     if (widget.showNotifications) {
-      _notificationService.initialize();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        _notificationService.initialize(requestPermission: false);
+      });
     }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (!mounted) return;
+    if (state == AppLifecycleState.resumed) {
+      context.read<ConnectionCubit>().checkInitialConnection();
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override

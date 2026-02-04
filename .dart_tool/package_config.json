@@ -15,9 +15,9 @@
     },
     {
       "name": "bloc",
-      "rootUri": "file:///home/garuda/.pub-cache/hosted/pub.dev/bloc-8.1.4",
+      "rootUri": "file:///home/garuda/.pub-cache/hosted/pub.dev/bloc-9.2.0",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "2.14"
     },
     {
       "name": "boolean_selector",
@@ -45,7 +45,7 @@
     },
     {
       "name": "connectivity_plus",
-      "rootUri": "file:///home/garuda/.pub-cache/hosted/pub.dev/connectivity_plus-6.1.5",
+      "rootUri": "file:///home/garuda/.pub-cache/hosted/pub.dev/connectivity_plus-7.0.0",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
@@ -87,9 +87,9 @@
     },
     {
       "name": "flutter_bloc",
-      "rootUri": "file:///home/garuda/.pub-cache/hosted/pub.dev/flutter_bloc-8.1.6",
+      "rootUri": "file:///home/garuda/.pub-cache/hosted/pub.dev/flutter_bloc-9.1.1",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "2.14"
     },
     {
       "name": "flutter_lints",
@@ -290,7 +290,7 @@
       "languageVersion": "2.19"
     }
   ],
-  "generated": "2026-02-03T11:26:32.523743Z",
+  "generated": "2026-02-04T10:04:24.401999Z",
   "generator": "pub",
   "generatorVersion": "3.7.2",
   "flutterRoot": "file:///home/garuda/fluuter_sdk/flutter",

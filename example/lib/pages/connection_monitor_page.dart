@@ -167,6 +167,26 @@ class ConnectionMonitorPage extends StatelessWidget {
                   icon: const Icon(Icons.clear_all),
                   label: const Text('Bildirimleri Temizle'),
                 ),
+                const SizedBox(height: 8),
+                FloatingActionButton.extended(
+                  heroTag: 'permission_button',
+                  onPressed: () async {
+                    final granted =
+                        await ConnectionNotificationService().requestPermission();
+                    if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          granted
+                              ? 'Bildirim izni verildi'
+                              : 'Bildirim izni verilmedi',
+                        ),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.notifications),
+                  label: const Text('Bildirim İzni'),
+                ),
               ],
             ),
           ),
