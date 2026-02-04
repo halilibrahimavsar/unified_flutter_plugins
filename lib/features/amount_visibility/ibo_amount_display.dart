@@ -95,11 +95,9 @@ class AmountVisibilityObfuscator extends StatelessWidget {
             );
           },
           child: Align(
+            key: ValueKey<bool>(isVisible),
             alignment: alignment,
-            child: KeyedSubtree(
-              key: ValueKey<bool>(isVisible),
-              child: current,
-            ),
+            child: current,
           ),
         );
       },
@@ -178,6 +176,9 @@ class AmountDisplay extends StatelessWidget {
   /// Animation curve for transitions.
   final Curve animationCurve;
 
+  /// Alignment of the amount inside its bounds.
+  final AlignmentGeometry alignment;
+
   const AmountDisplay({
     super.key,
     required this.amount,
@@ -190,6 +191,7 @@ class AmountDisplay extends StatelessWidget {
     this.blurSigma = 6,
     this.animationDuration = const Duration(milliseconds: 220),
     this.animationCurve = Curves.easeOut,
+    this.alignment = Alignment.centerLeft,
   });
 
   @override
@@ -204,6 +206,7 @@ class AmountDisplay extends StatelessWidget {
       blurSigma: blurSigma,
       animationDuration: animationDuration,
       animationCurve: animationCurve,
+      alignment: alignment,
       child: Text(
         visibleText,
         style: style,
