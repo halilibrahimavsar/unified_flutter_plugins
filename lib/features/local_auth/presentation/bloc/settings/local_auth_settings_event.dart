@@ -1,13 +1,7 @@
-abstract class LocalAuthSettingsEvent {
+import '../local_auth_base.dart';
+
+abstract class LocalAuthSettingsEvent extends LocalAuthEvent {
   const LocalAuthSettingsEvent();
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is LocalAuthSettingsEvent && runtimeType == other.runtimeType;
-
-  @override
-  int get hashCode => runtimeType.hashCode;
 }
 
 class LoadSettingsEvent extends LocalAuthSettingsEvent {}

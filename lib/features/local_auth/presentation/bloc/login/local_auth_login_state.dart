@@ -1,17 +1,4 @@
-enum LoginLoadStatus {
-  initial,
-  loading,
-  success,
-  error,
-}
-
-enum AuthStatus {
-  initial,
-  loading,
-  authenticated,
-  failure,
-  lockedOut,
-}
+import '../local_auth_status.dart';
 
 class LocalAuthLoginState {
   final LoginLoadStatus loadStatus;

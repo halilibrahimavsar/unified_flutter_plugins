@@ -1,9 +1,4 @@
-enum SettingsStatus {
-  initial,
-  loading,
-  success,
-  error,
-}
+import '../local_auth_status.dart';
 
 class LocalAuthSettingsState {
   final SettingsStatus status;

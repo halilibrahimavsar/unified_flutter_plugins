@@ -5,6 +5,7 @@ import 'package:unified_flutter_features/core/constants/app_spacing.dart';
 import 'pages/connection_monitor_page.dart';
 import 'pages/slider_2d_navigation_page.dart';
 import 'pages/amount_visibility_example.dart';
+import 'pages/local_auth_demo_page.dart';
 
 void main() {
   runApp(const UnifiedFeaturesDemoApp());
@@ -130,6 +131,22 @@ class DemoPage extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
                     foregroundColor: Colors.white,
+                  ),
+                ),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LocalAuthDemoEntry(),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.fingerprint_rounded),
+                  label: const Text('Local Auth Demo'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.secondary,
+                    foregroundColor: Colors.black,
                   ),
                 ),
               ],

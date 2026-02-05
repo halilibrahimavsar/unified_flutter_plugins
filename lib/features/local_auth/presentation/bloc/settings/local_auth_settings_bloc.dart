@@ -2,6 +2,9 @@ import 'package:bloc/bloc.dart';
 import 'package:unified_flutter_features/features/local_auth/data/local_auth_repository.dart';
 import 'local_auth_settings_event.dart';
 import 'local_auth_settings_state.dart';
+import '../local_auth_status.dart';
+import '../../utils/local_auth_utils.dart';
+import '../../constants/local_auth_constants.dart';
 
 class LocalAuthSettingsBloc
     extends Bloc<LocalAuthSettingsEvent, LocalAuthSettingsState> {
@@ -25,17 +28,13 @@ class LocalAuthSettingsBloc
   ) async {
     emit(state.copyWith(status: SettingsStatus.loading));
     try {
+      await LocalAuthUtils.ensureBiometricConsistency(_repository);
       final isPinSet = await _repository.isPinSet();
-      var isBioEnabled = await _repository.isBiometricEnabled();
+      final isBioEnabled = await _repository.isBiometricEnabled();
       final isAvailable = await _repository.isBiometricAvailable();
       final privacyGuardEnabled = await _repository.isPrivacyGuardEnabled();
       final backgroundLockTimeoutSeconds =
           await _repository.getBackgroundLockTimeoutSeconds();
-
-      if (!isPinSet && isBioEnabled) {
-        await _repository.setBiometricEnabled(false);
-        isBioEnabled = false;
-      }
 
       emit(state.copyWith(
         status: SettingsStatus.success,
@@ -56,24 +55,28 @@ class LocalAuthSettingsBloc
   ) async {
     try {
       if (event.enable) {
-        final isPinSet = await _repository.isPinSet();
-        if (!isPinSet) {
-          emit(state.copyWith(
-              status: SettingsStatus.error,
-              message: "Önce PIN belirlemelisiniz"));
-          return;
-        }
+        final requirementsValid =
+            await LocalAuthUtils.validateBiometricRequirements(_repository);
+        if (!requirementsValid) {
+          final isPinSet = await _repository.isPinSet();
+          if (!isPinSet) {
+            emit(state.copyWith(
+                status: SettingsStatus.error,
+                message: "Önce PIN belirlemelisiniz"));
+            return;
+          }
 
-        final isAvailable = await _repository.isBiometricAvailable();
-        if (!isAvailable) {
-          emit(state.copyWith(
-              status: SettingsStatus.error,
-              message: "Biyometrik doğrulama desteklenmiyor"));
-          return;
+          final isAvailable = await _repository.isBiometricAvailable();
+          if (!isAvailable) {
+            emit(state.copyWith(
+                status: SettingsStatus.error,
+                message: "Biyometrik doğrulama desteklenmiyor"));
+            return;
+          }
         }
 
         final authenticated = await _repository.authenticateWithBiometrics(
-          reason: 'Enable biometric login',
+          reason: LocalAuthConstants.enableBiometricReason,
         );
         if (!authenticated) {
           emit(state.copyWith(
@@ -112,8 +115,7 @@ class LocalAuthSettingsBloc
       }
       if (event.pin != event.confirmPin) {
         emit(state.copyWith(
-            status: SettingsStatus.error,
-            message: "PIN'ler eşleşmiyor"));
+            status: SettingsStatus.error, message: "PIN'ler eşleşmiyor"));
         return;
       }
       await _repository.savePin(event.pin);
@@ -133,8 +135,7 @@ class LocalAuthSettingsBloc
     try {
       if (event.newPin != event.confirmPin) {
         emit(state.copyWith(
-            status: SettingsStatus.error,
-            message: "Yeni PIN'ler eşleşmiyor"));
+            status: SettingsStatus.error, message: "Yeni PIN'ler eşleşmiyor"));
         return;
       }
 
@@ -202,27 +203,31 @@ class LocalAuthSettingsBloc
     try {
       final seconds = event.seconds < 0 ? 0 : event.seconds;
       if (seconds > 0) {
-        final isPinSet = await _repository.isPinSet();
-        final isBioEnabled = await _repository.isBiometricEnabled();
-        final isBioAvailable = await _repository.isBiometricAvailable();
+        final requirementsValid =
+            await LocalAuthUtils.validateBiometricRequirements(_repository);
+        if (!requirementsValid) {
+          final isPinSet = await _repository.isPinSet();
+          final isBioEnabled = await _repository.isBiometricEnabled();
+          final isBioAvailable = await _repository.isBiometricAvailable();
 
-        if (!isPinSet) {
-          emit(state.copyWith(
-              status: SettingsStatus.error,
-              message: "Önce PIN belirlemelisiniz"));
-          return;
-        }
-        if (!isBioAvailable) {
-          emit(state.copyWith(
-              status: SettingsStatus.error,
-              message: "Biyometrik doğrulama desteklenmiyor"));
-          return;
-        }
-        if (!isBioEnabled) {
-          emit(state.copyWith(
-              status: SettingsStatus.error,
-              message: "Biyometrik giriş açık olmalı"));
-          return;
+          if (!isPinSet) {
+            emit(state.copyWith(
+                status: SettingsStatus.error,
+                message: "Önce PIN belirlemelisiniz"));
+            return;
+          }
+          if (!isBioAvailable) {
+            emit(state.copyWith(
+                status: SettingsStatus.error,
+                message: "Biyometrik doğrulama desteklenmiyor"));
+            return;
+          }
+          if (!isBioEnabled) {
+            emit(state.copyWith(
+                status: SettingsStatus.error,
+                message: "Biyometrik giriş açık olmalı"));
+            return;
+          }
         }
       }
 

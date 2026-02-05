@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../constants/local_auth_constants.dart';
 
 class LocalAuthNumpad extends StatelessWidget {
   final bool isLockedOut;
@@ -34,7 +35,7 @@ class LocalAuthNumpad extends StatelessWidget {
                   ),
               ],
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: LocalAuthConstants.numpadSpacing),
           ],
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -79,12 +80,12 @@ class _NumberButton extends StatelessWidget {
       onTap: isLockedOut ? null : () => onTap(digit),
       borderRadius: BorderRadius.circular(40),
       child: Container(
-        height: 75,
-        width: 75,
+        height: LocalAuthConstants.numpadButtonSize,
+        width: LocalAuthConstants.numpadButtonSize,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: Theme.of(context).cardColor,
-          border: Border.all(color: Colors.grey.withOpacity(0.1)),
+          border: Border.all(color: Colors.grey.withValues(alpha: 0.1)),
         ),
         child: Center(
           child: Text(
@@ -110,13 +111,14 @@ class _ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (icon == null) return const SizedBox(width: 75);
+    if (icon == null)
+      return SizedBox(width: LocalAuthConstants.numpadButtonSize);
     return InkWell(
       onTap: isLockedOut ? null : onTap,
       borderRadius: BorderRadius.circular(40),
       child: SizedBox(
-        height: 75,
-        width: 75,
+        height: LocalAuthConstants.numpadButtonSize,
+        width: LocalAuthConstants.numpadButtonSize,
         child: Icon(
           icon,
           size: 28,

@@ -2,6 +2,24 @@
 
 A new Flutter project.
 
+## Local Auth Demo
+
+Local authentication örneği `example/lib/pages/local_auth_demo_page.dart` dosyasında.
+
+Kullanım:
+1. Uygulamayı çalıştırın ve ana sayfada `Local Auth Demo` butonuna girin.
+2. `Ayarlar` sekmesinde PIN belirleyin, biyometrik girişi açın, Privacy Guard ve arka plan kilidi süresini seçin.
+3. `Akış` sekmesinden `Güvenli Alanı Aç` ile giriş yapın.
+4. Uygulamayı arka plana alın ve seçtiğiniz süre kadar bekleyin. Geri döndüğünüzde biyometrik doğrulama (ve isteğe bağlı PIN) istenir.
+
+Kısa entegrasyon örneği:
+```dart
+Navigator.push(
+  context,
+  MaterialPageRoute(builder: (_) => const LocalAuthDemoEntry()),
+);
+```
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.

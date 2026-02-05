@@ -2,6 +2,8 @@ import 'package:bloc/bloc.dart';
 import 'package:unified_flutter_features/features/local_auth/data/local_auth_repository.dart';
 import 'local_auth_login_event.dart';
 import 'local_auth_login_state.dart';
+import '../local_auth_status.dart';
+import '../../utils/local_auth_utils.dart';
 
 class LocalAuthLoginBloc
     extends Bloc<LocalAuthLoginEvent, LocalAuthLoginState> {
@@ -22,14 +24,9 @@ class LocalAuthLoginBloc
   ) async {
     emit(state.copyWith(loadStatus: LoginLoadStatus.loading));
     try {
-      final isPinSet = await _repository.isPinSet();
+      await LocalAuthUtils.ensureBiometricConsistency(_repository);
       var isBioEnabled = await _repository.isBiometricEnabled();
       final isAvailable = await _repository.isBiometricAvailable();
-
-      if (!isPinSet && isBioEnabled) {
-        await _repository.setBiometricEnabled(false);
-        isBioEnabled = false;
-      }
 
       // Also check lockout status on load
       add(CheckLockoutEvent());
@@ -93,7 +90,7 @@ class LocalAuthLoginBloc
         if (newAttempts >= 3) {
           // Calculate lockout
           final level = await _repository.getLockoutLevel();
-          final duration = _lockoutDurationSeconds(level);
+          final duration = LocalAuthUtils.getLockoutDurationSeconds(level);
           final endTime =
               DateTime.now().millisecondsSinceEpoch + (duration * 1000);
 
@@ -134,12 +131,5 @@ class LocalAuthLoginBloc
         lockoutEndTime: null,
       ));
     }
-  }
-
-  int _lockoutDurationSeconds(int level) {
-    if (level <= 0) return 30;
-    if (level == 1) return 120;
-    if (level == 2) return 300;
-    return 1000;
   }
 }

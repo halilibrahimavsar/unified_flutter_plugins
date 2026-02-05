@@ -4,18 +4,9 @@ import 'package:crypto/crypto.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'local_auth_repository.dart';
+import '../presentation/constants/local_auth_constants.dart';
 
 class SharedPrefsLocalAuthRepository implements LocalAuthRepository {
-  static const _keyPinHash = 'local_auth_pin_hash';
-  static const _keyPinSalt = 'local_auth_pin_salt';
-  static const _keyBiometricEnabled = 'local_auth_biometric_enabled';
-  static const _keyPrivacyGuardEnabled = 'local_auth_privacy_guard_enabled';
-  static const _keyBackgroundLockTimeout =
-      'local_auth_background_lock_timeout';
-  static const _keyLastBackgroundAt = 'local_auth_last_background_at';
-  static const _keyLockoutEnd = 'local_auth_lockout_end';
-  static const _keyLockoutLevel = 'local_auth_lockout_level';
-
   final SharedPreferences _prefs;
   final LocalAuthentication _auth;
 
@@ -34,18 +25,18 @@ class SharedPrefsLocalAuthRepository implements LocalAuthRepository {
 
   @override
   Future<bool> isBiometricEnabled() async {
-    return _prefs.getBool(_keyBiometricEnabled) ?? false;
+    return _prefs.getBool(LocalAuthConstants.biometricEnabledKey) ?? false;
   }
 
   @override
   Future<void> setBiometricEnabled(bool enabled) async {
-    await _prefs.setBool(_keyBiometricEnabled, enabled);
+    await _prefs.setBool(LocalAuthConstants.biometricEnabledKey, enabled);
   }
 
   @override
   Future<bool> isPinSet() async {
-    final hash = _prefs.getString(_keyPinHash);
-    final salt = _prefs.getString(_keyPinSalt);
+    final hash = _prefs.getString(LocalAuthConstants.pinHashKey);
+    final salt = _prefs.getString(LocalAuthConstants.pinSaltKey);
     return hash != null && salt != null;
   }
 
@@ -53,22 +44,22 @@ class SharedPrefsLocalAuthRepository implements LocalAuthRepository {
   Future<void> savePin(String pin) async {
     final salt = _generateSalt();
     final hash = _hashPin(pin, salt);
-    await _prefs.setString(_keyPinSalt, salt);
-    await _prefs.setString(_keyPinHash, hash);
+    await _prefs.setString(LocalAuthConstants.pinSaltKey, salt);
+    await _prefs.setString(LocalAuthConstants.pinHashKey, hash);
   }
 
   @override
   Future<bool> verifyPin(String pin) async {
-    final salt = _prefs.getString(_keyPinSalt);
-    final hash = _prefs.getString(_keyPinHash);
+    final salt = _prefs.getString(LocalAuthConstants.pinSaltKey);
+    final hash = _prefs.getString(LocalAuthConstants.pinHashKey);
     if (salt == null || hash == null) return false;
     return _hashPin(pin, salt) == hash;
   }
 
   @override
   Future<void> deletePin() async {
-    await _prefs.remove(_keyPinSalt);
-    await _prefs.remove(_keyPinHash);
+    await _prefs.remove(LocalAuthConstants.pinSaltKey);
+    await _prefs.remove(LocalAuthConstants.pinHashKey);
   }
 
   @override
@@ -76,7 +67,7 @@ class SharedPrefsLocalAuthRepository implements LocalAuthRepository {
     final available = await isBiometricAvailable();
     if (!available) return false;
     return _auth.authenticate(
-      localizedReason: reason ?? 'Authenticate to continue',
+      localizedReason: reason ?? LocalAuthConstants.defaultBiometricReason,
       options: const AuthenticationOptions(
         biometricOnly: true,
         stickyAuth: true,
@@ -87,59 +78,60 @@ class SharedPrefsLocalAuthRepository implements LocalAuthRepository {
 
   @override
   Future<bool> isPrivacyGuardEnabled() async {
-    return _prefs.getBool(_keyPrivacyGuardEnabled) ?? true;
+    return _prefs.getBool(LocalAuthConstants.privacyGuardEnabledKey) ?? true;
   }
 
   @override
   Future<void> setPrivacyGuardEnabled(bool enabled) async {
-    await _prefs.setBool(_keyPrivacyGuardEnabled, enabled);
+    await _prefs.setBool(LocalAuthConstants.privacyGuardEnabledKey, enabled);
   }
 
   @override
   Future<int> getBackgroundLockTimeoutSeconds() async {
-    return _prefs.getInt(_keyBackgroundLockTimeout) ?? 0;
+    return _prefs.getInt(LocalAuthConstants.backgroundLockTimeoutKey) ?? 0;
   }
 
   @override
   Future<void> setBackgroundLockTimeoutSeconds(int seconds) async {
-    await _prefs.setInt(_keyBackgroundLockTimeout, seconds);
+    await _prefs.setInt(LocalAuthConstants.backgroundLockTimeoutKey, seconds);
   }
 
   @override
   Future<int?> getLastBackgroundTime() async {
-    return _prefs.getInt(_keyLastBackgroundAt);
+    return _prefs.getInt(LocalAuthConstants.lastBackgroundAtKey);
   }
 
   @override
   Future<void> setLastBackgroundTime(int timestampMillis) async {
-    await _prefs.setInt(_keyLastBackgroundAt, timestampMillis);
+    await _prefs.setInt(
+        LocalAuthConstants.lastBackgroundAtKey, timestampMillis);
   }
 
   @override
   Future<void> clearLastBackgroundTime() async {
-    await _prefs.remove(_keyLastBackgroundAt);
+    await _prefs.remove(LocalAuthConstants.lastBackgroundAtKey);
   }
 
   @override
   Future<int?> getLockoutEndTime() async {
-    return _prefs.getInt(_keyLockoutEnd);
+    return _prefs.getInt(LocalAuthConstants.lockoutEndKey);
   }
 
   @override
   Future<int> getLockoutLevel() async {
-    return _prefs.getInt(_keyLockoutLevel) ?? 0;
+    return _prefs.getInt(LocalAuthConstants.lockoutLevelKey) ?? 0;
   }
 
   @override
   Future<void> saveLockoutState(int level, int endTime) async {
-    await _prefs.setInt(_keyLockoutLevel, level);
-    await _prefs.setInt(_keyLockoutEnd, endTime);
+    await _prefs.setInt(LocalAuthConstants.lockoutLevelKey, level);
+    await _prefs.setInt(LocalAuthConstants.lockoutEndKey, endTime);
   }
 
   @override
   Future<void> clearLockoutState() async {
-    await _prefs.remove(_keyLockoutLevel);
-    await _prefs.remove(_keyLockoutEnd);
+    await _prefs.remove(LocalAuthConstants.lockoutLevelKey);
+    await _prefs.remove(LocalAuthConstants.lockoutEndKey);
   }
 
   String _generateSalt() {

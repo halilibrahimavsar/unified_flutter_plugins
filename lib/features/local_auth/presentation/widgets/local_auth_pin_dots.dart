@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import '../constants/local_auth_constants.dart';
 
 class LocalAuthPinDots extends StatelessWidget {
   final int length;
@@ -37,9 +38,10 @@ class LocalAuthPinDots extends StatelessWidget {
 
           return AnimatedContainer(
             duration: const Duration(milliseconds: 200),
-            margin: const EdgeInsets.symmetric(horizontal: 12),
-            width: 20,
-            height: 20,
+            margin: EdgeInsets.symmetric(
+                horizontal: LocalAuthConstants.pinDotSpacing),
+            width: LocalAuthConstants.pinDotSize.toDouble(),
+            height: LocalAuthConstants.pinDotSize.toDouble(),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: isError
@@ -48,9 +50,12 @@ class LocalAuthPinDots extends StatelessWidget {
               boxShadow: isFilled && !isError
                   ? [
                       BoxShadow(
-                        color: activeColor.withOpacity(0.4),
-                        blurRadius: 10,
-                        spreadRadius: 2,
+                        color: activeColor.withValues(alpha: 0.4),
+                        blurRadius: LocalAuthConstants.pinDotShadowBlurRadius
+                            .toDouble(),
+                        spreadRadius: LocalAuthConstants
+                            .pinDotShadowSpreadRadius
+                            .toDouble(),
                       )
                     ]
                   : [],

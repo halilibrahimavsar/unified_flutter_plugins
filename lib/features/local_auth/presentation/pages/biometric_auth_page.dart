@@ -7,6 +7,8 @@ import 'package:unified_flutter_features/features/local_auth/presentation/bloc/l
 import 'package:unified_flutter_features/features/local_auth/presentation/bloc/login/local_auth_login_state.dart';
 import 'package:unified_flutter_features/features/local_auth/presentation/widgets/local_auth_numpad.dart';
 import 'package:unified_flutter_features/features/local_auth/presentation/widgets/local_auth_pin_dots.dart';
+import '../bloc/local_auth_status.dart';
+import '../constants/local_auth_constants.dart';
 
 class BiometricAuthPage extends StatefulWidget {
   final VoidCallback onSuccess;
@@ -24,7 +26,6 @@ class BiometricAuthPage extends StatefulWidget {
 
 class _BiometricAuthPageState extends State<BiometricAuthPage>
     with SingleTickerProviderStateMixin {
-  static const int _pinLength = 4;
   String _enteredPin = '';
   Timer? _lockoutTimer;
   int _remainingSeconds = 0;
@@ -34,7 +35,8 @@ class _BiometricAuthPageState extends State<BiometricAuthPage>
   void initState() {
     super.initState();
     _shakeController = AnimationController(
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(
+          milliseconds: LocalAuthConstants.shakeAnimationDuration),
       vsync: this,
     );
     context.read<LocalAuthLoginBloc>().add(LoadLoginPolicyEvent());
@@ -77,7 +79,8 @@ class _BiometricAuthPageState extends State<BiometricAuthPage>
 
   void _handleKeyPress(String value, bool isLockedOut) {
     // Eğer kilitliyse veya zaten 4 hane girildiyse işlem yapma
-    if (isLockedOut || _enteredPin.length >= _pinLength) return;
+    if (isLockedOut || _enteredPin.length >= LocalAuthConstants.pinLength)
+      return;
 
     HapticFeedback.selectionClick();
     setState(() {
@@ -85,7 +88,7 @@ class _BiometricAuthPageState extends State<BiometricAuthPage>
     });
 
     // 4. hane girildiği an doğrulama gönder
-    if (_enteredPin.length == _pinLength) {
+    if (_enteredPin.length == LocalAuthConstants.pinLength) {
       context
           .read<LocalAuthLoginBloc>()
           .add(VerifyPinLoginEvent(pin: _enteredPin));
@@ -177,7 +180,7 @@ class _BiometricAuthPageState extends State<BiometricAuthPage>
                                     _enteredPin.isEmpty))
                             ? theme.colorScheme.error
                             : theme.textTheme.bodyMedium?.color
-                                ?.withOpacity(0.6),
+                                ?.withValues(alpha: 0.6),
                         fontWeight:
                             isLockedOut ? FontWeight.bold : FontWeight.normal,
                       ),
@@ -186,12 +189,12 @@ class _BiometricAuthPageState extends State<BiometricAuthPage>
                 ),
                 const Spacer(),
                 LocalAuthPinDots(
-                  length: _pinLength,
+                  length: LocalAuthConstants.pinLength,
                   filled: _enteredPin.length,
                   isError: _isPinError(state),
                   shake: _shakeController,
                   activeColor: theme.primaryColor,
-                  inactiveColor: Colors.grey.withOpacity(0.2),
+                  inactiveColor: Colors.grey.withValues(alpha: 0.2),
                   errorColor: theme.colorScheme.error,
                 ),
                 const Spacer(),
@@ -220,11 +223,13 @@ class _BiometricAuthPageState extends State<BiometricAuthPage>
     if (state.authStatus == AuthStatus.failure) {
       return 'Hatalı PIN, tekrar deneyin';
     }
-    return state.message ?? 'Devam etmek için $_pinLength haneli PIN girin';
+    return state.message ??
+        'Devam etmek için ${LocalAuthConstants.pinLength} haneli PIN girin';
   }
 
   bool _isPinError(LocalAuthLoginState state) {
     return state.authStatus == AuthStatus.failure &&
-        (_enteredPin.isEmpty || _enteredPin.length == _pinLength);
+        (_enteredPin.isEmpty ||
+            _enteredPin.length == LocalAuthConstants.pinLength);
   }
 }
