@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
+import 'dart:math' as math;
 import '../models/slider_models.dart';
 import '../constants/slider_config.dart';
 
@@ -59,22 +60,19 @@ class _MiniButtonsOverlayState extends State<MiniButtonsOverlay>
             ),
           ),
           ...List.generate(widget.buttons.length, (index) {
-            // Calculate button position in a fan/arc layout
-            double baseAngle = 3.14159 / 2; // Start at 90 degrees (top)
+            // Fan layout around the knob. Center stays top; edges tilt diagonally.
+            double baseAngle = math.pi / 2; // 90 degrees (top)
+            if (widget.sliderValue < 0.2) baseAngle = math.pi / 3; // 60 degrees
+            if (widget.sliderValue > 0.8) baseAngle = 2 * math.pi / 3; // 120
 
-            // Adjust angle based on slider position
-            if (widget.sliderValue < 0.2) baseAngle -= 0.3;
-            if (widget.sliderValue > 0.8) baseAngle += 0.3;
-
-            double angle = baseAngle +
+            final angle = baseAngle +
                 (index - (widget.buttons.length - 1) / 2) *
                     SliderConfig.miniButtonSpread;
-            double distance = SliderConfig.miniButtonDistance;
+            final distance = SliderConfig.miniButtonDistance;
+            const extraUp = 6.0;
 
-            double offsetX = distance * (angle - 3.14159 / 2).abs() < 0.1
-                ? 0
-                : distance * (angle > 3.14159 / 2 ? 1 : -1) * 0.7;
-            double offsetY = -distance * 0.7;
+            final offsetX = math.cos(angle) * distance;
+            final offsetY = -math.sin(angle) * distance - extraUp;
 
             return AnimatedBuilder(
               animation: _controller,

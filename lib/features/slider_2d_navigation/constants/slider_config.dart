@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class SliderConfig {
   // Animation
-  static const animationDuration = Duration(milliseconds: 500);
-  static const animationCurve = Curves.easeOutBack;
+  static const animationDuration = Duration(milliseconds: 600);
+  static const animationCurve = Curves.easeOutCubic;
 
   // Dimensions
   static const sliderHeight = 70.0;
@@ -13,12 +13,12 @@ class SliderConfig {
   static const trackRadius = 42.0;
 
   // Carousel
-  static const carouselItemHeight = 48.0;
+  static const carouselItemHeight = 42.0;
   static const carouselTotalHeight = carouselItemHeight * 4;
 
   // Mini buttons
   static const miniButtonSize = 40.0;
-  static const miniButtonDistance = 50.0;
+  static const miniButtonDistance = 76.0;
   static const miniButtonSpread = 0.9;
 
   // Arrow positioning
