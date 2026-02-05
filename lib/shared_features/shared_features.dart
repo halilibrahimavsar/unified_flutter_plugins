@@ -1,23 +1,36 @@
 /// Export file for all shared UI components and feature modules.
 ///
 /// This file exports:
-/// - Shared UI components (snackbar, dialog, glass button, date pickers)
+/// - Shared UI components (snackbar, dialog, glass button, date pickers, privacy guard)
 /// - Connection monitor feature with BLoC state management
 /// - Amount visibility feature with obfuscation and persistence
 /// - 2D Slider navigation feature with animation support
+/// - Local auth feature with biometric and PIN authentication
 ///
 /// Import this file to get access to all shared components and features:
 /// ```dart
 /// import 'package:unified_flutter_features/shared_features.dart';
 ///
-/// // Example usage of amount visibility feature:
-/// BlocProvider(
-///   create: (_) => AmountVisibilityCubit(),
-///   child: Row(
-///     children: [
-///       AmountDisplay(amount: 1234.56, currencySymbol: '\$'),
-///       AmountVisibilityButton(),
-///     ],
+/// // Example usage of privacy guard:
+/// PrivacyGuard(
+///   enabled: true,
+///   child: YourSensitiveWidget(),
+/// )
+///
+/// // Example usage of local auth:
+/// final prefs = await SharedPreferences.getInstance();
+/// final repo = SharedPrefsLocalAuthRepository(prefs: prefs);
+///
+/// RepositoryProvider.value(
+///   value: repo,
+///   child: BlocProvider(
+///     create: (context) => LocalAuthLoginBloc(
+///       repository: context.read<LocalAuthRepository>(),
+///     ),
+///     child: BiometricAuthPage(
+///       onSuccess: () => print('Authenticated'),
+///       onLogout: () => print('Logged out'),
+///     ),
 ///   ),
 /// )
 /// ```
@@ -31,6 +44,7 @@ export 'glass_button/ibo_glass_button.dart';
 export '../features/amount_visibility/ibo_amount_display.dart';
 export 'common/ibo_glass_surface.dart';
 export 'common/ibo_quick_menu_style.dart';
+export 'privacy_guard/ibo_privacy_guard.dart';
 
 // Connection Monitor Feature
 // Monitors internet connectivity using BLoC pattern with connectivity_plus
@@ -51,3 +65,16 @@ export '../features/slider_2d_navigation/widgets/dynamic_slider_button.dart';
 export '../features/slider_2d_navigation/widgets/mini_buttons_overlay.dart';
 export '../features/slider_2d_navigation/widgets/slider_knob.dart';
 export '../features/slider_2d_navigation/widgets/vertical_carousel.dart';
+
+// Local Auth Feature
+// Biometric and PIN authentication with BLoC pattern and lockout mechanism
+export '../features/local_auth/data/local_auth_repository.dart';
+export '../features/local_auth/data/shared_prefs_local_auth_repository.dart';
+export '../features/local_auth/presentation/bloc/login/local_auth_login_bloc.dart';
+export '../features/local_auth/presentation/bloc/login/local_auth_login_event.dart';
+export '../features/local_auth/presentation/bloc/login/local_auth_login_state.dart';
+export '../features/local_auth/presentation/bloc/settings/local_auth_settings_bloc.dart';
+export '../features/local_auth/presentation/bloc/settings/local_auth_settings_event.dart';
+export '../features/local_auth/presentation/bloc/settings/local_auth_settings_state.dart';
+export '../features/local_auth/presentation/pages/biometric_auth_page.dart';
+export '../features/local_auth/presentation/widgets/local_auth_background_lock.dart';
