@@ -117,6 +117,7 @@ class IboSnackbarStyle {
 /// IboSnackbar.showSuccess(context, 'Operation successful!');
 /// IboSnackbar.showError(context, 'An error occurred');
 /// IboSnackbar.showWarning(context, 'Warning');
+/// IboSnackbar.showInfo(context, 'Info');
 ///
 /// IboSnackbar.show(
 ///   context,
@@ -339,10 +340,21 @@ class IboSnackbar {
     );
   }
 
-  /// Dismisses the currently shown snackbar.
+  /// Shows an info snackbar with blue background and info icon.
   ///
-  /// [context] The build context containing the snackbar.
-  static void dismiss(BuildContext context) {
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+  /// [context] The build context to show the snackbar in.
+  /// [message] The info message to display.
+  /// [style] Optional custom styling.
+  static void showInfo(
+    BuildContext context,
+    String message, {
+    IboSnackbarStyle? style,
+  }) {
+    show(
+      context,
+      message,
+      backgroundColor: AppColors.sliderInfo,
+      style: style ?? const IboSnackbarStyle(icon: Icons.info_rounded),
+    );
   }
 }
