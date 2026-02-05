@@ -46,7 +46,6 @@ export '../features/amount_visibility/amount_visibility_cubit.dart';
 
 // 2D Slider Navigation Feature
 // Animated slider with state transitions and mini button/sub-menu support
-export '../features/slider_2d_navigation/dynamic_slider.dart';
 export '../features/slider_2d_navigation/models/slider_models.dart';
 export '../features/slider_2d_navigation/widgets/dynamic_slider_button.dart';
 export '../features/slider_2d_navigation/widgets/mini_buttons_overlay.dart';

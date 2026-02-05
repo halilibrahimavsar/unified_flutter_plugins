@@ -387,7 +387,7 @@ class _DynamicSliderState extends State<DynamicSlider> {
                               _carouselController.animateToItem(
                                 targetIndex,
                                 duration: const Duration(milliseconds: 300),
-                                curve: Curves.easeOutBack,
+                                curve: Curves.linear,
                               );
                             }
                           : null,
