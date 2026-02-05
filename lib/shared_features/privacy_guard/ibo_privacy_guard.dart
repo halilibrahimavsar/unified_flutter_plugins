@@ -51,6 +51,7 @@ class PrivacyGuard extends StatefulWidget {
     this.blurOn = const {
       AppLifecycleState.inactive,
       AppLifecycleState.paused,
+      AppLifecycleState.hidden,
     },
     this.style = const PrivacyGuardOverlayStyle(),
     this.animationDuration = const Duration(milliseconds: 180),
@@ -104,10 +105,10 @@ class _PrivacyGuardState extends State<PrivacyGuard>
     // Eğer güvenlik kapalıysa işlem yapma
     if (!widget.enabled) return;
 
-    // Uygulama aktif değilse (inactive veya paused) bulanıklaştır
+    // Uygulama aktif değilse (inactive, paused, hidden) bulanıklaştır
     final shouldBlur = widget.blurOn.contains(state);
 
-    if (_shouldBlur != shouldBlur) {
+    if (mounted && _shouldBlur != shouldBlur) {
       setState(() {
         _shouldBlur = shouldBlur;
       });
@@ -117,17 +118,21 @@ class _PrivacyGuardState extends State<PrivacyGuard>
   @override
   Widget build(BuildContext context) {
     // Güvenlik kapalıysa direkt içeriği göster
-    if (!widget.enabled) return widget.child;
+    if (!widget.enabled) {
+      return widget.child;
+    }
 
     return Stack(
       children: [
         widget.child,
-        if (_shouldBlur)
-          Positioned.fill(
-            child: AnimatedSwitcher(
-              duration: widget.animationDuration,
-              switchInCurve: widget.animationCurve,
-              switchOutCurve: widget.animationCurve,
+        // Debug için her zaman blur overlay'ı ekle (görünmez olsa bile)
+        Positioned.fill(
+          child: IgnorePointer(
+            ignoring: !_shouldBlur,
+            child: AnimatedOpacity(
+              duration: _shouldBlur ? Duration.zero : widget.animationDuration,
+              curve: widget.animationCurve,
+              opacity: _shouldBlur ? 1.0 : 0.0,
               child: _PrivacyGuardOverlay(
                 key: ValueKey<bool>(_shouldBlur),
                 style: widget.style,
@@ -135,6 +140,7 @@ class _PrivacyGuardState extends State<PrivacyGuard>
               ),
             ),
           ),
+        ),
       ],
     );
   }
@@ -165,43 +171,45 @@ class _PrivacyGuardOverlay extends StatelessWidget {
 
     return AbsorbPointer(
       absorbing: true,
-      child: BackdropFilter(
-        filter: ImageFilter.blur(
-          sigmaX: style.blurSigma,
-          sigmaY: style.blurSigma,
-        ),
-        child: ColoredBox(
-          color: style.scrimColor,
-          child: Center(
-            child: builder?.call(context, style) ??
-                Container(
-                  padding: style.padding,
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.surface.withValues(alpha: 0.2),
-                    borderRadius: style.borderRadius,
-                    border: Border.all(
-                      color: style.iconColor.withValues(alpha: 0.2),
+      child: ClipRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(
+            sigmaX: style.blurSigma,
+            sigmaY: style.blurSigma,
+          ),
+          child: ColoredBox(
+            color: style.scrimColor,
+            child: Center(
+              child: builder?.call(context, style) ??
+                  Container(
+                    padding: style.padding,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.surface.withValues(alpha: 0.2),
+                      borderRadius: style.borderRadius,
+                      border: Border.all(
+                        color: style.iconColor.withValues(alpha: 0.2),
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          style.icon,
+                          size: style.iconSize,
+                          color: style.iconColor,
+                        ),
+                        if (style.title != null) ...[
+                          const SizedBox(height: 12),
+                          Text(style.title!, style: titleStyle),
+                        ],
+                        if (style.subtitle != null) ...[
+                          const SizedBox(height: 6),
+                          Text(style.subtitle!, style: subtitleStyle),
+                        ],
+                      ],
                     ),
                   ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        style.icon,
-                        size: style.iconSize,
-                        color: style.iconColor,
-                      ),
-                      if (style.title != null) ...[
-                        const SizedBox(height: 12),
-                        Text(style.title!, style: titleStyle),
-                      ],
-                      if (style.subtitle != null) ...[
-                        const SizedBox(height: 6),
-                        Text(style.subtitle!, style: subtitleStyle),
-                      ],
-                    ],
-                  ),
-                ),
+            ),
           ),
         ),
       ),

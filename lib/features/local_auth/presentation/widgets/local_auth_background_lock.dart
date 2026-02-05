@@ -53,12 +53,15 @@ class _LocalAuthBackgroundLockState extends State<LocalAuthBackgroundLock>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (!widget.enabled) return;
 
+    // Uygulama arka plana gittiğinde zaman kaydet
     if (state == AppLifecycleState.paused ||
-        state == AppLifecycleState.inactive) {
+        state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.hidden) {
       _recordBackgroundTime();
       return;
     }
 
+    // Uygulama ön plana döndüğünde kontrol et
     if (state == AppLifecycleState.resumed) {
       _checkOnResume();
     }

@@ -221,7 +221,7 @@ class _BiometricAuthPageState extends State<BiometricAuthPage>
       return 'Çok fazla hatalı deneme. \n$_remainingSeconds saniye bekleyin.';
     }
     if (state.authStatus == AuthStatus.failure) {
-      return 'Hatalı PIN, tekrar deneyin';
+      return state.message ?? 'Hatalı PIN, tekrar deneyin';
     }
     return state.message ??
         'Devam etmek için ${LocalAuthConstants.pinLength} haneli PIN girin';

@@ -202,6 +202,10 @@ class LocalAuthSettingsBloc
   ) async {
     try {
       final seconds = event.seconds < 0 ? 0 : event.seconds;
+
+      // Mevcut değeri sakla (hata durumunda geri yüklemek için)
+      final currentTimeout = state.backgroundLockTimeoutSeconds;
+
       if (seconds > 0) {
         final requirementsValid =
             await LocalAuthUtils.validateBiometricRequirements(_repository);
@@ -213,21 +217,36 @@ class LocalAuthSettingsBloc
           if (!isPinSet) {
             emit(state.copyWith(
                 status: SettingsStatus.error,
+                backgroundLockTimeoutSeconds: currentTimeout,
                 message: "Önce PIN belirlemelisiniz"));
             return;
           }
           if (!isBioAvailable) {
             emit(state.copyWith(
                 status: SettingsStatus.error,
+                backgroundLockTimeoutSeconds: currentTimeout,
                 message: "Biyometrik doğrulama desteklenmiyor"));
             return;
           }
           if (!isBioEnabled) {
             emit(state.copyWith(
                 status: SettingsStatus.error,
+                backgroundLockTimeoutSeconds: currentTimeout,
                 message: "Biyometrik giriş açık olmalı"));
             return;
           }
+        }
+
+        // Arka plan kilidi açılıyorsa otomatik olarak Privacy Guard da aç
+        if (!state.isPrivacyGuardEnabled) {
+          await _repository.setPrivacyGuardEnabled(true);
+          await _repository.setBackgroundLockTimeoutSeconds(seconds);
+          emit(state.copyWith(
+              isPrivacyGuardEnabled: true,
+              backgroundLockTimeoutSeconds: seconds,
+              status: SettingsStatus.success,
+              message: "Arka plan kilidi ve Privacy Guard etkinleştirildi"));
+          return;
         }
       }
 
@@ -242,7 +261,10 @@ class LocalAuthSettingsBloc
               ? "Arka plan kilidi süresi güncellendi"
               : "Arka plan kilidi kapatıldı"));
     } catch (e) {
-      emit(state.copyWith(status: SettingsStatus.error, message: e.toString()));
+      emit(state.copyWith(
+          status: SettingsStatus.error,
+          backgroundLockTimeoutSeconds: state.backgroundLockTimeoutSeconds,
+          message: e.toString()));
     }
   }
 }

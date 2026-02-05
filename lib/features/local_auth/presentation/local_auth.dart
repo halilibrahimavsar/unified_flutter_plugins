@@ -15,6 +15,8 @@ export 'pages/biometric_auth_page.dart';
 export 'widgets/local_auth_background_lock.dart';
 export 'widgets/local_auth_numpad.dart';
 export 'widgets/local_auth_pin_dots.dart';
+export 'widgets/local_auth_settings_widget.dart';
+export 'widgets/local_auth_settings_style.dart';
 
 // Utility exports
 export 'utils/local_auth_utils.dart';

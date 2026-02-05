@@ -84,6 +84,7 @@ class LocalAuthLoginBloc
           authStatus: AuthStatus.authenticated,
           failedAttempts: 0,
           lockoutEndTime: null,
+          message: null,
         ));
       } else {
         final newAttempts = state.failedAttempts + 1;
@@ -99,6 +100,7 @@ class LocalAuthLoginBloc
             authStatus: AuthStatus.lockedOut,
             lockoutEndTime: endTime,
             failedAttempts: 0,
+            message: null,
           ));
         } else {
           emit(state.copyWith(
@@ -110,7 +112,8 @@ class LocalAuthLoginBloc
       }
     } catch (e) {
       emit(state.copyWith(
-          authStatus: AuthStatus.failure, message: e.toString()));
+          authStatus: AuthStatus.failure,
+          message: 'PIN doğrulama hatası: ${e.toString()}'));
     }
   }
 
