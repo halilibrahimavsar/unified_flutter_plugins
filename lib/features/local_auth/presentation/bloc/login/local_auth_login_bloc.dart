@@ -5,10 +5,28 @@ import 'local_auth_login_state.dart';
 import '../local_auth_status.dart';
 import '../../utils/local_auth_utils.dart';
 
+/// BLoC for handling local authentication login operations.
+///
+/// This bloc manages the authentication flow including PIN verification,
+/// biometric authentication, and lockout state management. It handles
+/// failed attempts, progressive lockouts, and authentication policy loading.
+///
+/// Example usage:
+/// ```dart
+/// BlocProvider(
+///   create: (context) => LocalAuthLoginBloc(
+///     repository: context.read<LocalAuthRepository>(),
+///   ),
+///   child: LocalAuthLoginPage(),
+/// )
+/// ```
 class LocalAuthLoginBloc
     extends Bloc<LocalAuthLoginEvent, LocalAuthLoginState> {
   final LocalAuthRepository _repository;
 
+  /// Creates a [LocalAuthLoginBloc] instance.
+  ///
+  /// [repository] The repository for authentication operations.
   LocalAuthLoginBloc({required LocalAuthRepository repository})
       : _repository = repository,
         super(const LocalAuthLoginState()) {

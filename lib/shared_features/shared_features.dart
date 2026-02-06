@@ -78,3 +78,4 @@ export '../features/local_auth/presentation/bloc/settings/local_auth_settings_ev
 export '../features/local_auth/presentation/bloc/settings/local_auth_settings_state.dart';
 export '../features/local_auth/presentation/pages/biometric_auth_page.dart';
 export '../features/local_auth/presentation/widgets/local_auth_background_lock.dart';
+export '../features/local_auth/presentation/widgets/local_auth_security_layer.dart';

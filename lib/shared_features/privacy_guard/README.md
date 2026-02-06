@@ -19,6 +19,22 @@ PrivacyGuard(
 )
 ```
 
+#### With Local Auth (Recommended)
+
+If you use the Local Auth feature, you can wrap the entire page with
+`LocalAuthSecurityLayer` to automatically combine Privacy Guard and
+background lock behavior.
+
+```dart
+final prefs = await SharedPreferences.getInstance();
+final repo = SharedPrefsLocalAuthRepository(prefs: prefs);
+
+LocalAuthSecurityLayer(
+  repository: repo,
+  child: YourAppOrPage(),
+)
+```
+
 #### Features
 
 - Automatically detects app lifecycle changes
@@ -95,9 +111,8 @@ RepositoryProvider.value(
 #### Lockout Mechanism
 
 - **3 failed attempts**: 30 seconds lockout
-- **5 failed attempts**: 2 minutes lockout  
-- **10 failed attempts**: 5 minutes lockout
-- **More than 10**: 1000+ seconds lockout
+- Each lockout increases the lockout level
+- Next lockouts: 2 minutes, 5 minutes, then 1000+ seconds
 
 #### UI Features
 

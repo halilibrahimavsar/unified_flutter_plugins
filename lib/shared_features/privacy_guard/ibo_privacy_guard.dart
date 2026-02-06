@@ -1,23 +1,54 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
+/// Builder function for creating custom privacy guard overlays.
+///
+/// [context] The build context for the overlay.
+/// [style] The current overlay style configuration.
+///
+/// Returns a custom widget to display when privacy guard is active.
 typedef PrivacyGuardOverlayBuilder = Widget Function(
   BuildContext context,
   PrivacyGuardOverlayStyle style,
 );
 
+/// Configuration for the privacy guard overlay appearance.
+///
+/// Defines how the privacy overlay looks when the app is backgrounded
+/// or when sensitive content should be hidden.
 @immutable
 class PrivacyGuardOverlayStyle {
+  /// Blur intensity for the background filter.
   final double blurSigma;
+
+  /// Color overlay for the scrim (semi-transparent background).
   final Color scrimColor;
+
+  /// Icon to display in the overlay center.
   final IconData icon;
+
+  /// Size of the displayed icon.
   final double iconSize;
+
+  /// Color of the displayed icon.
   final Color iconColor;
+
+  /// Optional title text to display.
   final String? title;
+
+  /// Optional subtitle text to display.
   final String? subtitle;
+
+  /// Custom text style for the title.
   final TextStyle? titleStyle;
+
+  /// Custom text style for the subtitle.
   final TextStyle? subtitleStyle;
+
+  /// Padding around the overlay content.
   final EdgeInsets padding;
+
+  /// Border radius for the overlay container.
   final BorderRadius borderRadius;
 
   const PrivacyGuardOverlayStyle({
@@ -35,13 +66,50 @@ class PrivacyGuardOverlayStyle {
   });
 }
 
+/// A privacy protection widget that automatically blurs/hides sensitive content
+/// when the app goes to background or specific lifecycle states.
+///
+/// This widget monitors app lifecycle changes and applies a privacy overlay
+/// to prevent sensitive information from being visible in app switchers,
+/// screenshots, or when the app is not actively in use.
+///
+/// Example usage:
+/// ```dart
+/// PrivacyGuard(
+///   enabled: true,
+///   blurOn: {
+///     AppLifecycleState.paused,
+///     AppLifecycleState.inactive,
+///     AppLifecycleState.hidden,
+///   },
+///   style: PrivacyGuardOverlayStyle(
+///     title: 'App Hidden',
+///     subtitle: 'Tap to return',
+///     blurSigma: 20,
+///   ),
+///   child: YourSensitiveContent(),
+/// )
+/// ```
 class PrivacyGuard extends StatefulWidget {
+  /// The child widget to protect with privacy guard.
   final Widget child;
-  final bool enabled; // Güvenlik açık mı kontrolü
+
+  /// Whether privacy guard is enabled or disabled.
+  final bool enabled;
+
+  /// Set of app lifecycle states that trigger the privacy overlay.
   final Set<AppLifecycleState> blurOn;
+
+  /// Styling configuration for the privacy overlay.
   final PrivacyGuardOverlayStyle style;
+
+  /// Duration of the show/hide animation.
   final Duration animationDuration;
+
+  /// Animation curve for transitions.
   final Curve animationCurve;
+
+  /// Optional custom builder for the overlay content.
   final PrivacyGuardOverlayBuilder? overlayBuilder;
 
   const PrivacyGuard({
@@ -102,12 +170,9 @@ class _PrivacyGuardState extends State<PrivacyGuard>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    // Eğer güvenlik kapalıysa işlem yapma
     if (!widget.enabled) return;
 
-    // Uygulama aktif değilse (inactive, paused, hidden) bulanıklaştır
     final shouldBlur = widget.blurOn.contains(state);
-
     if (mounted && _shouldBlur != shouldBlur) {
       setState(() {
         _shouldBlur = shouldBlur;
@@ -117,15 +182,11 @@ class _PrivacyGuardState extends State<PrivacyGuard>
 
   @override
   Widget build(BuildContext context) {
-    // Güvenlik kapalıysa direkt içeriği göster
-    if (!widget.enabled) {
-      return widget.child;
-    }
+    if (!widget.enabled) return widget.child;
 
     return Stack(
       children: [
         widget.child,
-        // Debug için her zaman blur overlay'ı ekle (görünmez olsa bile)
         Positioned.fill(
           child: IgnorePointer(
             ignoring: !_shouldBlur,

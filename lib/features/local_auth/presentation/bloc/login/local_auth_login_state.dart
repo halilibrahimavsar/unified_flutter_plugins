@@ -1,12 +1,30 @@
 import '../local_auth_status.dart';
 
+/// State for local authentication login operations.
+///
+/// Represents the current state of the authentication process including
+/// loading status, authentication status, biometric availability, and
+/// lockout information for failed attempts.
 class LocalAuthLoginState {
+  /// Status of loading authentication policies and settings.
   final LoginLoadStatus loadStatus;
+
+  /// Current authentication status (initial, loading, authenticated, etc.).
   final AuthStatus authStatus;
+
+  /// Whether biometric authentication is enabled by the user.
   final bool isBiometricEnabled;
+
+  /// Whether biometric authentication is available on the device.
   final bool isBiometricAvailable;
+
+  /// Optional error or status message to display to the user.
   final String? message;
+
+  /// Number of failed authentication attempts in current session.
   final int failedAttempts;
+
+  /// Timestamp when lockout period ends (null if not locked out).
   final int? lockoutEndTime;
 
   const LocalAuthLoginState({

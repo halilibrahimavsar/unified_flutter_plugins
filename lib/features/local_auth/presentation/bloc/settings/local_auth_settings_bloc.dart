@@ -207,34 +207,17 @@ class LocalAuthSettingsBloc
       final currentTimeout = state.backgroundLockTimeoutSeconds;
 
       if (seconds > 0) {
-        final requirementsValid =
-            await LocalAuthUtils.validateBiometricRequirements(_repository);
-        if (!requirementsValid) {
-          final isPinSet = await _repository.isPinSet();
-          final isBioEnabled = await _repository.isBiometricEnabled();
-          final isBioAvailable = await _repository.isBiometricAvailable();
+        // PIN veya biyometrikten biri varsa arka plan kilidi açılabilir
+        final isPinSet = await _repository.isPinSet();
+        final isBioEnabled = await _repository.isBiometricEnabled();
 
-          if (!isPinSet) {
-            emit(state.copyWith(
-                status: SettingsStatus.error,
-                backgroundLockTimeoutSeconds: currentTimeout,
-                message: "Önce PIN belirlemelisiniz"));
-            return;
-          }
-          if (!isBioAvailable) {
-            emit(state.copyWith(
-                status: SettingsStatus.error,
-                backgroundLockTimeoutSeconds: currentTimeout,
-                message: "Biyometrik doğrulama desteklenmiyor"));
-            return;
-          }
-          if (!isBioEnabled) {
-            emit(state.copyWith(
-                status: SettingsStatus.error,
-                backgroundLockTimeoutSeconds: currentTimeout,
-                message: "Biyometrik giriş açık olmalı"));
-            return;
-          }
+        if (!isPinSet && !isBioEnabled) {
+          emit(state.copyWith(
+              status: SettingsStatus.error,
+              backgroundLockTimeoutSeconds: currentTimeout,
+              message:
+                  "Arka plan kilidi için PIN veya biyometrik giriş gerekli"));
+          return;
         }
 
         // Arka plan kilidi açılıyorsa otomatik olarak Privacy Guard da aç

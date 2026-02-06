@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:async';
+import '../../../../shared_features/common/ibo_glass_surface.dart';
 import 'package:unified_flutter_features/features/local_auth/presentation/bloc/login/local_auth_login_bloc.dart';
 import 'package:unified_flutter_features/features/local_auth/presentation/bloc/login/local_auth_login_event.dart';
 import 'package:unified_flutter_features/features/local_auth/presentation/bloc/login/local_auth_login_state.dart';
@@ -157,33 +158,62 @@ class _BiometricAuthPageState extends State<BiometricAuthPage>
             child: Column(
               children: [
                 const SizedBox(height: 16),
-                Icon(Icons.lock_outline_rounded,
-                    size: 80, color: theme.primaryColor),
-                const SizedBox(height: 20),
-                Text(
-                  'Hoş Geldiniz',
-                  style: theme.textTheme.headlineMedium
-                      ?.copyWith(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 12),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 40),
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 250),
-                    child: Text(
-                      statusText,
-                      key: ValueKey(statusText),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: (isLockedOut ||
-                                (state.authStatus == AuthStatus.failure &&
-                                    _enteredPin.isEmpty))
-                            ? theme.colorScheme.error
-                            : theme.textTheme.bodyMedium?.color
-                                ?.withValues(alpha: 0.6),
-                        fontWeight:
-                            isLockedOut ? FontWeight.bold : FontWeight.normal,
-                      ),
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: IboGlassSurface(
+                    padding: const EdgeInsets.all(20),
+                    style: IboGlassStyle(
+                      borderRadius: BorderRadius.circular(28),
+                      backgroundColor: theme.colorScheme.surface,
+                      backgroundOpacity: 0.9,
+                    ),
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 72,
+                          height: 72,
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.primary
+                                .withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(22),
+                            border: Border.all(
+                              color: theme.colorScheme.primary
+                                  .withValues(alpha: 0.22),
+                            ),
+                          ),
+                          child: Icon(
+                            Icons.lock_outline_rounded,
+                            size: 36,
+                            color: theme.primaryColor,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Hoş Geldiniz',
+                          style: theme.textTheme.headlineSmall
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 10),
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 250),
+                          child: Text(
+                            statusText,
+                            key: ValueKey(statusText),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: (isLockedOut ||
+                                      (state.authStatus == AuthStatus.failure &&
+                                          _enteredPin.isEmpty))
+                                  ? theme.colorScheme.error
+                                  : theme.textTheme.bodyMedium?.color
+                                      ?.withValues(alpha: 0.7),
+                              fontWeight: isLockedOut
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),

@@ -1,3 +1,7 @@
+/// Base class for all local authentication events.
+///
+/// All events in the local authentication BLoC should extend this class.
+/// It provides equality checking based on runtime type for proper BLoC operation.
 abstract class LocalAuthEvent {
   const LocalAuthEvent();
 
@@ -10,6 +14,10 @@ abstract class LocalAuthEvent {
   int get hashCode => runtimeType.hashCode;
 }
 
+/// Base class for all local authentication states.
+///
+/// All states in the local authentication BLoC should extend this class.
+/// It provides equality checking based on runtime type for proper BLoC operation.
 abstract class LocalAuthState {
   const LocalAuthState();
 
