@@ -1,3 +1,5 @@
+import 'dart:async';
+
 /// Repository interface for local authentication operations.
 ///
 /// This abstract class defines the contract for all local authentication
@@ -7,6 +9,11 @@
 /// Implementations should handle secure storage of authentication data
 /// and provide thread-safe operations for all authentication methods.
 abstract class LocalAuthRepository {
+  /// Stream of settings changes that widgets can listen to for updates.
+  ///
+  /// Emits whenever any setting (privacy guard, background lock, etc.) changes.
+  Stream<void> get settingsChanges;
+
   /// Checks if biometric authentication is available on the device.
   ///
   /// Returns true if device has biometric hardware (fingerprint, face ID, etc.).

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 import 'package:crypto/crypto.dart';
@@ -9,12 +10,16 @@ import '../presentation/constants/local_auth_constants.dart';
 class SharedPrefsLocalAuthRepository implements LocalAuthRepository {
   final SharedPreferences _prefs;
   final LocalAuthentication _auth;
+  final _settingsChangeController = StreamController<void>.broadcast();
 
   SharedPrefsLocalAuthRepository({
     required SharedPreferences prefs,
     LocalAuthentication? auth,
   })  : _prefs = prefs,
         _auth = auth ?? LocalAuthentication();
+
+  @override
+  Stream<void> get settingsChanges => _settingsChangeController.stream;
 
   @override
   Future<bool> isBiometricAvailable() async {
@@ -31,6 +36,7 @@ class SharedPrefsLocalAuthRepository implements LocalAuthRepository {
   @override
   Future<void> setBiometricEnabled(bool enabled) async {
     await _prefs.setBool(LocalAuthConstants.biometricEnabledKey, enabled);
+    _settingsChangeController.add(null);
   }
 
   @override
@@ -46,6 +52,7 @@ class SharedPrefsLocalAuthRepository implements LocalAuthRepository {
     final hash = _hashPin(pin, salt);
     await _prefs.setString(LocalAuthConstants.pinSaltKey, salt);
     await _prefs.setString(LocalAuthConstants.pinHashKey, hash);
+    _settingsChangeController.add(null);
   }
 
   @override
@@ -60,6 +67,7 @@ class SharedPrefsLocalAuthRepository implements LocalAuthRepository {
   Future<void> deletePin() async {
     await _prefs.remove(LocalAuthConstants.pinSaltKey);
     await _prefs.remove(LocalAuthConstants.pinHashKey);
+    _settingsChangeController.add(null);
   }
 
   @override
@@ -84,6 +92,7 @@ class SharedPrefsLocalAuthRepository implements LocalAuthRepository {
   @override
   Future<void> setPrivacyGuardEnabled(bool enabled) async {
     await _prefs.setBool(LocalAuthConstants.privacyGuardEnabledKey, enabled);
+    _settingsChangeController.add(null);
   }
 
   @override
@@ -94,6 +103,7 @@ class SharedPrefsLocalAuthRepository implements LocalAuthRepository {
   @override
   Future<void> setBackgroundLockTimeoutSeconds(int seconds) async {
     await _prefs.setInt(LocalAuthConstants.backgroundLockTimeoutKey, seconds);
+    _settingsChangeController.add(null);
   }
 
   @override

@@ -131,9 +131,8 @@ class _LocalAuthSettingsWidgetState extends State<LocalAuthSettingsWidget> {
             addSection(LocalAuthBackgroundLockSection(
               style: widget.style,
               state: state,
-              onTimeoutSelected: (seconds) => _bloc
-                  .add(UpdateBackgroundLockTimeoutEvent(seconds: seconds)),
-              onTest: () => _showTestHint(context),
+              onTimeoutSelected: (seconds) =>
+                  _bloc.add(UpdateBackgroundLockTimeoutEvent(seconds: seconds)),
             ));
           }
 
@@ -177,7 +176,7 @@ class _LocalAuthSettingsWidgetState extends State<LocalAuthSettingsWidget> {
     final pins = await PinInputDialog.show(
       context: context,
       title: 'PIN Oluştur',
-      fieldLabels: const ['PIN (4 hane)', 'PIN Tekrar'],
+      fieldLabels: const ['PIN (6 hane)', 'PIN Tekrar'],
     );
 
     if (pins != null && pins.length == 2) {
@@ -215,28 +214,16 @@ class _LocalAuthSettingsWidgetState extends State<LocalAuthSettingsWidget> {
     );
 
     if (confirmed == true) {
-      final currentPin = await IboDialog.showTextInput(
-        context,
-        'PIN Doğrulama',
-        'Mevcut PINinizi girin',
-        keyboardType: TextInputType.number,
-        obscureText: true,
+      final pins = await PinInputDialog.show(
+        context: context,
+        title: 'PIN Doğrulama',
+        fieldLabels: const ['Mevcut PIN'],
+        confirmLabel: 'Doğrula',
       );
 
-      if (currentPin != null && currentPin.isNotEmpty) {
-        _bloc.add(DeletePinEvent(currentPin: currentPin));
+      if (pins != null && pins.isNotEmpty) {
+        _bloc.add(DeletePinEvent(currentPin: pins[0]));
       }
     }
-  }
-
-  void _showTestHint(BuildContext context) {
-    IboDialog.showInfo(
-      context,
-      'Test İpucu',
-      '1. Bu ayarları kaydedin\n'
-      '2. Uygulamayı arka plana alın\n'
-      '3. Belirlenen süre bekleyin\n'
-      '4. Geri döndüğünüzde doğrulama istemeli',
-    );
   }
 }

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../data/local_auth_repository.dart';
 import 'local_auth_background_lock.dart';
@@ -87,12 +88,14 @@ class LocalAuthSecurityLayer extends StatefulWidget {
 
 class _LocalAuthSecurityLayerState extends State<LocalAuthSecurityLayer> {
   bool _privacyGuardEnabled = true;
+  StreamSubscription<void>? _settingsSubscription;
 
   @override
   void initState() {
     super.initState();
     _loadPrivacyGuard();
     widget.controller?.addListener(_loadPrivacyGuard);
+    _listenToSettingsChanges();
   }
 
   @override
@@ -100,6 +103,8 @@ class _LocalAuthSecurityLayerState extends State<LocalAuthSecurityLayer> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.repository != widget.repository) {
       _loadPrivacyGuard();
+      _cancelSettingsSubscription();
+      _listenToSettingsChanges();
     }
     if (oldWidget.controller != widget.controller) {
       oldWidget.controller?.removeListener(_loadPrivacyGuard);
@@ -109,8 +114,22 @@ class _LocalAuthSecurityLayerState extends State<LocalAuthSecurityLayer> {
 
   @override
   void dispose() {
+    _cancelSettingsSubscription();
     widget.controller?.removeListener(_loadPrivacyGuard);
     super.dispose();
+  }
+
+  void _listenToSettingsChanges() {
+    _settingsSubscription = widget.repository.settingsChanges.listen((_) {
+      if (mounted) {
+        _loadPrivacyGuard();
+      }
+    });
+  }
+
+  void _cancelSettingsSubscription() {
+    _settingsSubscription?.cancel();
+    _settingsSubscription = null;
   }
 
   Future<void> _loadPrivacyGuard() async {

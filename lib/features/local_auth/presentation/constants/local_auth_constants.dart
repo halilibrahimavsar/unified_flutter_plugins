@@ -1,7 +1,7 @@
 class LocalAuthConstants {
   LocalAuthConstants._();
 
-  static const int pinLength = 4;
+  static const int pinLength = 6;
   static const int maxFailedAttempts = 3;
   static const int hapticDelayMs = 150;
   static const int shakeAnimationDuration = 500;
@@ -55,12 +55,12 @@ class LocalAuthConstants {
   static const String currentPinLabel = 'Mevcut PIN';
   static const String newPinLabel = 'Yeni PIN';
   static const String confirmPinLabel = 'PIN Tekrar';
-  static const String pinHint = '****';
+  static const String pinHint = '******';
   static const String saveButtonText = 'Kaydet';
   static const String changeButtonText = 'Değiştir';
   static const String removeButtonText = 'Kaldır';
   static const String cancelButtonText2 = 'İptal';
-  static const String pinValidationError = '4 haneli PIN girin';
+  static const String pinValidationError = '6 haneli PIN girin';
   static const String pinMatchError = 'PINler eşleşmiyor';
   static const String privacyGuardEnabledSubtitle = 'Ekran koruma aktif';
   static const String privacyGuardDisabledSubtitle = 'Ekran koruma kapalı';

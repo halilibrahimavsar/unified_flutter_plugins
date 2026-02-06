@@ -77,7 +77,7 @@ class _PinInputDialogState extends State<PinInputDialog> {
       labelStyle: theme.textTheme.bodyMedium?.copyWith(
         color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
       ),
-      hintText: '****',
+      hintText: '******',
       counterText: '',
       filled: true,
       fillColor: theme.colorScheme.surface.withValues(alpha: 0.65),
@@ -127,8 +127,7 @@ class _PinInputDialogState extends State<PinInputDialog> {
                       color: theme.colorScheme.primary.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(14),
                       border: Border.all(
-                        color:
-                            theme.colorScheme.primary.withValues(alpha: 0.2),
+                        color: theme.colorScheme.primary.withValues(alpha: 0.2),
                       ),
                     ),
                     child: Icon(
@@ -156,22 +155,25 @@ class _PinInputDialogState extends State<PinInputDialog> {
                   obscureText: true,
                   textAlign: TextAlign.center,
                   textAlignVertical: TextAlignVertical.center,
-                  maxLength: 4,
+                  maxLength: 6,
                   textInputAction: i < widget.fieldLabels.length - 1
                       ? TextInputAction.next
                       : TextInputAction.done,
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
-                    LengthLimitingTextInputFormatter(4),
+                    LengthLimitingTextInputFormatter(6),
                   ],
                   decoration: inputDecoration.copyWith(
                     labelText: widget.fieldLabels[i],
                   ),
                   validator: (value) {
-                    if (value == null || value.length != 4) {
-                      return '4 haneli PIN girin';
+                    if (value == null || value.length != 6) {
+                      return '6 haneli PIN girin';
                     }
-                    if (i > 0 && value != _controllers[i - 1].text) {
+                    // Only compare the last field with the previous one (for change PIN: new vs confirm)
+                    if (i > 0 &&
+                        i == widget.fieldLabels.length - 1 &&
+                        value != _controllers[i - 1].text) {
                       return 'PINler eşleşmiyor';
                     }
                     return null;

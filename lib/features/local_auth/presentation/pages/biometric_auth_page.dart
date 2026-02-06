@@ -79,7 +79,7 @@ class _BiometricAuthPageState extends State<BiometricAuthPage>
   }
 
   void _handleKeyPress(String value, bool isLockedOut) {
-    // Eğer kilitliyse veya zaten 4 hane girildiyse işlem yapma
+    // Eğer kilitliyse veya zaten 6 hane girildiyse işlem yapma
     if (isLockedOut || _enteredPin.length >= LocalAuthConstants.pinLength)
       return;
 
@@ -88,7 +88,7 @@ class _BiometricAuthPageState extends State<BiometricAuthPage>
       _enteredPin += value;
     });
 
-    // 4. hane girildiği an doğrulama gönder
+    // 6. hane girildiği an doğrulama gönder
     if (_enteredPin.length == LocalAuthConstants.pinLength) {
       context
           .read<LocalAuthLoginBloc>()

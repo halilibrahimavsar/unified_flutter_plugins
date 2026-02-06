@@ -274,14 +274,12 @@ class LocalAuthBackgroundLockSection extends StatelessWidget {
   final LocalAuthSettingsStyle style;
   final LocalAuthSettingsState state;
   final ValueChanged<int> onTimeoutSelected;
-  final VoidCallback onTest;
 
   const LocalAuthBackgroundLockSection({
     super.key,
     required this.style,
     required this.state,
     required this.onTimeoutSelected,
-    required this.onTest,
   });
 
   @override
@@ -337,13 +335,6 @@ class LocalAuthBackgroundLockSection extends StatelessWidget {
                   ),
                 ),
           ],
-        ),
-        SizedBox(height: style.buttonSpacing),
-        LocalAuthActionButton(
-          style: style,
-          text: 'Test Et',
-          icon: Icons.play_arrow_outlined,
-          onPressed: canEdit ? onTest : null,
         ),
         if (currentTimeout > 0) ...[
           const SizedBox(height: 10),
