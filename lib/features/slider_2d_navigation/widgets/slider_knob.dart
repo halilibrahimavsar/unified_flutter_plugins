@@ -17,6 +17,7 @@ class SliderKnob extends StatelessWidget {
   final bool showUpArrow;
   final bool showDownArrow;
   final VoidCallback onTap;
+  final VoidCallback? onMainTitleTap;
   final VoidCallback onHorizontalDragStart;
   final Function(DragUpdateDetails) onHorizontalDrag;
   final VoidCallback onHorizontalDragEnd;
@@ -35,6 +36,7 @@ class SliderKnob extends StatelessWidget {
     required this.showUpArrow,
     required this.showDownArrow,
     required this.onTap,
+    this.onMainTitleTap,
     required this.onHorizontalDragStart,
     required this.onHorizontalDrag,
     required this.onHorizontalDragEnd,
@@ -161,6 +163,11 @@ class SliderKnob extends StatelessWidget {
                 controller: carouselController,
                 physics: const NeverScrollableScrollPhysics(),
                 onItemTapped: (index) {
+                  if (index == 0) {
+                    onMainTitleTap?.call();
+                    HapticFeedback.lightImpact();
+                    return;
+                  }
                   if (index < items.length) {
                     items[index].onTap();
                     HapticFeedback.lightImpact();

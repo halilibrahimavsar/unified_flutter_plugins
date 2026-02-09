@@ -76,6 +76,9 @@ class DynamicSlider extends StatefulWidget {
   /// Sub-menu items that appear in vertical carousel for specific states.
   final Map<SliderState, List<SubMenuItem>> subMenuItems;
 
+  /// Selected sub-menu index for each state (0-based, excluding title item).
+  final Map<SliderState, int> selectedSubIndex;
+
   const DynamicSlider({
     super.key,
     required this.controller,
@@ -83,6 +86,7 @@ class DynamicSlider extends StatefulWidget {
     this.onStateTap,
     this.miniButtons = const {},
     this.subMenuItems = const {},
+    this.selectedSubIndex = const {},
   });
 
   @override
@@ -112,8 +116,19 @@ class _DynamicSliderState extends State<DynamicSlider> {
     _carouselController.addListener(_updateArrowVisibility);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) _updateArrowVisibility();
+      if (!mounted) return;
+      _updateArrowVisibility();
+      _syncCarouselToSelection(animate: false);
     });
+  }
+
+  @override
+  void didUpdateWidget(covariant DynamicSlider oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.selectedSubIndex != widget.selectedSubIndex ||
+        oldWidget.subMenuItems != widget.subMenuItems) {
+      _syncCarouselToSelection();
+    }
   }
 
   @override
@@ -147,15 +162,65 @@ class _DynamicSliderState extends State<DynamicSlider> {
       // Execute default/main title callback when state changes
       _executeDefaultCallback(currentState);
 
-      _carouselController.animateToItem(
-        0,
-        duration: const Duration(milliseconds: 200),
-        curve: Curves.easeOut,
-      );
+      _resetCarouselForState(currentState);
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) _updateArrowVisibility();
       });
+    }
+  }
+
+  void _resetCarouselForState(SliderState state) {
+    final subItems = widget.subMenuItems[state] ?? [];
+    if (subItems.isEmpty) return;
+
+    final selectedIndex = widget.selectedSubIndex[state];
+    final targetIndex = selectedIndex != null
+        ? (selectedIndex + 1).clamp(0, subItems.length)
+        : 0;
+
+    if (!_carouselController.hasClients) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _resetCarouselForState(state);
+      });
+      return;
+    }
+
+    _carouselController.animateToItem(
+      targetIndex,
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeOut,
+    );
+  }
+
+  void _syncCarouselToSelection({bool animate = true}) {
+    final state = _getCurrentState();
+    final subItems = widget.subMenuItems[state] ?? [];
+    if (subItems.isEmpty) return;
+
+    final selectedIndex = widget.selectedSubIndex[state];
+    if (selectedIndex == null) return;
+
+    final targetIndex =
+        (selectedIndex + 1).clamp(0, subItems.length);
+
+    if (!_carouselController.hasClients) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _syncCarouselToSelection(animate: animate);
+      });
+      return;
+    }
+
+    if (_carouselController.selectedItem == targetIndex) return;
+
+    if (animate) {
+      _carouselController.animateToItem(
+        targetIndex,
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOut,
+      );
+    } else {
+      _carouselController.jumpToItem(targetIndex);
     }
   }
 
@@ -343,8 +408,8 @@ class _DynamicSliderState extends State<DynamicSlider> {
                       showDownArrow: _showDownArrow,
                       onTap: () {
                         _toggleMiniButtons();
-                        widget.onStateTap?.call(state);
                       },
+                      onMainTitleTap: () => widget.onStateTap?.call(state),
                       onHorizontalDragStart: () =>
                           setState(() => _isDragging = true),
                       onHorizontalDrag: (details) {
@@ -389,6 +454,13 @@ class _DynamicSliderState extends State<DynamicSlider> {
                                 duration: const Duration(milliseconds: 300),
                                 curve: Curves.linear,
                               );
+                              if (targetIndex == 0) {
+                                widget.onStateTap?.call(state);
+                                return;
+                              }
+                              if (targetIndex > 0) {
+                                carouselItems[targetIndex].onTap();
+                              }
                             }
                           : null,
                     ),

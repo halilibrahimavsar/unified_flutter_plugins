@@ -25,7 +25,6 @@ class VerticalCarousel extends StatelessWidget {
         perspective: 0.009,
         diameterRatio: 1.5,
         physics: physics ?? const FixedExtentScrollPhysics(),
-        onSelectedItemChanged: onItemTapped,
         childDelegate: ListWheelChildBuilderDelegate(
           childCount: children.length,
           builder: (context, index) {
