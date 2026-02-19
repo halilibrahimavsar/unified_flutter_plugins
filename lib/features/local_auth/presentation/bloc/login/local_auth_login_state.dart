@@ -6,6 +6,8 @@ import '../local_auth_status.dart';
 /// loading status, authentication status, biometric availability, and
 /// lockout information for failed attempts.
 class LocalAuthLoginState {
+  static const Object _unset = Object();
+
   /// Status of loading authentication policies and settings.
   final LoginLoadStatus loadStatus;
 
@@ -42,18 +44,20 @@ class LocalAuthLoginState {
     AuthStatus? authStatus,
     bool? isBiometricEnabled,
     bool? isBiometricAvailable,
-    String? message,
+    Object? message = _unset,
     int? failedAttempts,
-    int? lockoutEndTime,
+    Object? lockoutEndTime = _unset,
   }) {
     return LocalAuthLoginState(
       loadStatus: loadStatus ?? this.loadStatus,
       authStatus: authStatus ?? this.authStatus,
       isBiometricEnabled: isBiometricEnabled ?? this.isBiometricEnabled,
       isBiometricAvailable: isBiometricAvailable ?? this.isBiometricAvailable,
-      message: message,
+      message: identical(message, _unset) ? this.message : message as String?,
       failedAttempts: failedAttempts ?? this.failedAttempts,
-      lockoutEndTime: lockoutEndTime ?? this.lockoutEndTime,
+      lockoutEndTime: identical(lockoutEndTime, _unset)
+          ? this.lockoutEndTime
+          : lockoutEndTime as int?,
     );
   }
 

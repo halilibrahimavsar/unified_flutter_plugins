@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:unified_flutter_features/shared_features/shared_features.dart';
+import 'package:unified_flutter_features/shared_features.dart';
 
 void main() {
   testWidgets('IboDatePicker returns quick option and normalizes date', (

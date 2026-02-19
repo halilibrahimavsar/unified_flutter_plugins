@@ -24,10 +24,10 @@ class LocalAuthUtils {
   }
 
   static String getLockoutDurationText(int level) {
-    if (level <= 0) return '30 saniye';
-    if (level == 1) return '2 dakika';
-    if (level == 2) return '5 dakika';
-    return '16.7 dakika';
+    if (level <= 0) return '30 seconds';
+    if (level == 1) return '2 minutes';
+    if (level == 2) return '5 minutes';
+    return '16.7 minutes';
   }
 
   static int getLockoutDurationSeconds(int level) {
@@ -36,10 +36,10 @@ class LocalAuthUtils {
   }
 
   static String getRemainingTimeText(int seconds) {
-    if (seconds < 60) return '$seconds saniye';
+    if (seconds < 60) return '$seconds seconds';
     final minutes = seconds ~/ 60;
     final remainingSeconds = seconds % 60;
-    if (remainingSeconds == 0) return '$minutes dakika';
-    return '$minutes dakika $remainingSeconds saniye';
+    if (remainingSeconds == 0) return '$minutes minutes';
+    return '$minutes minutes $remainingSeconds seconds';
   }
 }

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/local_auth_repository.dart';
@@ -48,8 +49,7 @@ class _LocalAuthBackgroundLockState extends State<LocalAuthBackgroundLock>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused ||
-        state == AppLifecycleState.inactive ||
-        state == AppLifecycleState.hidden) {
+        state == AppLifecycleState.inactive) {
       _recordBackgroundTime();
     } else if (state == AppLifecycleState.resumed) {
       _checkLock();
@@ -96,8 +96,9 @@ class _LocalAuthBackgroundLockState extends State<LocalAuthBackgroundLock>
     setState(() => _shouldShowLock = true);
   }
 
-  void _onAuthSuccess() {
-    widget.repository.clearLastBackgroundTime();
+  Future<void> _onAuthSuccess() async {
+    await widget.repository.clearLastBackgroundTime();
+    if (!mounted) return;
     setState(() => _shouldShowLock = false);
   }
 
@@ -107,8 +108,10 @@ class _LocalAuthBackgroundLockState extends State<LocalAuthBackgroundLock>
       return BlocProvider(
         create: (_) => LocalAuthLoginBloc(repository: widget.repository),
         child: BiometricAuthPage(
-          onSuccess: _onAuthSuccess,
-          onLogout: _onAuthSuccess, // Just unlock, don't pop
+          onSuccess: () {
+            unawaited(_onAuthSuccess());
+          },
+          showLogoutButton: false,
         ),
       );
     }

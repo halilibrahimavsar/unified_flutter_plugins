@@ -1,0 +1,9 @@
+Analyzing example...                                            
+
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/connection_monitor_page.dart:87:53 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/connection_monitor_page.dart:105:51 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/connection_monitor_page.dart:121:54 • deprecated_member_use
+   info • Use 'const' with the constructor to improve performance • test/features/local_auth/local_auth_migration_test.dart:65:27 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • test/features/local_auth/local_auth_migration_test.dart:90:27 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • test/features/local_auth/local_auth_migration_test.dart:109:27 • prefer_const_constructors
+

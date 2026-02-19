@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/texts/date_range_picker_texts.dart';
 import '../common/ibo_glass_surface.dart';
 import '../common/ibo_quick_menu_style.dart';
 
@@ -36,15 +37,16 @@ class IboDateRangePicker {
     bool includeFullDays = false,
     ThemeData? pickerTheme,
     IboQuickMenuStyle? quickMenuStyle,
-    String quickMenuActionText = 'Takvimden Seç',
+    String? quickMenuActionText,
+    DateRangePickerTexts texts = const DateRangePickerTexts(),
   }) async {
     if (quickOptions != null && quickOptions.isNotEmpty) {
       final action = await _showQuickMenu(
         context,
         quickOptions: quickOptions,
-        title: helpText ?? 'Tarih Aralığı Seç',
+        title: helpText ?? texts.helpText,
         style: quickMenuStyle,
-        actionText: quickMenuActionText,
+        actionText: quickMenuActionText ?? texts.quickMenuActionText,
       );
       if (action == null) {
         return null;
@@ -67,9 +69,9 @@ class IboDateRangePicker {
           ),
       firstDate: firstDate ?? DateTime(2000),
       lastDate: lastDate ?? DateTime(2100),
-      helpText: helpText ?? 'Tarih Aralığı Seç',
-      saveText: saveText ?? 'Kaydet',
-      cancelText: cancelText ?? 'İptal',
+      helpText: helpText ?? texts.helpText,
+      saveText: saveText ?? texts.saveText,
+      cancelText: cancelText ?? texts.cancelText,
       builder: (context, child) {
         return Theme(
           data: pickerTheme ?? _defaultPickerTheme(context),
@@ -93,7 +95,6 @@ class IboDateRangePicker {
     final resolvedStyle = style ?? const IboQuickMenuStyle();
     return showModalBottomSheet<_QuickRangeAction>(
       context: context,
-      showDragHandle: true,
       backgroundColor: Colors.transparent,
       builder: (context) {
         return SafeArea(
@@ -107,6 +108,17 @@ class IboDateRangePicker {
                   shrinkWrap: true,
                   padding: resolvedStyle.listPadding,
                   children: [
+                    Center(
+                      child: Container(
+                        width: 38,
+                        height: 4,
+                        margin: const EdgeInsets.only(bottom: 10),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.35),
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                      ),
+                    ),
                     ListTile(
                       title: Text(
                         title,
@@ -124,10 +136,9 @@ class IboDateRangePicker {
                           option.label,
                           style: resolvedStyle.optionStyle,
                         ),
-                        onTap:
-                            () => Navigator.of(context).pop(
-                              _QuickRangeAction.select(option.range),
-                            ),
+                        onTap: () => Navigator.of(context).pop(
+                          _QuickRangeAction.select(option.range),
+                        ),
                       ),
                     const Divider(height: 1),
                     ListTile(
@@ -135,18 +146,16 @@ class IboDateRangePicker {
                       leading: Icon(
                         resolvedStyle.actionIcon,
                         color:
-                            resolvedStyle.actionIconColor ??
-                            AppColors.primary,
+                            resolvedStyle.actionIconColor ?? AppColors.primary,
                       ),
                       title: Text(
                         actionText,
                         style: resolvedStyle.actionStyle ??
                             const TextStyle(fontWeight: FontWeight.w600),
                       ),
-                      onTap:
-                          () => Navigator.of(context).pop(
-                            const _QuickRangeAction.openPicker(),
-                          ),
+                      onTap: () => Navigator.of(context).pop(
+                        const _QuickRangeAction.openPicker(),
+                      ),
                     ),
                   ],
                 ),
@@ -159,7 +168,8 @@ class IboDateRangePicker {
   }
 
   static DateTimeRange _normalizeToFullDays(DateTimeRange range) {
-    final start = DateTime(range.start.year, range.start.month, range.start.day);
+    final start =
+        DateTime(range.start.year, range.start.month, range.start.day);
     final end = DateTime(
       range.end.year,
       range.end.month,

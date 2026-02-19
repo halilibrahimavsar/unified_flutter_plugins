@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/texts/date_picker_texts.dart';
 import '../common/ibo_glass_surface.dart';
 import '../common/ibo_quick_menu_style.dart';
 
@@ -71,15 +72,16 @@ class IboDatePicker {
     bool normalizeToStartOfDay = false,
     ThemeData? pickerTheme,
     IboQuickMenuStyle? quickMenuStyle,
-    String quickMenuActionText = 'Takvimden Seç',
+    String? quickMenuActionText,
+    DatePickerTexts texts = const DatePickerTexts(),
   }) async {
     if (quickOptions != null && quickOptions.isNotEmpty) {
       final action = await _showQuickMenu(
         context,
         quickOptions: quickOptions,
-        title: helpText ?? 'Tarih Seç',
+        title: helpText ?? texts.helpText,
         style: quickMenuStyle,
-        actionText: quickMenuActionText,
+        actionText: quickMenuActionText ?? texts.quickMenuActionText,
       );
       if (action == null) {
         return null;
@@ -98,11 +100,11 @@ class IboDatePicker {
       initialDate: initialDate ?? DateTime.now(),
       firstDate: firstDate ?? DateTime(2000),
       lastDate: lastDate ?? DateTime(2100),
-      helpText: helpText ?? 'Tarih Seç',
-      cancelText: cancelText ?? 'İptal',
-      confirmText: confirmText ?? 'Tamam',
-      fieldLabelText: 'Seçilen Tarih',
-      fieldHintText: 'Ay/Gün/Yıl',
+      helpText: helpText ?? texts.helpText,
+      cancelText: cancelText ?? texts.cancelText,
+      confirmText: confirmText ?? texts.confirmText,
+      fieldLabelText: texts.fieldLabelText,
+      fieldHintText: texts.fieldHintText,
       builder: (context, child) {
         return Theme(
           data: pickerTheme ?? _defaultPickerTheme(context),
@@ -144,15 +146,16 @@ class IboDatePicker {
     bool normalizeToStartOfDay = false,
     ThemeData? pickerTheme,
     IboQuickMenuStyle? quickMenuStyle,
-    String quickMenuActionText = 'Takvimden Seç',
+    String? quickMenuActionText,
+    DatePickerTexts texts = const DatePickerTexts(),
   }) async {
     if (quickOptions != null && quickOptions.isNotEmpty) {
       final action = await _showQuickMenu(
         context,
         quickOptions: quickOptions,
-        title: 'Tarih Seç',
+        title: texts.helpText,
         style: quickMenuStyle,
-        actionText: quickMenuActionText,
+        actionText: quickMenuActionText ?? texts.quickMenuActionText,
       );
       if (action == null) {
         return null;
@@ -196,7 +199,6 @@ class IboDatePicker {
     final resolvedStyle = style ?? const IboQuickMenuStyle();
     return showModalBottomSheet<_QuickDateAction>(
       context: context,
-      showDragHandle: true,
       backgroundColor: Colors.transparent,
       builder: (context) {
         return SafeArea(
@@ -210,6 +212,17 @@ class IboDatePicker {
                   shrinkWrap: true,
                   padding: resolvedStyle.listPadding,
                   children: [
+                    Center(
+                      child: Container(
+                        width: 38,
+                        height: 4,
+                        margin: const EdgeInsets.only(bottom: 10),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.35),
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                      ),
+                    ),
                     ListTile(
                       title: Text(
                         title,

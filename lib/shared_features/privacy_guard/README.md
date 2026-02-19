@@ -27,7 +27,7 @@ background lock behavior.
 
 ```dart
 final prefs = await SharedPreferences.getInstance();
-final repo = SharedPrefsLocalAuthRepository(prefs: prefs);
+final repo = SecureLocalAuthRepository(prefs: prefs);
 
 LocalAuthSecurityLayer(
   repository: repo,
@@ -68,7 +68,7 @@ import 'package:unified_flutter_features/shared_features.dart';
 
 // In your app
 final prefs = await SharedPreferences.getInstance();
-final repo = SharedPrefsLocalAuthRepository(prefs: prefs);
+final repo = SecureLocalAuthRepository(prefs: prefs);
 
 RepositoryProvider.value(
   value: repo,
@@ -163,7 +163,7 @@ To use these features in your project:
 3. For Local Auth, provide `LocalAuthRepository` and `LocalAuthLoginBloc`:
    ```dart
    final prefs = await SharedPreferences.getInstance();
-   final repo = SharedPrefsLocalAuthRepository(prefs: prefs);
+   final repo = SecureLocalAuthRepository(prefs: prefs);
 
    RepositoryProvider.value(
      value: repo,

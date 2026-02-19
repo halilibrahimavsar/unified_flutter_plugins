@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unified_flutter_features/features/local_auth/local_auth.dart';
-import 'package:unified_flutter_features/shared_features/shared_features.dart';
+import 'package:unified_flutter_features/shared_features.dart';
 
 class LocalAuthDemoEntry extends StatefulWidget {
   const LocalAuthDemoEntry({super.key});
@@ -21,7 +21,9 @@ class _LocalAuthDemoEntryState extends State<LocalAuthDemoEntry> {
 
   Future<LocalAuthRepository> _initRepository() async {
     final prefs = await SharedPreferences.getInstance();
-    return SharedPrefsLocalAuthRepository(prefs: prefs);
+    final repo = SecureLocalAuthRepository(prefs: prefs);
+    await repo.migrateLegacyPinFromSharedPreferences();
+    return repo;
   }
 
   @override

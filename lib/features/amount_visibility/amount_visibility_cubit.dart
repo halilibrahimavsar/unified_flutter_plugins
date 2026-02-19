@@ -29,6 +29,7 @@ class AmountVisibilityCubit extends Cubit<bool> {
   Future<void> _loadVisibility() async {
     final prefs = await SharedPreferences.getInstance();
     final isVisible = prefs.getBool(_visibilityKey) ?? true;
+    if (isClosed) return;
     emit(isVisible);
   }
 
@@ -37,6 +38,7 @@ class AmountVisibilityCubit extends Cubit<bool> {
   /// Persists the new state to SharedPreferences immediately.
   Future<void> toggleVisibility() async {
     final newState = !state;
+    if (isClosed) return;
     emit(newState);
 
     final prefs = await SharedPreferences.getInstance();
@@ -48,6 +50,7 @@ class AmountVisibilityCubit extends Cubit<bool> {
   /// [isVisible] The desired visibility state (true for visible, false for hidden).
   /// Persists the state to SharedPreferences immediately.
   Future<void> setVisibility(bool isVisible) async {
+    if (isClosed) return;
     emit(isVisible);
 
     final prefs = await SharedPreferences.getInstance();

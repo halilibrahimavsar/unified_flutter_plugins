@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:unified_flutter_features/core/constants/app_colors.dart';
-import 'package:unified_flutter_features/shared_features/shared_features.dart';
+import 'package:unified_flutter_features/shared_features.dart';
 import 'package:unified_flutter_features/core/constants/app_spacing.dart';
 import 'pages/connection_monitor_page.dart';
 import 'pages/slider_2d_navigation_page.dart';

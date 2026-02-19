@@ -1,25 +1,25 @@
 class AppStrings {
   // Connection Monitor
-  static const connectionStatusConnected = 'İnternet bağlantısı aktif';
-  static const connectionStatusDisconnected = 'İnternet bağlantısı yok';
-  static const connectionStatusChecking = 'Kontrol ediliyor...';
-  static const connectionCheckFailed = 'Bağlantı kontrolü yapılamadı';
-  static const connectionCheckAgain = 'Tekrar Kontrol Et';
-  static const connectionLastCheck = 'Son kontrol';
+  static const connectionStatusConnected = 'Internet connection is active';
+  static const connectionStatusDisconnected = 'No internet connection';
+  static const connectionStatusChecking = 'Checking...';
+  static const connectionCheckFailed = 'Connection check failed';
+  static const connectionCheckAgain = 'Check again';
+  static const connectionLastCheck = 'Last check';
 
   // Slider States
-  static const sliderSavedMoney = 'Birikim';
-  static const sliderTransactions = 'İşlemler';
-  static const sliderDebt = 'Borç';
+  static const sliderSavedMoney = 'Savings';
+  static const sliderTransactions = 'Transactions';
+  static const sliderDebt = 'Debt';
 
   // Dialog
-  static const dialogConfirm = 'Onay';
-  static const dialogCancel = 'İptal';
-  static const dialogOk = 'Tamam';
+  static const dialogConfirm = 'Confirm';
+  static const dialogCancel = 'Cancel';
+  static const dialogOk = 'OK';
 
   // Common
-  static const loading = 'Yükleniyor...';
-  static const error = 'Hata';
-  static const success = 'Başarılı';
-  static const warning = 'Uyarı';
+  static const loading = 'Loading...';
+  static const error = 'Error';
+  static const success = 'Success';
+  static const warning = 'Warning';
 }

@@ -4,8 +4,11 @@ import '../models/slider_models.dart';
 
 class SliderStateHelper {
   static SliderState getStateFromValue(double value, int totalStates) {
+    if (totalStates <= 1) return SliderState.values.first;
+
     final segmentSize = 1.0 / (totalStates - 1);
-    final index = (value / segmentSize).round().clamp(0, totalStates - 1);
+    final maxIndex = (totalStates - 1).clamp(0, SliderState.values.length - 1);
+    final index = (value / segmentSize).round().clamp(0, maxIndex);
     return SliderState.values[index];
   }
 
@@ -23,11 +26,11 @@ class SliderStateHelper {
   static String getLabelForState(SliderState state) {
     switch (state) {
       case SliderState.savedMoney:
-        return 'BİRİKİM';
+        return 'SAVINGS';
       case SliderState.transactions:
-        return 'İŞLEMLER';
+        return 'TRANSACTIONS';
       case SliderState.debt:
-        return 'BORÇ';
+        return 'DEBT';
     }
   }
 
@@ -43,6 +46,7 @@ class SliderStateHelper {
   }
 
   static double getTargetValue(SliderState state, int totalStates) {
+    if (totalStates <= 1) return 0.0;
     final index = SliderState.values.indexOf(state);
     return index / (totalStates - 1);
   }

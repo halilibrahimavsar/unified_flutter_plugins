@@ -2,24 +2,48 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 import 'package:crypto/crypto.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'local_auth_migration.dart';
 import 'local_auth_repository.dart';
 import '../presentation/constants/local_auth_constants.dart';
 
-class SharedPrefsLocalAuthRepository implements LocalAuthRepository {
+/// Local auth repository that stores PIN credentials in secure storage.
+///
+/// Non-sensitive settings are stored in SharedPreferences.
+class SecureLocalAuthRepository implements LocalAuthRepository {
   final SharedPreferences _prefs;
+  final FlutterSecureStorage _secureStorage;
   final LocalAuthentication _auth;
   final _settingsChangeController = StreamController<void>.broadcast();
 
-  SharedPrefsLocalAuthRepository({
+  SecureLocalAuthRepository({
     required SharedPreferences prefs,
+    FlutterSecureStorage? secureStorage,
     LocalAuthentication? auth,
   })  : _prefs = prefs,
+        _secureStorage = secureStorage ?? const FlutterSecureStorage(),
         _auth = auth ?? LocalAuthentication();
 
   @override
   Stream<void> get settingsChanges => _settingsChangeController.stream;
+
+  /// Migrates legacy PIN credentials from SharedPreferences.
+  Future<bool> migrateLegacyPinFromSharedPreferences({
+    bool removeLegacyValues = true,
+  }) async {
+    final didMigrate =
+        await LocalAuthMigration.migratePinFromSharedPreferencesToSecureStorage(
+      prefs: _prefs,
+      secureStorage: _secureStorage,
+      removeLegacyValues: removeLegacyValues,
+    );
+    if (didMigrate) {
+      _settingsChangeController.add(null);
+    }
+    return didMigrate;
+  }
 
   @override
   Future<bool> isBiometricAvailable() async {
@@ -41,8 +65,8 @@ class SharedPrefsLocalAuthRepository implements LocalAuthRepository {
 
   @override
   Future<bool> isPinSet() async {
-    final hash = _prefs.getString(LocalAuthConstants.pinHashKey);
-    final salt = _prefs.getString(LocalAuthConstants.pinSaltKey);
+    final hash = await _secureStorage.read(key: LocalAuthConstants.pinHashKey);
+    final salt = await _secureStorage.read(key: LocalAuthConstants.pinSaltKey);
     return hash != null && salt != null;
   }
 
@@ -50,23 +74,23 @@ class SharedPrefsLocalAuthRepository implements LocalAuthRepository {
   Future<void> savePin(String pin) async {
     final salt = _generateSalt();
     final hash = _hashPin(pin, salt);
-    await _prefs.setString(LocalAuthConstants.pinSaltKey, salt);
-    await _prefs.setString(LocalAuthConstants.pinHashKey, hash);
+    await _secureStorage.write(key: LocalAuthConstants.pinSaltKey, value: salt);
+    await _secureStorage.write(key: LocalAuthConstants.pinHashKey, value: hash);
     _settingsChangeController.add(null);
   }
 
   @override
   Future<bool> verifyPin(String pin) async {
-    final salt = _prefs.getString(LocalAuthConstants.pinSaltKey);
-    final hash = _prefs.getString(LocalAuthConstants.pinHashKey);
+    final salt = await _secureStorage.read(key: LocalAuthConstants.pinSaltKey);
+    final hash = await _secureStorage.read(key: LocalAuthConstants.pinHashKey);
     if (salt == null || hash == null) return false;
     return _hashPin(pin, salt) == hash;
   }
 
   @override
   Future<void> deletePin() async {
-    await _prefs.remove(LocalAuthConstants.pinSaltKey);
-    await _prefs.remove(LocalAuthConstants.pinHashKey);
+    await _secureStorage.delete(key: LocalAuthConstants.pinSaltKey);
+    await _secureStorage.delete(key: LocalAuthConstants.pinHashKey);
     _settingsChangeController.add(null);
   }
 

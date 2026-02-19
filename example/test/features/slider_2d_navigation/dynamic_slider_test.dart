@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:unified_flutter_features/features/slider_2d_navigation/constants/slider_config.dart';
 import 'package:unified_flutter_features/features/slider_2d_navigation/models/slider_models.dart';
-import 'package:unified_flutter_features/features/slider_2d_navigation/widgets/dynamic_slider_button.dart';
+import 'package:unified_flutter_features/features/slider_2d_navigation/dynamic_slider.dart';
 import 'package:unified_flutter_features/features/slider_2d_navigation/widgets/slider_knob.dart';
 
 void main() {
@@ -33,7 +33,7 @@ void main() {
 
     expect(controller.value, 0.0);
 
-    await tester.tap(find.text('İŞLEMLER'));
+    await tester.tap(find.text('TRANSACTIONS'));
     await tester.pump();
     await tester.pump(SliderConfig.animationDuration);
     await tester.pumpAndSettle();

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:unified_flutter_features/core/texts/connection_texts.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:unified_flutter_features/features/connection_monitor/connection_cubit.dart';
 import 'package:unified_flutter_features/features/connection_monitor/connection_state.dart';
@@ -127,36 +128,36 @@ class ConnectionNotificationService {
   }
 
   void _onNotificationTap(NotificationResponse response) {
-    debugPrint('Bildirime tıklandı: ${response.payload}');
+    debugPrint('Notification tapped: ${response.payload}');
   }
 
   Future<void> showConnectedNotification({
     String? title,
     String? body,
     String? payload,
+    ConnectionTexts texts = const ConnectionTexts(),
   }) async {
     if (!_initialized) await initialize(requestPermission: false);
     if (!_permissionGranted) return;
 
-    const AndroidNotificationDetails androidDetails =
-        AndroidNotificationDetails(
+    final androidDetails = AndroidNotificationDetails(
       'connection_monitor',
-      'Bağlantı Bildirimleri',
-      channelDescription: 'İnternet bağlantı durumu bildirimleri',
+      texts.notificationsChannelName,
+      channelDescription: texts.notificationsChannelDescription,
       importance: Importance.low,
       priority: Priority.low,
       color: Colors.green,
       icon: '@mipmap/ic_launcher',
     );
 
-    const NotificationDetails platformDetails = NotificationDetails(
+    final platformDetails = NotificationDetails(
       android: androidDetails,
     );
 
     await _notifications.show(
       1,
-      title ?? 'İnternet Bağlantısı Aktif',
-      body ?? 'Cihazınız internete bağlı',
+      title ?? texts.notificationConnectedTitle,
+      body ?? texts.notificationConnectedBody,
       platformDetails,
       payload: payload,
     );
@@ -166,15 +167,15 @@ class ConnectionNotificationService {
     String? title,
     String? body,
     String? payload,
+    ConnectionTexts texts = const ConnectionTexts(),
   }) async {
     if (!_initialized) await initialize(requestPermission: false);
     if (!_permissionGranted) return;
 
-    const AndroidNotificationDetails androidDetails =
-        AndroidNotificationDetails(
+    final androidDetails = AndroidNotificationDetails(
       'connection_monitor',
-      'Bağlantı Bildirimleri',
-      channelDescription: 'İnternet bağlantı durumu bildirimleri',
+      texts.notificationsChannelName,
+      channelDescription: texts.notificationsChannelDescription,
       importance: Importance.high,
       priority: Priority.high,
       color: Colors.red,
@@ -183,14 +184,14 @@ class ConnectionNotificationService {
       autoCancel: false,
     );
 
-    const NotificationDetails platformDetails = NotificationDetails(
+    final platformDetails = NotificationDetails(
       android: androidDetails,
     );
 
     await _notifications.show(
       2,
-      title ?? 'İnternet Bağlantısı Kesildi',
-      body ?? 'Cihazınız internete bağlı değil',
+      title ?? texts.notificationDisconnectedTitle,
+      body ?? texts.notificationDisconnectedBody,
       platformDetails,
       payload: payload,
     );
@@ -217,6 +218,7 @@ class ConnectionNotificationHandler extends StatefulWidget {
   final String? connectedBody;
   final String? disconnectedTitle;
   final String? disconnectedBody;
+  final ConnectionTexts texts;
 
   const ConnectionNotificationHandler({
     super.key,
@@ -227,6 +229,7 @@ class ConnectionNotificationHandler extends StatefulWidget {
     this.connectedBody,
     this.disconnectedTitle,
     this.disconnectedBody,
+    this.texts = const ConnectionTexts(),
   });
 
   @override
@@ -238,7 +241,7 @@ class _ConnectionNotificationHandlerState
     extends State<ConnectionNotificationHandler> with WidgetsBindingObserver {
   final ConnectionNotificationService _notificationService =
       ConnectionNotificationService();
-  MyConnectionState? lastState;
+  ConnectionMonitorState? lastState;
 
   @override
   void initState() {
@@ -268,7 +271,7 @@ class _ConnectionNotificationHandlerState
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ConnectionCubit, MyConnectionState>(
+    return BlocListener<ConnectionCubit, ConnectionMonitorState>(
       listener: (context, state) {
         if (!widget.showNotifications) return;
 
@@ -281,6 +284,7 @@ class _ConnectionNotificationHandlerState
               _notificationService.showConnectedNotification(
                 title: widget.connectedTitle,
                 body: widget.connectedBody,
+                texts: widget.texts,
               );
             }
             break;
@@ -290,6 +294,7 @@ class _ConnectionNotificationHandlerState
             _notificationService.showDisconnectedNotification(
               title: widget.disconnectedTitle,
               body: widget.disconnectedBody,
+              texts: widget.texts,
             );
             break;
 

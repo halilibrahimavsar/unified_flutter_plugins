@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:unified_flutter_features/core/constants/app_colors.dart';
-import 'package:unified_flutter_features/shared_features/shared_features.dart';
+import 'package:unified_flutter_features/shared_features.dart';
 import 'package:unified_flutter_features/core/constants/app_spacing.dart';
 
 void main() {
@@ -180,7 +180,9 @@ class _DemoPageState extends State<DemoPage> with TickerProviderStateMixin {
                         text: 'Yükleme Butonu',
                         backgroundColor: AppColors.primary,
                         onPressed: () async {
-                          await Future.delayed(const Duration(seconds: 2));
+                          await Future<void>.delayed(
+                            const Duration(seconds: 2),
+                          );
                           if (!mounted) return;
                           IboSnackbar.showSuccess(
                             context,
@@ -293,15 +295,13 @@ class _DemoPageState extends State<DemoPage> with TickerProviderStateMixin {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final startOfMonth = DateTime(now.year, now.month, 1);
-    final startOfNextMonth =
-        (now.month == 12)
-            ? DateTime(now.year + 1, 1, 1)
-            : DateTime(now.year, now.month + 1, 1);
+    final startOfNextMonth = (now.month == 12)
+        ? DateTime(now.year + 1, 1, 1)
+        : DateTime(now.year, now.month + 1, 1);
     final endOfMonth = startOfNextMonth.subtract(const Duration(days: 1));
-    final startOfLastMonth =
-        (now.month == 1)
-            ? DateTime(now.year - 1, 12, 1)
-            : DateTime(now.year, now.month - 1, 1);
+    final startOfLastMonth = (now.month == 1)
+        ? DateTime(now.year - 1, 12, 1)
+        : DateTime(now.year, now.month - 1, 1);
     final endOfLastMonth = startOfMonth.subtract(const Duration(days: 1));
 
     return [

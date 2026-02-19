@@ -1,4 +1,4 @@
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:unified_flutter_features/features/local_auth/data/local_auth_repository.dart';
 import 'local_auth_settings_event.dart';
 import 'local_auth_settings_state.dart';
@@ -61,8 +61,7 @@ class LocalAuthSettingsBloc
           final isPinSet = await _repository.isPinSet();
           if (!isPinSet) {
             emit(state.copyWith(
-                status: SettingsStatus.error,
-                message: "Önce PIN belirlemelisiniz"));
+                status: SettingsStatus.error, message: "Create a PIN first"));
             return;
           }
 
@@ -70,7 +69,7 @@ class LocalAuthSettingsBloc
           if (!isAvailable) {
             emit(state.copyWith(
                 status: SettingsStatus.error,
-                message: "Biyometrik doğrulama desteklenmiyor"));
+                message: "Biometric authentication is not supported"));
             return;
           }
         }
@@ -81,20 +80,20 @@ class LocalAuthSettingsBloc
         if (!authenticated) {
           emit(state.copyWith(
               status: SettingsStatus.error,
-              message: "Biyometrik doğrulama başarısız"));
+              message: "Biometric authentication failed"));
           return;
         }
         await _repository.setBiometricEnabled(true);
         emit(state.copyWith(
             isBiometricEnabled: true,
             status: SettingsStatus.success,
-            message: "Biyometrik giriş açıldı"));
+            message: "Biometric login enabled"));
       } else {
         await _repository.setBiometricEnabled(false);
         emit(state.copyWith(
             isBiometricEnabled: false,
             status: SettingsStatus.success,
-            message: "Biyometrik giriş kapatıldı"));
+            message: "Biometric login disabled"));
       }
     } catch (e) {
       emit(state.copyWith(status: SettingsStatus.error, message: e.toString()));
@@ -110,19 +109,19 @@ class LocalAuthSettingsBloc
       if (alreadySet) {
         emit(state.copyWith(
             status: SettingsStatus.error,
-            message: "PIN zaten mevcut, değiştirmek için güncelleyin"));
+            message: "PIN already exists, use change PIN instead"));
         return;
       }
       if (event.pin != event.confirmPin) {
         emit(state.copyWith(
-            status: SettingsStatus.error, message: "PIN'ler eşleşmiyor"));
+            status: SettingsStatus.error, message: "PINs do not match"));
         return;
       }
       await _repository.savePin(event.pin);
       emit(state.copyWith(
           isPinSet: true,
           status: SettingsStatus.success,
-          message: "PIN başarıyla kaydedildi"));
+          message: "PIN saved successfully"));
     } catch (e) {
       emit(state.copyWith(status: SettingsStatus.error, message: e.toString()));
     }
@@ -135,14 +134,15 @@ class LocalAuthSettingsBloc
     try {
       if (event.newPin != event.confirmPin) {
         emit(state.copyWith(
-            status: SettingsStatus.error, message: "Yeni PIN'ler eşleşmiyor"));
+            status: SettingsStatus.error,
+            message: "New PIN values do not match"));
         return;
       }
 
       final isValid = await _repository.verifyPin(event.currentPin);
       if (!isValid) {
         emit(state.copyWith(
-            status: SettingsStatus.error, message: "Mevcut PIN yanlış"));
+            status: SettingsStatus.error, message: "Current PIN is incorrect"));
         return;
       }
 
@@ -150,7 +150,7 @@ class LocalAuthSettingsBloc
       emit(state.copyWith(
           isPinSet: true,
           status: SettingsStatus.success,
-          message: "PIN başarıyla güncellendi"));
+          message: "PIN updated successfully"));
     } catch (e) {
       emit(state.copyWith(status: SettingsStatus.error, message: e.toString()));
     }
@@ -164,7 +164,7 @@ class LocalAuthSettingsBloc
       final isValid = await _repository.verifyPin(event.currentPin);
       if (!isValid) {
         emit(state.copyWith(
-            status: SettingsStatus.error, message: "Mevcut PIN yanlış"));
+            status: SettingsStatus.error, message: "Current PIN is incorrect"));
         return;
       }
       await _repository.deletePin();
@@ -173,7 +173,7 @@ class LocalAuthSettingsBloc
           isPinSet: false,
           isBiometricEnabled: false,
           status: SettingsStatus.success,
-          message: "PIN kaldırıldı"));
+          message: "PIN removed"));
     } catch (e) {
       emit(state.copyWith(status: SettingsStatus.error, message: e.toString()));
     }
@@ -189,7 +189,7 @@ class LocalAuthSettingsBloc
         isPrivacyGuardEnabled: event.enable,
         status: SettingsStatus.success,
         message:
-            event.enable ? "Privacy Guard açıldı" : "Privacy Guard kapatıldı",
+            event.enable ? "Privacy Guard enabled" : "Privacy Guard disabled",
       ));
     } catch (e) {
       emit(state.copyWith(status: SettingsStatus.error, message: e.toString()));
@@ -216,7 +216,7 @@ class LocalAuthSettingsBloc
               status: SettingsStatus.error,
               backgroundLockTimeoutSeconds: currentTimeout,
               message:
-                  "Arka plan kilidi için PIN veya biyometrik giriş gerekli"));
+                  "PIN or biometric login is required for background lock"));
           return;
         }
 
@@ -228,7 +228,7 @@ class LocalAuthSettingsBloc
               isPrivacyGuardEnabled: true,
               backgroundLockTimeoutSeconds: seconds,
               status: SettingsStatus.success,
-              message: "Arka plan kilidi ve Privacy Guard etkinleştirildi"));
+              message: "Background lock and Privacy Guard enabled"));
           return;
         }
       }
@@ -241,8 +241,8 @@ class LocalAuthSettingsBloc
           backgroundLockTimeoutSeconds: seconds,
           status: SettingsStatus.success,
           message: seconds > 0
-              ? "Arka plan kilidi süresi güncellendi"
-              : "Arka plan kilidi kapatıldı"));
+              ? "Background lock timeout updated"
+              : "Background lock disabled"));
     } catch (e) {
       emit(state.copyWith(
           status: SettingsStatus.error,

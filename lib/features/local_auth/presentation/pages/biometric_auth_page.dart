@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:async';
 import '../../../../shared_features/common/ibo_glass_surface.dart';
+import 'package:unified_flutter_features/core/texts/local_auth_texts.dart';
 import 'package:unified_flutter_features/features/local_auth/presentation/bloc/login/local_auth_login_bloc.dart';
 import 'package:unified_flutter_features/features/local_auth/presentation/bloc/login/local_auth_login_event.dart';
 import 'package:unified_flutter_features/features/local_auth/presentation/bloc/login/local_auth_login_state.dart';
@@ -13,12 +14,16 @@ import '../constants/local_auth_constants.dart';
 
 class BiometricAuthPage extends StatefulWidget {
   final VoidCallback onSuccess;
-  final VoidCallback onLogout;
+  final VoidCallback? onLogout;
+  final bool showLogoutButton;
+  final LocalAuthTexts texts;
 
   const BiometricAuthPage({
     super.key,
     required this.onSuccess,
-    required this.onLogout,
+    this.onLogout,
+    this.showLogoutButton = true,
+    this.texts = const LocalAuthTexts(),
   });
 
   @override
@@ -79,16 +84,17 @@ class _BiometricAuthPageState extends State<BiometricAuthPage>
   }
 
   void _handleKeyPress(String value, bool isLockedOut) {
-    // Eğer kilitliyse veya zaten 6 hane girildiyse işlem yapma
-    if (isLockedOut || _enteredPin.length >= LocalAuthConstants.pinLength)
+    // Ignore key press while locked or after reaching PIN length.
+    if (isLockedOut || _enteredPin.length >= LocalAuthConstants.pinLength) {
       return;
+    }
 
     HapticFeedback.selectionClick();
     setState(() {
       _enteredPin += value;
     });
 
-    // 6. hane girildiği an doğrulama gönder
+    // Trigger verification once PIN length is reached.
     if (_enteredPin.length == LocalAuthConstants.pinLength) {
       context
           .read<LocalAuthLoginBloc>()
@@ -143,16 +149,19 @@ class _BiometricAuthPageState extends State<BiometricAuthPage>
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
-            actions: [
-              TextButton.icon(
-                onPressed: widget.onLogout,
-                icon: const Icon(Icons.logout_rounded, size: 20),
-                label: const Text('Çıkış Yap'),
-                style: TextButton.styleFrom(
-                    foregroundColor: theme.colorScheme.error),
-              ),
-              const SizedBox(width: 8),
-            ],
+            actions: widget.showLogoutButton && widget.onLogout != null
+                ? [
+                    TextButton.icon(
+                      onPressed: widget.onLogout,
+                      icon: const Icon(Icons.logout_rounded, size: 20),
+                      label: Text(widget.texts.logoutLabel),
+                      style: TextButton.styleFrom(
+                        foregroundColor: theme.colorScheme.error,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                  ]
+                : null,
           ),
           body: SafeArea(
             child: Column(
@@ -173,12 +182,11 @@ class _BiometricAuthPageState extends State<BiometricAuthPage>
                           width: 72,
                           height: 72,
                           decoration: BoxDecoration(
-                            color: theme.colorScheme.primary
-                                .withValues(alpha: 0.12),
+                            color: theme.colorScheme.primary.withOpacity(0.12),
                             borderRadius: BorderRadius.circular(22),
                             border: Border.all(
-                              color: theme.colorScheme.primary
-                                  .withValues(alpha: 0.22),
+                              color:
+                                  theme.colorScheme.primary.withOpacity(0.22),
                             ),
                           ),
                           child: Icon(
@@ -189,7 +197,7 @@ class _BiometricAuthPageState extends State<BiometricAuthPage>
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          'Hoş Geldiniz',
+                          widget.texts.welcomeTitle,
                           style: theme.textTheme.headlineSmall
                               ?.copyWith(fontWeight: FontWeight.bold),
                         ),
@@ -206,7 +214,7 @@ class _BiometricAuthPageState extends State<BiometricAuthPage>
                                           _enteredPin.isEmpty))
                                   ? theme.colorScheme.error
                                   : theme.textTheme.bodyMedium?.color
-                                      ?.withValues(alpha: 0.7),
+                                      ?.withOpacity(0.7),
                               fontWeight: isLockedOut
                                   ? FontWeight.bold
                                   : FontWeight.normal,
@@ -224,7 +232,7 @@ class _BiometricAuthPageState extends State<BiometricAuthPage>
                   isError: _isPinError(state),
                   shake: _shakeController,
                   activeColor: theme.primaryColor,
-                  inactiveColor: Colors.grey.withValues(alpha: 0.2),
+                  inactiveColor: Colors.grey.withOpacity(0.2),
                   errorColor: theme.colorScheme.error,
                 ),
                 const Spacer(),
@@ -248,13 +256,12 @@ class _BiometricAuthPageState extends State<BiometricAuthPage>
 
   String _statusText(LocalAuthLoginState state, bool isLockedOut) {
     if (isLockedOut) {
-      return 'Çok fazla hatalı deneme. \n$_remainingSeconds saniye bekleyin.';
+      return '${widget.texts.lockedOutPromptPrefix}\n$_remainingSeconds ${widget.texts.lockedOutPromptSuffix}';
     }
     if (state.authStatus == AuthStatus.failure) {
-      return state.message ?? 'Hatalı PIN, tekrar deneyin';
+      return state.message ?? widget.texts.invalidPinFallback;
     }
-    return state.message ??
-        'Devam etmek için ${LocalAuthConstants.pinLength} haneli PIN girin';
+    return state.message ?? widget.texts.enterPinPrompt;
   }
 
   bool _isPinError(LocalAuthLoginState state) {

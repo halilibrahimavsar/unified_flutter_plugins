@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/texts/snackbar_texts.dart';
 import '../common/ibo_glass_surface.dart';
 
 class IboSnackbarStyle {
@@ -158,8 +159,8 @@ class IboSnackbar {
     final resolvedGradient = resolvedStyle.gradient ??
         LinearGradient(
           colors: [
-            baseBackground.withValues(alpha: 0.85),
-            baseBackground.withValues(alpha: 0.65),
+            baseBackground.withOpacity(0.85),
+            baseBackground.withOpacity(0.65),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -167,7 +168,7 @@ class IboSnackbar {
     final resolvedShadows = resolvedStyle.shadows ??
         [
           BoxShadow(
-            color: baseBackground.withValues(alpha: 0.25),
+            color: baseBackground.withOpacity(0.25),
             blurRadius: 18,
             offset: const Offset(0, 10),
           ),
@@ -177,8 +178,7 @@ class IboSnackbar {
       gradient: resolvedGradient,
       backgroundColor: baseBackground,
       borderRadius: resolvedStyle.borderRadius,
-      borderColor:
-          resolvedStyle.borderColor ?? baseBackground.withValues(alpha: 0.5),
+      borderColor: resolvedStyle.borderColor ?? baseBackground.withOpacity(0.5),
       borderWidth: resolvedStyle.borderWidth,
       shadows: resolvedShadows,
       padding: resolvedStyle.padding,
@@ -266,7 +266,7 @@ class IboSnackbar {
     final subtitleStyle = resolvedStyle.messageStyle ??
         baseTextStyle.copyWith(
           fontSize: 12,
-          color: baseTextStyle.color?.withValues(alpha: 0.82),
+          color: baseTextStyle.color?.withOpacity(0.82),
         );
 
     if (title == null && subtitle == null) {
@@ -295,10 +295,11 @@ class IboSnackbar {
     BuildContext context,
     String message, {
     IboSnackbarStyle? style,
+    SnackbarTexts texts = const SnackbarTexts(),
   }) {
     show(
       context,
-      message,
+      message.isEmpty ? texts.successDefaultMessage : message,
       backgroundColor: AppColors.success,
       style: style ?? const IboSnackbarStyle(icon: Icons.check_circle),
     );
@@ -313,10 +314,11 @@ class IboSnackbar {
     BuildContext context,
     String message, {
     IboSnackbarStyle? style,
+    SnackbarTexts texts = const SnackbarTexts(),
   }) {
     show(
       context,
-      message,
+      message.isEmpty ? texts.errorDefaultMessage : message,
       backgroundColor: AppColors.error,
       style: style ?? const IboSnackbarStyle(icon: Icons.error_rounded),
     );
@@ -331,10 +333,11 @@ class IboSnackbar {
     BuildContext context,
     String message, {
     IboSnackbarStyle? style,
+    SnackbarTexts texts = const SnackbarTexts(),
   }) {
     show(
       context,
-      message,
+      message.isEmpty ? texts.warningDefaultMessage : message,
       backgroundColor: AppColors.warning,
       style: style ?? const IboSnackbarStyle(icon: Icons.warning_amber_rounded),
     );
@@ -349,10 +352,11 @@ class IboSnackbar {
     BuildContext context,
     String message, {
     IboSnackbarStyle? style,
+    SnackbarTexts texts = const SnackbarTexts(),
   }) {
     show(
       context,
-      message,
+      message.isEmpty ? texts.infoDefaultMessage : message,
       backgroundColor: AppColors.sliderInfo,
       style: style ?? const IboSnackbarStyle(icon: Icons.info_rounded),
     );

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:unified_flutter_features/core/texts/local_auth_texts.dart';
 import '../../../../shared_features/dialog/ibo_dialog.dart';
 import '../../../../shared_features/snackbar/ibo_snackbar.dart';
 import '../../data/local_auth_repository.dart';
 import '../bloc/local_auth_status.dart';
+import '../constants/local_auth_constants.dart';
 import '../bloc/settings/local_auth_settings_bloc.dart';
 import '../bloc/settings/local_auth_settings_event.dart';
 import '../bloc/settings/local_auth_settings_state.dart';
@@ -42,6 +44,7 @@ class LocalAuthSettingsWidget extends StatefulWidget {
   final bool showBiometricSection;
   final bool showPrivacyGuardSection;
   final bool showBackgroundLockSection;
+  final LocalAuthTexts texts;
 
   const LocalAuthSettingsWidget({
     super.key,
@@ -57,6 +60,7 @@ class LocalAuthSettingsWidget extends StatefulWidget {
     this.showBiometricSection = true,
     this.showPrivacyGuardSection = true,
     this.showBackgroundLockSection = true,
+    this.texts = const LocalAuthTexts(),
   });
 
   @override
@@ -66,6 +70,7 @@ class LocalAuthSettingsWidget extends StatefulWidget {
 
 class _LocalAuthSettingsWidgetState extends State<LocalAuthSettingsWidget> {
   late final LocalAuthSettingsBloc _bloc;
+  LocalAuthSettingsState? _previousState;
 
   @override
   void initState() {
@@ -106,9 +111,9 @@ class _LocalAuthSettingsWidgetState extends State<LocalAuthSettingsWidget> {
             addSection(LocalAuthPinSection(
               style: widget.style,
               state: state,
-              onCreatePin: () => _showCreatePinDialog(context),
-              onChangePin: () => _showChangePinDialog(context),
-              onDeletePin: () => _showDeletePinDialog(context),
+              onCreatePin: _showCreatePinDialog,
+              onChangePin: _showChangePinDialog,
+              onDeletePin: _showDeletePinDialog,
             ));
           }
           if (widget.showBiometricSection) {
@@ -159,24 +164,40 @@ class _LocalAuthSettingsWidgetState extends State<LocalAuthSettingsWidget> {
     }
 
     if (state.status == SettingsStatus.success) {
-      final normalized = state.message?.toLowerCase();
-      if (normalized?.contains('pin') == true) {
+      final previous = _previousState;
+      if (previous != null &&
+          (previous.isPinSet != state.isPinSet ||
+              (previous.isPinSet &&
+                  state.isPinSet &&
+                  state.message?.toLowerCase().contains('pin') == true))) {
         widget.onPinChanged?.call();
-      } else if (normalized?.contains('biyometrik') == true) {
+      }
+      if (previous != null &&
+          previous.isBiometricEnabled != state.isBiometricEnabled) {
         widget.onBiometricToggled?.call();
-      } else if (normalized?.contains('privacy guard') == true) {
+      }
+      if (previous != null &&
+          previous.isPrivacyGuardEnabled != state.isPrivacyGuardEnabled) {
         widget.onPrivacyGuardToggled?.call();
-      } else if (normalized?.contains('arka plan') == true) {
+      }
+      if (previous != null &&
+          previous.backgroundLockTimeoutSeconds !=
+              state.backgroundLockTimeoutSeconds) {
         widget.onBackgroundLockChanged?.call();
       }
     }
+
+    _previousState = state;
   }
 
-  Future<void> _showCreatePinDialog(BuildContext context) async {
+  Future<void> _showCreatePinDialog() async {
+    final currentContext = context;
     final pins = await PinInputDialog.show(
-      context: context,
-      title: 'PIN Oluştur',
-      fieldLabels: const ['PIN (6 hane)', 'PIN Tekrar'],
+      context: currentContext,
+      title: widget.texts.createPinTitle,
+      fieldLabels: const ['PIN (6 digits)', 'Confirm PIN'],
+      confirmLabel: widget.texts.saveLabel,
+      cancelLabel: widget.texts.cancelLabel,
     );
 
     if (pins != null && pins.length == 2) {
@@ -187,12 +208,14 @@ class _LocalAuthSettingsWidgetState extends State<LocalAuthSettingsWidget> {
     }
   }
 
-  Future<void> _showChangePinDialog(BuildContext context) async {
+  Future<void> _showChangePinDialog() async {
+    final currentContext = context;
     final pins = await PinInputDialog.show(
-      context: context,
-      title: 'PIN Değiştir',
-      fieldLabels: const ['Mevcut PIN', 'Yeni PIN', 'Yeni PIN Tekrar'],
-      confirmLabel: 'Değiştir',
+      context: currentContext,
+      title: widget.texts.changePinTitle,
+      fieldLabels: const ['Current PIN', 'New PIN', 'Confirm New PIN'],
+      confirmLabel: widget.texts.changeLabel,
+      cancelLabel: widget.texts.cancelLabel,
     );
 
     if (pins != null && pins.length == 3) {
@@ -204,22 +227,26 @@ class _LocalAuthSettingsWidgetState extends State<LocalAuthSettingsWidget> {
     }
   }
 
-  Future<void> _showDeletePinDialog(BuildContext context) async {
+  Future<void> _showDeletePinDialog() async {
+    final currentContext = context;
     final confirmed = await IboDialog.showConfirmation(
-      context,
-      'PIN Kaldır',
-      'PIN kaldırıldığında biyometrik giriş de devre dışı kalacak. Devam etmek istiyor musunuz?',
-      confirmText: 'Kaldır',
-      cancelText: 'İptal',
+      currentContext,
+      widget.texts.deletePinTitle,
+      widget.texts.deletePinConfirmMessage,
+      confirmText: widget.texts.removeLabel,
+      cancelText: widget.texts.cancelLabel,
     );
+    if (!mounted) return;
 
     if (confirmed == true) {
       final pins = await PinInputDialog.show(
         context: context,
-        title: 'PIN Doğrulama',
-        fieldLabels: const ['Mevcut PIN'],
-        confirmLabel: 'Doğrula',
+        title: widget.texts.verifyPinTitle,
+        fieldLabels: const ['Current PIN'],
+        confirmLabel: LocalAuthConstants.verifyButtonText,
+        cancelLabel: widget.texts.cancelLabel,
       );
+      if (!mounted) return;
 
       if (pins != null && pins.isNotEmpty) {
         _bloc.add(DeletePinEvent(currentPin: pins[0]));

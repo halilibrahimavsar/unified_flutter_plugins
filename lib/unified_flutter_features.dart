@@ -40,7 +40,15 @@ library unified_flutter_features;
 
 // Core constants and utilities
 export 'core/constants/app_colors.dart';
+export 'core/constants/app_spacing.dart';
 export 'core/constants/app_strings.dart';
+export 'core/texts/texts.dart';
 
 // Shared Features (UI components)
-export 'shared_features/shared_features.dart';
+export 'shared_features.dart';
+
+// Feature-specific top-level exports
+export 'amount_visibility.dart';
+export 'connection_monitor.dart';
+export 'local_auth.dart';
+export 'slider_2d_navigation.dart';

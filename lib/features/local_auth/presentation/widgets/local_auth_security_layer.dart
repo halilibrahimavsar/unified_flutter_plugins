@@ -75,7 +75,6 @@ class LocalAuthSecurityLayer extends StatefulWidget {
     this.privacyBlurOn = const {
       AppLifecycleState.inactive,
       AppLifecycleState.paused,
-      AppLifecycleState.hidden,
     },
     this.privacyGuardAnimationDuration = const Duration(milliseconds: 180),
     this.privacyGuardAnimationCurve = Curves.easeOut,

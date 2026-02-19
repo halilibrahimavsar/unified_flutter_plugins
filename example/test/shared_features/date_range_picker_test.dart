@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:unified_flutter_features/shared_features/shared_features.dart';
+import 'package:unified_flutter_features/shared_features.dart';
 
 void main() {
-  testWidgets('IboDateRangePicker returns quick range and expands to full days', (
+  testWidgets('IboDateRangePicker returns quick range and expands to full days',
+      (
     WidgetTester tester,
   ) async {
     final selectedRange = DateTimeRange(

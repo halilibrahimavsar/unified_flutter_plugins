@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:unified_flutter_features/core/constants/app_colors.dart';
-import 'package:unified_flutter_features/shared_features/shared_features.dart';
+import 'package:unified_flutter_features/shared_features.dart';
 
 void main() {
   testWidgets('IboSnackbar shows and replaces messages with colors', (
@@ -14,8 +14,7 @@ void main() {
             builder: (context) => Column(
               children: [
                 ElevatedButton(
-                  onPressed: () =>
-                      IboSnackbar.showSuccess(context, 'Başarılı'),
+                  onPressed: () => IboSnackbar.showSuccess(context, 'Başarılı'),
                   child: const Text('success'),
                 ),
                 ElevatedButton(

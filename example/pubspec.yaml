@@ -13,6 +13,7 @@ dependencies:
   flutter_bloc: ^9.1.1
   connectivity_plus: ^7.0.0
   shared_preferences: ^2.2.2
+  flutter_secure_storage: ^9.2.4
   unified_flutter_features:
     path: ../
 

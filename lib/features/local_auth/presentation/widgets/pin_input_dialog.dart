@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../../shared_features/common/ibo_glass_surface.dart';
 import '../../../../shared_features/glass_button/ibo_glass_button.dart';
+import '../constants/local_auth_constants.dart';
 
 /// Reusable PIN input dialog with proper controller management
 class PinInputDialog extends StatefulWidget {
@@ -14,8 +15,8 @@ class PinInputDialog extends StatefulWidget {
     super.key,
     required this.title,
     required this.fieldLabels,
-    this.confirmLabel = 'Kaydet',
-    this.cancelLabel = 'İptal',
+    this.confirmLabel = LocalAuthConstants.saveButtonText,
+    this.cancelLabel = LocalAuthConstants.cancelButtonText2,
   });
 
   @override
@@ -34,8 +35,8 @@ class PinInputDialog extends StatefulWidget {
       builder: (context) => PinInputDialog(
         title: title,
         fieldLabels: fieldLabels,
-        confirmLabel: confirmLabel ?? 'Kaydet',
-        cancelLabel: cancelLabel ?? 'İptal',
+        confirmLabel: confirmLabel ?? LocalAuthConstants.saveButtonText,
+        cancelLabel: cancelLabel ?? LocalAuthConstants.cancelButtonText2,
       ),
     );
   }
@@ -75,28 +76,28 @@ class _PinInputDialogState extends State<PinInputDialog> {
     final theme = Theme.of(context);
     final inputDecoration = InputDecoration(
       labelStyle: theme.textTheme.bodyMedium?.copyWith(
-        color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+        color: theme.colorScheme.onSurface.withOpacity(0.7),
       ),
       hintText: '******',
       counterText: '',
       filled: true,
-      fillColor: theme.colorScheme.surface.withValues(alpha: 0.65),
+      fillColor: theme.colorScheme.surface.withOpacity(0.65),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
         borderSide: BorderSide(
-          color: theme.colorScheme.primary.withValues(alpha: 0.15),
+          color: theme.colorScheme.primary.withOpacity(0.15),
         ),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
         borderSide: BorderSide(
-          color: theme.colorScheme.primary.withValues(alpha: 0.12),
+          color: theme.colorScheme.primary.withOpacity(0.12),
         ),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
         borderSide: BorderSide(
-          color: theme.colorScheme.primary.withValues(alpha: 0.5),
+          color: theme.colorScheme.primary.withOpacity(0.5),
           width: 1.4,
         ),
       ),
@@ -124,10 +125,10 @@ class _PinInputDialogState extends State<PinInputDialog> {
                     width: 44,
                     height: 44,
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.primary.withValues(alpha: 0.12),
+                      color: theme.colorScheme.primary.withOpacity(0.12),
                       borderRadius: BorderRadius.circular(14),
                       border: Border.all(
-                        color: theme.colorScheme.primary.withValues(alpha: 0.2),
+                        color: theme.colorScheme.primary.withOpacity(0.2),
                       ),
                     ),
                     child: Icon(
@@ -168,13 +169,13 @@ class _PinInputDialogState extends State<PinInputDialog> {
                   ),
                   validator: (value) {
                     if (value == null || value.length != 6) {
-                      return '6 haneli PIN girin';
+                      return LocalAuthConstants.pinValidationError;
                     }
                     // Only compare the last field with the previous one (for change PIN: new vs confirm)
                     if (i > 0 &&
                         i == widget.fieldLabels.length - 1 &&
                         value != _controllers[i - 1].text) {
-                      return 'PINler eşleşmiyor';
+                      return LocalAuthConstants.pinMatchError;
                     }
                     return null;
                   },
@@ -206,8 +207,7 @@ class _PinInputDialogState extends State<PinInputDialog> {
                       height: 44,
                       onPressed: _submit,
                       foregroundColor: theme.colorScheme.primary,
-                      borderColor:
-                          theme.colorScheme.primary.withValues(alpha: 0.4),
+                      borderColor: theme.colorScheme.primary.withOpacity(0.4),
                     ),
                   ),
                 ],

@@ -24,9 +24,12 @@
 /// )
 /// ```
 
+library unified_flutter_features.features.local_auth;
+
 // Data layer - Repository and implementations
 export 'data/local_auth_repository.dart';
-export 'data/shared_prefs_local_auth_repository.dart';
+export 'data/local_auth_migration.dart';
+export 'data/secure_local_auth_repository.dart';
 
 // Presentation layer - All UI components and BLoCs
 export 'presentation/local_auth.dart';

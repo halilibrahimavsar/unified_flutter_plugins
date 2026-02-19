@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:unified_flutter_features/shared_features/shared_features.dart';
+import 'package:unified_flutter_features/shared_features.dart';
 
 void main() {
   testWidgets('IboDialog.showConfirmation returns true on confirm', (
@@ -30,7 +30,7 @@ void main() {
     await tester.tap(find.text('open'));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Tamam'));
+    await tester.tap(find.text('Confirm'));
     await tester.pumpAndSettle();
 
     expect(result, isTrue);
@@ -63,7 +63,7 @@ void main() {
     await tester.tap(find.text('open'));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('İptal'));
+    await tester.tap(find.text('Cancel'));
     await tester.pumpAndSettle();
 
     expect(result, isFalse);
@@ -97,7 +97,7 @@ void main() {
     await tester.pumpAndSettle();
 
     await tester.enterText(find.byType(TextField), 'Ada');
-    await tester.tap(find.text('Tamam'));
+    await tester.tap(find.text('Confirm'));
     await tester.pumpAndSettle();
 
     expect(result, 'Ada');

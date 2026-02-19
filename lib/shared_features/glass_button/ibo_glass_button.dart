@@ -173,28 +173,27 @@ class _IboGlassButtonState extends State<IboGlassButton> {
     final resolvedGradient = widget.gradient ??
         LinearGradient(
           colors: [
-            baseBackground.withValues(alpha: 0.35),
-            baseBackground.withValues(alpha: 0.15),
+            baseBackground.withOpacity(0.35),
+            baseBackground.withOpacity(0.15),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         );
     final resolvedBorder = widget.border ??
         Border.all(
-          color:
-              widget.borderColor ?? AppColors.primary.withValues(alpha: 0.45),
+          color: widget.borderColor ?? AppColors.primary.withOpacity(0.45),
           width: widget.borderWidth ?? 1,
         );
     final resolvedGlowColor = widget.glowColor ?? AppColors.secondary;
     final resolvedShadows = widget.boxShadow ??
         [
           BoxShadow(
-            color: resolvedGlowColor.withValues(alpha: 0.28),
+            color: resolvedGlowColor.withOpacity(0.28),
             blurRadius: widget.glowBlur ?? 24,
             spreadRadius: widget.glowSpread ?? 1,
           ),
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
+            color: Colors.black.withOpacity(0.08),
             blurRadius: 16,
             offset: const Offset(0, 8),
           ),
@@ -204,9 +203,9 @@ class _IboGlassButtonState extends State<IboGlassButton> {
         resolvedStyle.textStyle?.color ??
         Colors.black87;
     final disabledForeground = resolvedStyle.disabledForegroundColor ??
-        effectiveForeground.withValues(alpha: 0.55);
+        effectiveForeground.withOpacity(0.55);
     final disabledBackground = resolvedStyle.disabledBackgroundColor ??
-        baseBackground.withValues(alpha: 0.18);
+        baseBackground.withOpacity(0.18);
     final resolvedGlassStyle = resolvedStyle.glassStyle.copyWith(
       gradient: resolvedGradient,
       backgroundColor: isEnabled ? baseBackground : disabledBackground,

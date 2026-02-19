@@ -35,7 +35,7 @@ class TestConnectionCubit extends ConnectionCubit {
 
   int manualCheckCount = 0;
 
-  void emitState(MyConnectionState state) => emit(state);
+  void emitState(ConnectionMonitorState state) => emit(state);
 
   @override
   Future<void> checkInitialConnection() async {}
@@ -44,7 +44,7 @@ class TestConnectionCubit extends ConnectionCubit {
   Future<void> manualCheck() async {
     manualCheckCount++;
     emitState(
-      const MyConnectionState(
+      const ConnectionMonitorState(
         status: ConnectionStatus.disconnected,
         message: 'İnternet bağlantısı yok',
       ),
@@ -56,7 +56,7 @@ void main() {
   testWidgets('ConnectionIndicatorWidget swaps widgets by status', (
     WidgetTester tester,
   ) async {
-    MyConnectionState current = const MyConnectionState(
+    ConnectionMonitorState current = const ConnectionMonitorState(
       status: ConnectionStatus.connected,
       message: 'Aktif',
     );
@@ -80,13 +80,14 @@ void main() {
 
     expect(find.text('connected'), findsOneWidget);
 
-    current = const MyConnectionState(status: ConnectionStatus.disconnected);
+    current =
+        const ConnectionMonitorState(status: ConnectionStatus.disconnected);
     setState(() {});
     await tester.pump();
 
     expect(find.text('disconnected'), findsOneWidget);
 
-    current = const MyConnectionState(status: ConnectionStatus.checking);
+    current = const ConnectionMonitorState(status: ConnectionStatus.checking);
     setState(() {});
     await tester.pump();
 
@@ -96,7 +97,7 @@ void main() {
   testWidgets('DefaultConnectionIndicator shows correct icons', (
     WidgetTester tester,
   ) async {
-    MyConnectionState current = const MyConnectionState(
+    ConnectionMonitorState current = const ConnectionMonitorState(
       status: ConnectionStatus.connected,
     );
     late void Function(void Function()) setState;
@@ -114,13 +115,14 @@ void main() {
 
     expect(find.byIcon(Icons.wifi), findsOneWidget);
 
-    current = const MyConnectionState(status: ConnectionStatus.disconnected);
+    current =
+        const ConnectionMonitorState(status: ConnectionStatus.disconnected);
     setState(() {});
     await tester.pump();
 
     expect(find.byIcon(Icons.wifi_off), findsOneWidget);
 
-    current = const MyConnectionState(status: ConnectionStatus.checking);
+    current = const ConnectionMonitorState(status: ConnectionStatus.checking);
     setState(() {});
     await tester.pump();
 
@@ -158,7 +160,7 @@ void main() {
     );
     await tester.pump();
     cubit.emitState(
-      const MyConnectionState(
+      const ConnectionMonitorState(
         status: ConnectionStatus.disconnected,
         message: 'İnternet bağlantısı yok',
       ),
@@ -167,7 +169,7 @@ void main() {
 
     // Should show disconnected snackbar
     expect(find.textContaining('İnternet bağlantısı yok'), findsOneWidget);
-    expect(find.text('Yeniden Dene'), findsOneWidget);
+    expect(find.text('Retry'), findsOneWidget);
 
     // Test retry functionality - tap the action button
     final beforeCheck = cubit.manualCheckCount;

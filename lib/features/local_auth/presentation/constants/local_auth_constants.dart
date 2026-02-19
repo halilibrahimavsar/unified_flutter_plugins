@@ -29,57 +29,58 @@ class LocalAuthConstants {
   static const String defaultBiometricReason = 'Authenticate to continue';
   static const String enableBiometricReason = 'Enable biometric login';
   static const String pinLabelText = 'PIN';
-  static const String verifyButtonText = 'Doğrula';
-  static const String cancelButtonText = 'Vazgeç';
-  static const String pinDialogTitle = 'PIN Doğrulama';
+  static const String verifyButtonText = 'Verify';
+  static const String cancelButtonText = 'Cancel';
+  static const String pinDialogTitle = 'PIN Verification';
 
   // Settings Widget Constants
   static const List<int> defaultTimeoutOptions = [0, 5, 10, 15, 30, 60];
-  static const String settingsTitle = 'Güvenlik Ayarları';
-  static const String settingsSubtitle = 'Uygulama güvenliğinizi yönetin';
-  static const String pinSectionTitle = 'PIN Kilidi';
-  static const String biometricSectionTitle = 'Biyometrik Giriş';
+  static const String settingsTitle = 'Security Settings';
+  static const String settingsSubtitle = 'Manage your app security';
+  static const String pinSectionTitle = 'PIN Lock';
+  static const String biometricSectionTitle = 'Biometric Login';
   static const String privacyGuardSectionTitle = 'Privacy Guard';
-  static const String backgroundLockSectionTitle = 'Arka Plan Kilidi';
-  static const String pinNotSetWarning = 'Önce PIN belirlemelisiniz';
+  static const String backgroundLockSectionTitle = 'Background Lock';
+  static const String pinNotSetWarning = 'You must create a PIN first';
   static const String biometricNotAvailable =
-      'Cihazınız biyometrik doğrulamayı desteklemiyor';
-  static const String createPinButtonText = 'PIN Oluştur';
-  static const String changePinButtonText = 'PIN Değiştir';
-  static const String deletePinButtonText = 'PIN Kaldır';
-  static const String createPinDialogTitle = 'PIN Oluştur';
-  static const String changePinDialogTitle = 'PIN Değiştir';
-  static const String deletePinConfirmTitle = 'PIN Kaldır';
+      'Biometric authentication is not supported on this device';
+  static const String createPinButtonText = 'Create PIN';
+  static const String changePinButtonText = 'Change PIN';
+  static const String deletePinButtonText = 'Remove PIN';
+  static const String createPinDialogTitle = 'Create PIN';
+  static const String changePinDialogTitle = 'Change PIN';
+  static const String deletePinConfirmTitle = 'Remove PIN';
   static const String deletePinConfirmMessage =
-      'PIN kaldırıldığında biyometrik giriş de devre dışı kalacak. Devam etmek istiyor musunuz?';
-  static const String currentPinLabel = 'Mevcut PIN';
-  static const String newPinLabel = 'Yeni PIN';
-  static const String confirmPinLabel = 'PIN Tekrar';
+      'Removing PIN will also disable biometric login. Do you want to continue?';
+  static const String currentPinLabel = 'Current PIN';
+  static const String newPinLabel = 'New PIN';
+  static const String confirmPinLabel = 'Confirm PIN';
   static const String pinHint = '******';
-  static const String saveButtonText = 'Kaydet';
-  static const String changeButtonText = 'Değiştir';
-  static const String removeButtonText = 'Kaldır';
-  static const String cancelButtonText2 = 'İptal';
-  static const String pinValidationError = '6 haneli PIN girin';
-  static const String pinMatchError = 'PINler eşleşmiyor';
-  static const String privacyGuardEnabledSubtitle = 'Ekran koruma aktif';
-  static const String privacyGuardDisabledSubtitle = 'Ekran koruma kapalı';
-  static const String biometricEnabledSubtitle = 'Biyometrik giriş aktif';
-  static const String biometricDisabledSubtitle = 'Biyometrik giriş kapalı';
-  static const String biometricSwitchTitle = 'Biyometrik Doğrulama';
+  static const String saveButtonText = 'Save';
+  static const String changeButtonText = 'Change';
+  static const String removeButtonText = 'Remove';
+  static const String cancelButtonText2 = 'Cancel';
+  static const String pinValidationError = 'Enter a 6-digit PIN';
+  static const String pinMatchError = 'PINs do not match';
+  static const String privacyGuardEnabledSubtitle = 'Screen protection enabled';
+  static const String privacyGuardDisabledSubtitle =
+      'Screen protection disabled';
+  static const String biometricEnabledSubtitle = 'Biometric login enabled';
+  static const String biometricDisabledSubtitle = 'Biometric login disabled';
+  static const String biometricSwitchTitle = 'Biometric Authentication';
   static const String biometricEnabledDescription =
-      'Açık - Parmak izi veya yüz tanıma ile giriş';
-  static const String biometricDisabledDescription = 'Kapalı';
+      'On - Sign in with fingerprint or face recognition';
+  static const String biometricDisabledDescription = 'Off';
   static const String biometricPrerequisiteMessage =
-      'Biyometrik girişi etkinleştirmek için önce PIN oluşturmalısınız.';
-  static const String privacyGuardSwitchTitle = 'Ekran Koruma';
+      'Create a PIN first to enable biometric login.';
+  static const String privacyGuardSwitchTitle = 'Screen Protection';
   static const String privacyGuardEnabledDescription =
-      'Açık - Uygulama arka plandayken içerik gizlenir';
-  static const String privacyGuardDisabledDescription = 'Kapalı';
+      'On - Hides content while the app is in the background';
+  static const String privacyGuardDisabledDescription = 'Off';
   static const String backgroundLockSubtitle =
-      'Uygulama arka planda belirli süre kaldığında otomatik olarak kilitlensin';
-  static const String backgroundLockDisabled = 'Kapalı';
-  static const String timeoutChipLabelSuffix = ' sn';
+      'Automatically lock when the app stays in background for a while';
+  static const String backgroundLockDisabled = 'Off';
+  static const String timeoutChipLabelSuffix = ' sec';
 
   static const Map<int, int> lockoutDurations = {
     0: 30,

@@ -332,7 +332,7 @@ class SignedAmountDisplay extends StatelessWidget {
 ///     Spacer(),
 ///     AmountVisibilityButton(
 ///       activeColor: Colors.white,
-///       inactiveColor: Colors.white.withValues(alpha: 0.7),
+///       inactiveColor: Colors.white.withOpacity(0.7),
 ///       size: 20,
 ///     ),
 ///   ],
@@ -365,7 +365,7 @@ class AmountVisibilityButton extends StatelessWidget {
             size: size,
             color: isVisible
                 ? (activeColor ?? Colors.white)
-                : (inactiveColor ?? Colors.white.withValues(alpha: 0.7)),
+                : (inactiveColor ?? Colors.white.withOpacity(0.7)),
           ),
           onPressed: () {
             context.read<AmountVisibilityCubit>().toggleVisibility();

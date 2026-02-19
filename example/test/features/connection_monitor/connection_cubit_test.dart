@@ -43,7 +43,7 @@ void main() {
         ConnectivityResult.mobile,
         ConnectivityResult.vpn,
       ]),
-      'WiFi, Mobil, VPN',
+      'WiFi, Mobile, VPN',
     );
 
     await cubit.close();
@@ -145,7 +145,7 @@ void main() {
         ConnectivityResult.mobile,
         ConnectivityResult.bluetooth,
       ]),
-      'WiFi, Ethernet, Mobil, Bluetooth',
+      'WiFi, Ethernet, Mobile, Bluetooth',
     );
 
     await cubit.close();

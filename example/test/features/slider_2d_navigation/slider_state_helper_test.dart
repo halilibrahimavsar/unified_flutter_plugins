@@ -43,15 +43,15 @@ void main() {
   test('SliderStateHelper returns labels and icons', () {
     expect(
       SliderStateHelper.getLabelForState(SliderState.savedMoney),
-      'BİRİKİM',
+      'SAVINGS',
     );
     expect(
       SliderStateHelper.getLabelForState(SliderState.transactions),
-      'İŞLEMLER',
+      'TRANSACTIONS',
     );
     expect(
       SliderStateHelper.getLabelForState(SliderState.debt),
-      'BORÇ',
+      'DEBT',
     );
 
     expect(
@@ -117,6 +117,17 @@ void main() {
     expect(
       SliderStateHelper.getTargetValue(SliderState.debt, 3),
       closeTo(1.0, 0.01),
+    );
+  });
+
+  test('SliderStateHelper handles single-state guard', () {
+    expect(
+      SliderStateHelper.getStateFromValue(0.5, 1),
+      SliderState.savedMoney,
+    );
+    expect(
+      SliderStateHelper.getTargetValue(SliderState.savedMoney, 1),
+      0.0,
     );
   });
 

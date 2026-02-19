@@ -94,17 +94,16 @@ class _NumberButton extends StatelessWidget {
             borderRadius: radius,
             backgroundColor: theme.colorScheme.surface,
             backgroundOpacity: isEnabled ? 0.88 : 0.5,
-            borderColor: theme.colorScheme.primary.withValues(
-              alpha: isEnabled ? 0.18 : 0.08,
-            ),
+            borderColor:
+                theme.colorScheme.primary.withOpacity(isEnabled ? 0.18 : 0.08),
             shadows: [
               BoxShadow(
-                color: theme.colorScheme.primary.withValues(alpha: 0.12),
+                color: theme.colorScheme.primary.withOpacity(0.12),
                 blurRadius: 18,
                 offset: const Offset(0, 8),
               ),
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.06),
+                color: Colors.black.withOpacity(0.06),
                 blurRadius: 12,
                 offset: const Offset(0, 6),
               ),
@@ -118,7 +117,7 @@ class _NumberButton extends StatelessWidget {
                 fontWeight: FontWeight.w600,
                 color: isEnabled
                     ? theme.colorScheme.onSurface
-                    : theme.colorScheme.onSurface.withValues(alpha: 0.4),
+                    : theme.colorScheme.onSurface.withOpacity(0.4),
               ),
             ),
           ),
@@ -159,17 +158,16 @@ class _ActionButton extends StatelessWidget {
             borderRadius: radius,
             backgroundColor: theme.colorScheme.surface,
             backgroundOpacity: isEnabled ? 0.8 : 0.4,
-            borderColor: theme.colorScheme.primary.withValues(
-              alpha: isEnabled ? 0.2 : 0.08,
-            ),
+            borderColor:
+                theme.colorScheme.primary.withOpacity(isEnabled ? 0.2 : 0.08),
             shadows: [
               BoxShadow(
-                color: theme.colorScheme.primary.withValues(alpha: 0.12),
+                color: theme.colorScheme.primary.withOpacity(0.12),
                 blurRadius: 18,
                 offset: const Offset(0, 8),
               ),
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.06),
+                color: Colors.black.withOpacity(0.06),
                 blurRadius: 12,
                 offset: const Offset(0, 6),
               ),
@@ -181,7 +179,7 @@ class _ActionButton extends StatelessWidget {
               size: 26,
               color: isEnabled
                   ? theme.colorScheme.primary
-                  : theme.colorScheme.primary.withValues(alpha: 0.4),
+                  : theme.colorScheme.primary.withOpacity(0.4),
             ),
           ),
         ),

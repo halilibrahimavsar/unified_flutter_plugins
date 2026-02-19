@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/texts/dialog_texts.dart';
 import '../common/ibo_glass_surface.dart';
 
 class IboDialogStyle {
@@ -80,13 +81,17 @@ class IboDialogStyle {
 /// await IboDialog.showInfo(context, 'Info', 'Operation completed');
 /// ```
 class IboDialog {
+  static bool _isLoadingDialogVisible = false;
+  static BuildContext? _loadingDialogContext;
+  static bool _loadingDialogUsesRootNavigator = true;
+
   /// Shows a confirmation dialog with OK and Cancel buttons.
   ///
   /// [context] The build context to show the dialog in.
   /// [title] The dialog title.
   /// [message] The confirmation message.
-  /// [confirmText] Text for the confirm button (default: 'Tamam').
-  /// [cancelText] Text for the cancel button (default: 'İptal').
+  /// [confirmText] Text for the confirm button (default: 'Confirm').
+  /// [cancelText] Text for the cancel button (default: 'Cancel').
   /// [barrierDismissible] Whether dialog can be dismissed by tapping outside.
   /// [style] Custom styling options.
   /// [icon] Optional icon to display in the dialog.
@@ -96,11 +101,12 @@ class IboDialog {
     BuildContext context,
     String title,
     String message, {
-    String confirmText = 'Tamam',
-    String cancelText = 'İptal',
+    String? confirmText,
+    String? cancelText,
     bool barrierDismissible = true,
     IboDialogStyle? style,
     Widget? icon,
+    DialogTexts texts = const DialogTexts(),
   }) async {
     final resolvedStyle = style ?? const IboDialogStyle();
     return _showGlassDialog<bool>(
@@ -113,7 +119,7 @@ class IboDialog {
           message,
           style: resolvedStyle.contentStyle ??
               TextStyle(
-                color: AppColors.onSurface.withValues(alpha: 0.9),
+                color: AppColors.onSurface.withOpacity(0.9),
                 fontSize: 14,
               ),
         ),
@@ -122,12 +128,12 @@ class IboDialog {
           TextButton(
             style: resolvedStyle.cancelButtonStyle,
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text(cancelText),
+            child: Text(cancelText ?? texts.cancelText),
           ),
           TextButton(
             style: resolvedStyle.confirmButtonStyle,
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text(confirmText),
+            child: Text(confirmText ?? texts.confirmText),
           ),
         ],
         style: resolvedStyle,
@@ -140,7 +146,7 @@ class IboDialog {
   /// [context] The build context to show the dialog in.
   /// [title] The dialog title.
   /// [message] The info message to display.
-  /// [closeText] Text for the close button (default: 'Tamam').
+  /// [closeText] Text for the close button (default: 'OK').
   /// [barrierDismissible] Whether dialog can be dismissed by tapping outside.
   /// [style] Custom styling options.
   /// [icon] Optional icon to display in the dialog.
@@ -148,10 +154,11 @@ class IboDialog {
     BuildContext context,
     String title,
     String message, {
-    String closeText = 'Tamam',
+    String? closeText,
     bool barrierDismissible = true,
     IboDialogStyle? style,
     Widget? icon,
+    DialogTexts texts = const DialogTexts(),
   }) async {
     final resolvedStyle = style ?? const IboDialogStyle();
     await _showGlassDialog<void>(
@@ -164,7 +171,7 @@ class IboDialog {
           message,
           style: resolvedStyle.contentStyle ??
               TextStyle(
-                color: AppColors.onSurface.withValues(alpha: 0.9),
+                color: AppColors.onSurface.withOpacity(0.9),
                 fontSize: 14,
               ),
         ),
@@ -173,7 +180,7 @@ class IboDialog {
           TextButton(
             style: resolvedStyle.confirmButtonStyle,
             onPressed: () => Navigator.of(context).pop(),
-            child: Text(closeText),
+            child: Text(closeText ?? texts.okText),
           ),
         ],
         style: resolvedStyle,
@@ -187,8 +194,8 @@ class IboDialog {
   /// [title] The dialog title.
   /// [hintText] Hint text for the input field.
   /// [initialValue] Initial value for the text field.
-  /// [confirmText] Text for the confirm button (default: 'Tamam').
-  /// [cancelText] Text for the cancel button (default: 'İptal').
+  /// [confirmText] Text for the confirm button (default: 'Confirm').
+  /// [cancelText] Text for the cancel button (default: 'Cancel').
   /// [keyboardType] Keyboard type for the text field.
   /// [maxLines] Maximum lines for the text field.
   /// [obscureText] Whether to obscure the text (for passwords).
@@ -201,67 +208,71 @@ class IboDialog {
     String title,
     String hintText, {
     String? initialValue,
-    String confirmText = 'Tamam',
-    String cancelText = 'İptal',
+    String? confirmText,
+    String? cancelText,
     TextInputType keyboardType = TextInputType.text,
     int maxLines = 1,
     bool obscureText = false,
     IboDialogStyle? style,
     Widget? icon,
+    DialogTexts texts = const DialogTexts(),
   }) async {
     final controller = TextEditingController(text: initialValue);
     final resolvedStyle = style ?? const IboDialogStyle();
-
-    return await _showGlassDialog<String>(
-      context,
-      barrierDismissible: true,
-      style: resolvedStyle,
-      child: _buildDialogBody(
-        title: title,
-        icon: icon,
-        content: TextField(
-          controller: controller,
-          decoration: InputDecoration(
-            hintText: hintText,
-            filled: true,
-            fillColor: AppColors.surface.withValues(alpha: 0.12),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
-              borderSide: BorderSide(
-                color: AppColors.primary.withValues(alpha: 0.4),
-              ),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
-              borderSide: BorderSide(
-                color: AppColors.primary.withValues(alpha: 0.35),
-              ),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: AppColors.primary),
-            ),
-          ),
-          keyboardType: keyboardType,
-          maxLines: maxLines,
-          obscureText: obscureText,
-          autofocus: true,
-        ),
-        actions: [
-          TextButton(
-            style: resolvedStyle.cancelButtonStyle,
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(cancelText),
-          ),
-          TextButton(
-            style: resolvedStyle.confirmButtonStyle,
-            onPressed: () => Navigator.of(context).pop(controller.text),
-            child: Text(confirmText),
-          ),
-        ],
+    try {
+      return await _showGlassDialog<String>(
+        context,
+        barrierDismissible: true,
         style: resolvedStyle,
-      ),
-    );
+        child: _buildDialogBody(
+          title: title,
+          icon: icon,
+          content: TextField(
+            controller: controller,
+            decoration: InputDecoration(
+              hintText: hintText,
+              filled: true,
+              fillColor: AppColors.surface.withOpacity(0.12),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide(
+                  color: AppColors.primary.withOpacity(0.4),
+                ),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide(
+                  color: AppColors.primary.withOpacity(0.35),
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: const BorderSide(color: AppColors.primary),
+              ),
+            ),
+            keyboardType: keyboardType,
+            maxLines: maxLines,
+            obscureText: obscureText,
+            autofocus: true,
+          ),
+          actions: [
+            TextButton(
+              style: resolvedStyle.cancelButtonStyle,
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(cancelText ?? texts.cancelText),
+            ),
+            TextButton(
+              style: resolvedStyle.confirmButtonStyle,
+              onPressed: () => Navigator.of(context).pop(controller.text),
+              child: Text(confirmText ?? texts.confirmText),
+            ),
+          ],
+          style: resolvedStyle,
+        ),
+      );
+    } finally {
+      controller.dispose();
+    }
   }
 
   static Future<T?> showCustomDialog<T>(
@@ -291,54 +302,88 @@ class IboDialog {
   /// Shows a loading dialog with a progress indicator and message.
   ///
   /// [context] The build context to show the dialog in.
-  /// [message] The loading message to display (default: 'Yükleniyor...').
+  /// [message] The loading message to display (default: 'Loading...').
   /// [barrierDismissible] Whether dialog can be dismissed (default: false).
   /// [style] Custom styling options.
   static Future<void> showLoadingDialog(
     BuildContext context, {
-    String message = 'Yükleniyor...',
+    String? message,
     bool barrierDismissible = false,
+    bool useRootNavigator = true,
     IboDialogStyle? style,
+    DialogTexts texts = const DialogTexts(),
   }) async {
+    if (_isLoadingDialogVisible) return;
     final resolvedStyle = style ?? const IboDialogStyle();
-    await _showGlassDialog<void>(
-      context,
-      barrierDismissible: barrierDismissible,
-      style: resolvedStyle,
-      child: _buildDialogBody(
-        title: null,
-        content: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(
-              width: 22,
-              height: 22,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                message,
-                style: resolvedStyle.contentStyle ??
-                    TextStyle(
-                      color: AppColors.onSurface.withValues(alpha: 0.9),
-                      fontSize: 14,
-                    ),
-              ),
-            ),
-          ],
-        ),
-        actions: const [],
+    _isLoadingDialogVisible = true;
+    _loadingDialogUsesRootNavigator = useRootNavigator;
+    try {
+      await _showGlassDialog<void>(
+        context,
+        barrierDismissible: barrierDismissible,
+        useRootNavigator: useRootNavigator,
+        onDialogContext: (dialogContext) {
+          _loadingDialogContext = dialogContext;
+        },
         style: resolvedStyle,
-      ),
-    );
+        child: _buildDialogBody(
+          title: null,
+          content: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(
+                width: 22,
+                height: 22,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  message ?? texts.loadingMessage,
+                  style: resolvedStyle.contentStyle ??
+                      TextStyle(
+                        color: AppColors.onSurface.withOpacity(0.9),
+                        fontSize: 14,
+                      ),
+                ),
+              ),
+            ],
+          ),
+          actions: const [],
+          style: resolvedStyle,
+        ),
+      );
+    } finally {
+      _isLoadingDialogVisible = false;
+      _loadingDialogContext = null;
+    }
   }
 
   /// Dismisses the currently shown loading dialog.
   ///
   /// [context] The build context containing the loading dialog.
-  static void dismissLoadingDialog(BuildContext context) {
-    Navigator.of(context).pop();
+  static void dismissLoadingDialog(
+    BuildContext context, {
+    bool rootNavigator = true,
+  }) {
+    if (!_isLoadingDialogVisible) return;
+    final loadingContext = _loadingDialogContext;
+    if (loadingContext != null) {
+      final loadingNavigator = Navigator.of(
+        loadingContext,
+        rootNavigator: _loadingDialogUsesRootNavigator,
+      );
+      if (loadingNavigator.canPop()) {
+        loadingNavigator.pop();
+      }
+      return;
+    }
+
+    final fallbackNavigator =
+        Navigator.of(context, rootNavigator: rootNavigator);
+    if (fallbackNavigator.canPop()) {
+      fallbackNavigator.pop();
+    }
   }
 
   static Future<T?> _showGlassDialog<T>(
@@ -346,14 +391,18 @@ class IboDialog {
     required Widget child,
     required IboDialogStyle style,
     bool barrierDismissible = true,
+    bool useRootNavigator = true,
+    ValueChanged<BuildContext>? onDialogContext,
   }) {
     return showGeneralDialog<T>(
       context: context,
       barrierDismissible: barrierDismissible,
+      useRootNavigator: useRootNavigator,
       barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-      barrierColor: Colors.black.withValues(alpha: 0.5),
+      barrierColor: Colors.black.withOpacity(0.5),
       transitionDuration: style.transitionDuration,
       pageBuilder: (context, animation, secondaryAnimation) {
+        onDialogContext?.call(context);
         return SafeArea(
           child: Center(
             child: Material(
@@ -424,7 +473,7 @@ class IboDialog {
           child: DefaultTextStyle(
             style: style.contentStyle ??
                 TextStyle(
-                  color: AppColors.onSurface.withValues(alpha: 0.9),
+                  color: AppColors.onSurface.withOpacity(0.9),
                   fontSize: 14,
                 ),
             child: content,

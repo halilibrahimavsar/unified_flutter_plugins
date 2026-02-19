@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:unified_flutter_features/features/slider_2d_navigation/models/slider_models.dart';
-import 'package:unified_flutter_features/features/slider_2d_navigation/widgets/dynamic_slider_button.dart';
+import 'package:unified_flutter_features/features/slider_2d_navigation/dynamic_slider.dart';
 
 class Slider2DNavigationPage extends StatefulWidget {
   const Slider2DNavigationPage({super.key});

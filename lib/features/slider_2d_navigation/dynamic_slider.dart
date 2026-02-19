@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../models/slider_models.dart';
-import '../constants/slider_config.dart';
-import '../helpers/slider_state_helper.dart';
-import 'mini_buttons_overlay.dart';
-import 'slider_knob.dart';
-
-// ============================================================================
-// MAIN SLIDER WIDGET
-// ============================================================================
+import 'models/slider_models.dart';
+import 'constants/slider_config.dart';
+import 'helpers/slider_state_helper.dart';
+import 'widgets/mini_buttons_overlay.dart';
+import 'widgets/slider_knob.dart';
 
 /// A 2D navigation slider with state transitions and mini button/sub-menu support.
 ///
@@ -125,6 +121,16 @@ class _DynamicSliderState extends State<DynamicSlider> {
   @override
   void didUpdateWidget(covariant DynamicSlider oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller != widget.controller) {
+      oldWidget.controller.removeListener(_onControllerChange);
+      widget.controller.addListener(_onControllerChange);
+      _lastState = _getCurrentState();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        _syncCarouselToSelection(animate: false);
+        _updateArrowVisibility();
+      });
+    }
     if (oldWidget.selectedSubIndex != widget.selectedSubIndex ||
         oldWidget.subMenuItems != widget.subMenuItems) {
       _syncCarouselToSelection();
@@ -201,8 +207,7 @@ class _DynamicSliderState extends State<DynamicSlider> {
     final selectedIndex = widget.selectedSubIndex[state];
     if (selectedIndex == null) return;
 
-    final targetIndex =
-        (selectedIndex + 1).clamp(0, subItems.length);
+    final targetIndex = (selectedIndex + 1).clamp(0, subItems.length);
 
     if (!_carouselController.hasClients) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -413,9 +418,11 @@ class _DynamicSliderState extends State<DynamicSlider> {
                       onHorizontalDragStart: () =>
                           setState(() => _isDragging = true),
                       onHorizontalDrag: (details) {
+                        final trackWidth =
+                            _widgetWidth - SliderConfig.knobWidth;
+                        if (trackWidth <= 0) return;
                         final newValue = (widget.controller.value +
-                                details.delta.dx /
-                                    (_widgetWidth - SliderConfig.knobWidth))
+                                details.delta.dx / trackWidth)
                             .clamp(0.0, 1.0);
                         widget.controller.value = newValue;
                         widget.onValueChanged?.call(newValue);
@@ -427,8 +434,15 @@ class _DynamicSliderState extends State<DynamicSlider> {
                       },
                       onVerticalDrag: subItems.isNotEmpty
                           ? (details) {
+                              if (!_carouselController.hasClients) return;
+                              final position = _carouselController.position;
                               final newOffset =
-                                  _carouselController.offset - details.delta.dy;
+                                  (position.pixels - details.delta.dy)
+                                      .clamp(
+                                        position.minScrollExtent,
+                                        position.maxScrollExtent,
+                                      )
+                                      .toDouble();
                               _carouselController.jumpTo(newOffset);
                             }
                           : null,
@@ -484,10 +498,10 @@ class _DynamicSliderState extends State<DynamicSlider> {
         duration: const Duration(milliseconds: 300),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(SliderConfig.trackRadius),
-          color: activeColor.withValues(alpha: 0.08),
+          color: activeColor.withOpacity(0.08),
           boxShadow: [
             BoxShadow(
-              color: activeColor.withValues(alpha: 0.15),
+              color: activeColor.withOpacity(0.15),
               blurRadius: 20,
               spreadRadius: 2,
             )
@@ -528,7 +542,7 @@ class _DynamicSliderState extends State<DynamicSlider> {
               children: [
                 Icon(
                   icon,
-                  color: isActive ? color : color.withValues(alpha: 0.9),
+                  color: isActive ? color : color.withOpacity(0.9),
                   size: isActive ? 24 : 20,
                 ),
                 const SizedBox(height: 4),
@@ -537,7 +551,7 @@ class _DynamicSliderState extends State<DynamicSlider> {
                   style: TextStyle(
                     fontSize: isActive ? 13 : 12,
                     fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
-                    color: isActive ? color : color.withValues(alpha: 0.4),
+                    color: isActive ? color : color.withOpacity(0.4),
                     letterSpacing: 0.5,
                   ),
                 ),

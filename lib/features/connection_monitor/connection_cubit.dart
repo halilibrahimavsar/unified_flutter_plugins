@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:unified_flutter_features/core/texts/connection_texts.dart';
 import 'connection_state.dart';
 
 /// A BLoC/Cubit that monitors internet connectivity status using connectivity_plus.
@@ -9,23 +10,26 @@ import 'connection_state.dart';
 /// ```dart
 /// BlocProvider(
 ///   create: (_) => ConnectionCubit(),
-///   child: BlocBuilder<ConnectionCubit, MyConnectionState>(
+///   child: BlocBuilder<ConnectionCubit, ConnectionMonitorState>(
 ///     builder: (context, state) {
 ///       return DefaultConnectionIndicator(connectionState: state);
 ///     },
 ///   ),
 /// )
 /// ```
-class ConnectionCubit extends Cubit<MyConnectionState> {
+class ConnectionCubit extends Cubit<ConnectionMonitorState> {
   final Connectivity _connectivity;
+  final ConnectionTexts texts;
   late StreamSubscription<List<ConnectivityResult>> _connectivitySubscription;
 
   /// Creates a [ConnectionCubit] instance.
   ///
   /// [connectivity] Optional connectivity instance for testing.
-  ConnectionCubit({Connectivity? connectivity})
-      : _connectivity = connectivity ?? Connectivity(),
-        super(const MyConnectionState(status: ConnectionStatus.checking)) {
+  ConnectionCubit({
+    Connectivity? connectivity,
+    this.texts = const ConnectionTexts(),
+  })  : _connectivity = connectivity ?? Connectivity(),
+        super(const ConnectionMonitorState(status: ConnectionStatus.checking)) {
     _initializeConnectionCheck();
   }
 
@@ -47,7 +51,7 @@ class ConnectionCubit extends Cubit<MyConnectionState> {
       emit(
         state.copyWith(
           status: ConnectionStatus.disconnected,
-          message: 'Bağlantı kontrolü yapılamadı: ${e.toString()}',
+          message: '${texts.checkFailedPrefix}: ${e.toString()}',
           lastChecked: DateTime.now(),
         ),
       );
@@ -63,7 +67,7 @@ class ConnectionCubit extends Cubit<MyConnectionState> {
       emit(
         state.copyWith(
           status: ConnectionStatus.connected,
-          message: 'İnternet bağlantısı aktif',
+          message: texts.connectedMessage,
           lastChecked: DateTime.now(),
         ),
       );
@@ -71,7 +75,7 @@ class ConnectionCubit extends Cubit<MyConnectionState> {
       emit(
         state.copyWith(
           status: ConnectionStatus.disconnected,
-          message: 'İnternet bağlantısı yok',
+          message: texts.disconnectedMessage,
           lastChecked: DateTime.now(),
         ),
       );
@@ -82,7 +86,12 @@ class ConnectionCubit extends Cubit<MyConnectionState> {
   ///
   /// Sets status to [ConnectionStatus.checking] first, then performs the check.
   Future<void> manualCheck() async {
-    emit(state.copyWith(status: ConnectionStatus.checking));
+    emit(
+      state.copyWith(
+        status: ConnectionStatus.checking,
+        message: texts.checkingMessage,
+      ),
+    );
     await checkInitialConnection();
   }
 
@@ -91,31 +100,31 @@ class ConnectionCubit extends Cubit<MyConnectionState> {
   /// [results] List of connectivity results to convert.
   /// Returns a comma-separated string of connection types.
   String getConnectionTypeString(List<ConnectivityResult> results) {
-    if (results.isEmpty) return 'Bilinmiyor';
+    if (results.isEmpty) return texts.unknownConnectionType;
 
     final types = <String>[];
     for (final result in results) {
       switch (result) {
         case ConnectivityResult.wifi:
-          types.add('WiFi');
+          types.add(texts.typeWifi);
           break;
         case ConnectivityResult.ethernet:
-          types.add('Ethernet');
+          types.add(texts.typeEthernet);
           break;
         case ConnectivityResult.mobile:
-          types.add('Mobil');
+          types.add(texts.typeMobile);
           break;
         case ConnectivityResult.bluetooth:
-          types.add('Bluetooth');
+          types.add(texts.typeBluetooth);
           break;
         case ConnectivityResult.vpn:
-          types.add('VPN');
+          types.add(texts.typeVpn);
           break;
         case ConnectivityResult.other:
-          types.add('Diğer');
+          types.add(texts.typeOther);
           break;
         case ConnectivityResult.none:
-          types.add('Yok');
+          types.add(texts.typeNone);
           break;
       }
     }

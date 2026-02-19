@@ -19,7 +19,7 @@ class ConnectionMonitorPage extends StatelessWidget {
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
               title: const Text('Connection Monitor'),
               actions: [
-                BlocBuilder<ConnectionCubit, MyConnectionState>(
+                BlocBuilder<ConnectionCubit, ConnectionMonitorState>(
                   builder: (context, state) {
                     return Container(
                       width: 16,
@@ -34,7 +34,7 @@ class ConnectionMonitorPage extends StatelessWidget {
                 const SizedBox(width: 16),
               ],
             ),
-            body: BlocBuilder<ConnectionCubit, MyConnectionState>(
+            body: BlocBuilder<ConnectionCubit, ConnectionMonitorState>(
               builder: (context, state) {
                 return Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -171,8 +171,8 @@ class ConnectionMonitorPage extends StatelessWidget {
                 FloatingActionButton.extended(
                   heroTag: 'permission_button',
                   onPressed: () async {
-                    final granted =
-                        await ConnectionNotificationService().requestPermission();
+                    final granted = await ConnectionNotificationService()
+                        .requestPermission();
                     if (!context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(

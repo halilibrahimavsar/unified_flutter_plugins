@@ -50,7 +50,7 @@ class LocalAuthPinDots extends StatelessWidget {
               boxShadow: isFilled && !isError
                   ? [
                       BoxShadow(
-                        color: activeColor.withValues(alpha: 0.4),
+                        color: activeColor.withOpacity(0.4),
                         blurRadius: LocalAuthConstants.pinDotShadowBlurRadius
                             .toDouble(),
                         spreadRadius: LocalAuthConstants

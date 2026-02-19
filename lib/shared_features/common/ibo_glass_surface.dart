@@ -80,8 +80,8 @@ class IboGlassSurface extends StatelessWidget {
     final resolvedGradient = style.gradient ??
         LinearGradient(
           colors: [
-            baseBackground.withValues(alpha: 0.35),
-            baseBackground.withValues(alpha: 0.12),
+            baseBackground.withOpacity(0.35),
+            baseBackground.withOpacity(0.12),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -89,12 +89,12 @@ class IboGlassSurface extends StatelessWidget {
     final resolvedShadows = style.shadows ??
         [
           BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.2),
+            color: AppColors.primary.withOpacity(0.2),
             blurRadius: 28,
             offset: const Offset(0, 16),
           ),
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
+            color: Colors.black.withOpacity(0.08),
             blurRadius: 18,
             offset: const Offset(0, 8),
           ),
@@ -106,7 +106,7 @@ class IboGlassSurface extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: style.borderRadius,
         border: Border.all(
-          color: style.borderColor ?? AppColors.primary.withValues(alpha: 0.45),
+          color: style.borderColor ?? AppColors.primary.withOpacity(0.45),
           width: style.borderWidth,
         ),
         boxShadow: resolvedShadows,
@@ -126,7 +126,7 @@ class IboGlassSurface extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: resolvedGradient,
               color: style.gradient == null
-                  ? baseBackground.withValues(alpha: style.backgroundOpacity)
+                  ? baseBackground.withOpacity(style.backgroundOpacity)
                   : null,
               borderRadius: style.borderRadius,
             ),

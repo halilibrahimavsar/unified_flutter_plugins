@@ -1,8 +1,9 @@
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:unified_flutter_features/features/local_auth/data/local_auth_repository.dart';
 import 'local_auth_login_event.dart';
 import 'local_auth_login_state.dart';
 import '../local_auth_status.dart';
+import '../../constants/local_auth_constants.dart';
 import '../../utils/local_auth_utils.dart';
 
 /// BLoC for handling local authentication login operations.
@@ -43,7 +44,7 @@ class LocalAuthLoginBloc
     emit(state.copyWith(loadStatus: LoginLoadStatus.loading));
     try {
       await LocalAuthUtils.ensureBiometricConsistency(_repository);
-      var isBioEnabled = await _repository.isBiometricEnabled();
+      final isBioEnabled = await _repository.isBiometricEnabled();
       final isAvailable = await _repository.isBiometricAvailable();
 
       // Also check lockout status on load
@@ -76,10 +77,12 @@ class LocalAuthLoginBloc
         lockoutEndTime: endTime,
       ));
     } else {
+      await _repository.clearLockoutState();
       emit(state.copyWith(
         authStatus: AuthStatus.initial,
         lockoutEndTime: null,
         failedAttempts: 0,
+        message: null,
       ));
     }
   }
@@ -91,7 +94,7 @@ class LocalAuthLoginBloc
     if (state.authStatus == AuthStatus.lockedOut) return;
 
     emit(state.copyWith(authStatus: AuthStatus.loading));
-    await Future.delayed(const Duration(milliseconds: 150));
+    await Future<void>.delayed(const Duration(milliseconds: 150));
 
     try {
       final isCorrect = await _repository.verifyPin(event.pin);
@@ -106,7 +109,7 @@ class LocalAuthLoginBloc
         ));
       } else {
         final newAttempts = state.failedAttempts + 1;
-        if (newAttempts >= 3) {
+        if (newAttempts >= LocalAuthConstants.maxFailedAttempts) {
           // Calculate lockout
           final level = await _repository.getLockoutLevel();
           final duration = LocalAuthUtils.getLockoutDurationSeconds(level);
@@ -124,14 +127,15 @@ class LocalAuthLoginBloc
           emit(state.copyWith(
             authStatus: AuthStatus.failure,
             failedAttempts: newAttempts,
-            message: 'Hatalı PIN. Kalan hak: ${3 - newAttempts}',
+            message:
+                'Incorrect PIN. Remaining tries: ${LocalAuthConstants.maxFailedAttempts - newAttempts}',
           ));
         }
       }
     } catch (e) {
       emit(state.copyWith(
           authStatus: AuthStatus.failure,
-          message: 'PIN doğrulama hatası: ${e.toString()}'));
+          message: 'PIN verification failed: ${e.toString()}'));
     }
   }
 
@@ -142,7 +146,7 @@ class LocalAuthLoginBloc
     if (state.authStatus == AuthStatus.lockedOut) return;
 
     final success = await _repository.authenticateWithBiometrics(
-      reason: 'Authenticate to continue',
+      reason: LocalAuthConstants.defaultBiometricReason,
     );
     if (success) {
       await _repository.clearLockoutState();

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:unified_flutter_features/core/texts/connection_texts.dart';
 import 'package:unified_flutter_features/features/connection_monitor/connection_state.dart';
 
 class ConnectionIndicatorWidget extends StatelessWidget {
-  final MyConnectionState connectionState;
+  final ConnectionMonitorState connectionState;
   final Widget? child;
   final bool showIndicator;
   final Widget connectedWidget;
@@ -66,12 +67,13 @@ class ConnectionIndicatorWidget extends StatelessWidget {
 }
 
 class DefaultConnectionIndicator extends StatelessWidget {
-  final MyConnectionState connectionState;
+  final ConnectionMonitorState connectionState;
   final bool showText;
   final Color? connectedColor;
   final Color? disconnectedColor;
   final Color? checkingColor;
   final TextStyle? textStyle;
+  final ConnectionTexts texts;
 
   const DefaultConnectionIndicator({
     super.key,
@@ -81,28 +83,29 @@ class DefaultConnectionIndicator extends StatelessWidget {
     this.disconnectedColor,
     this.checkingColor,
     this.textStyle,
+    this.texts = const ConnectionTexts(),
   });
 
   @override
   Widget build(BuildContext context) {
     Color color = Colors.grey;
-    String text = 'Bilinmiyor';
+    String text = texts.unknownConnectionType;
     IconData icon = Icons.help;
 
     switch (connectionState.status) {
       case ConnectionStatus.connected:
         color = connectedColor ?? Colors.green;
-        text = connectionState.message ?? 'Bağlantı Aktif';
+        text = connectionState.message ?? texts.connectedMessage;
         icon = Icons.wifi;
         break;
       case ConnectionStatus.disconnected:
         color = disconnectedColor ?? Colors.red;
-        text = connectionState.message ?? 'Bağlantı Yok';
+        text = connectionState.message ?? texts.disconnectedMessage;
         icon = Icons.wifi_off;
         break;
       case ConnectionStatus.checking:
         color = checkingColor ?? Colors.orange;
-        text = connectionState.message ?? 'Kontrol Ediliyor...';
+        text = connectionState.message ?? texts.checkingMessage;
         icon = Icons.sync;
         break;
     }
@@ -110,9 +113,9 @@ class DefaultConnectionIndicator extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
+        color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withValues(alpha: 0.3)),
+        border: Border.all(color: color.withOpacity(0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -145,7 +148,7 @@ class DefaultConnectionIndicator extends StatelessWidget {
 }
 
 class ConnectionStatusBadge extends StatelessWidget {
-  final MyConnectionState connectionState;
+  final ConnectionMonitorState connectionState;
   final double size;
   final Color? connectedColor;
   final Color? disconnectedColor;
@@ -184,7 +187,7 @@ class ConnectionStatusBadge extends StatelessWidget {
         shape: BoxShape.circle,
         boxShadow: [
           BoxShadow(
-            color: color.withValues(alpha: 0.3),
+            color: color.withOpacity(0.3),
             blurRadius: 4,
             spreadRadius: 1,
           ),

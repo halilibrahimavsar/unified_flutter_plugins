@@ -9,7 +9,7 @@ class MiniButtonsOverlay extends StatefulWidget {
   final Size knobSize;
   final List<MiniButtonData> buttons;
   final double sliderValue;
-  final Function(int) onButtonTap;
+  final ValueChanged<int> onButtonTap;
   final VoidCallback onDismiss;
 
   const MiniButtonsOverlay({
@@ -56,7 +56,7 @@ class _MiniButtonsOverlayState extends State<MiniButtonsOverlay>
           BackdropFilter(
             filter: ui.ImageFilter.blur(sigmaX: 5, sigmaY: 5),
             child: Container(
-              color: Colors.black.withValues(alpha: 0.2),
+              color: Colors.black.withOpacity(0.2),
             ),
           ),
           ...List.generate(widget.buttons.length, (index) {
@@ -109,13 +109,13 @@ class _MiniButtonsOverlayState extends State<MiniButtonsOverlay>
                                   colors: [
                                     widget.buttons[index].color,
                                     widget.buttons[index].color
-                                        .withValues(alpha: 0.7),
+                                        .withOpacity(0.7),
                                   ],
                                 ),
                                 boxShadow: [
                                   BoxShadow(
                                     color: widget.buttons[index].color
-                                        .withValues(alpha: 0.4),
+                                        .withOpacity(0.4),
                                     blurRadius: 15,
                                     offset: const Offset(0, 5),
                                   )
@@ -136,7 +136,7 @@ class _MiniButtonsOverlayState extends State<MiniButtonsOverlay>
                                 borderRadius: BorderRadius.circular(8),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.1),
+                                    color: Colors.black.withOpacity(0.1),
                                     blurRadius: 4,
                                   )
                                 ],

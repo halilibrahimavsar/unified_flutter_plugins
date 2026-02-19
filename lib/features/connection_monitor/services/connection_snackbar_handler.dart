@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:unified_flutter_features/core/constants/app_spacing.dart';
+import 'package:unified_flutter_features/core/texts/connection_texts.dart';
 import 'package:unified_flutter_features/features/connection_monitor/connection_cubit.dart';
 import 'package:unified_flutter_features/features/connection_monitor/connection_state.dart';
 
@@ -14,6 +15,7 @@ class ConnectionSnackbarHandler extends StatefulWidget {
   final SnackBarBehavior? behavior;
   final Color? backgroundColor;
   final TextStyle? textStyle;
+  final ConnectionTexts texts;
 
   const ConnectionSnackbarHandler({
     super.key,
@@ -26,6 +28,7 @@ class ConnectionSnackbarHandler extends StatefulWidget {
     this.behavior,
     this.backgroundColor,
     this.textStyle,
+    this.texts = const ConnectionTexts(),
   });
 
   @override
@@ -34,11 +37,11 @@ class ConnectionSnackbarHandler extends StatefulWidget {
 }
 
 class _ConnectionSnackbarHandlerState extends State<ConnectionSnackbarHandler> {
-  MyConnectionState? lastState;
+  ConnectionMonitorState? lastState;
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ConnectionCubit, MyConnectionState>(
+    return BlocListener<ConnectionCubit, ConnectionMonitorState>(
       listener: (context, state) {
         if (!widget.showSnackbar) return;
 
@@ -58,7 +61,7 @@ class _ConnectionSnackbarHandlerState extends State<ConnectionSnackbarHandler> {
                       child: Text(
                         widget.connectedMessage ??
                             state.message ??
-                            'İnternet bağlantısı aktif',
+                            widget.texts.connectedMessage,
                         style: widget.textStyle ??
                             const TextStyle(color: Colors.white),
                       ),
@@ -88,7 +91,7 @@ class _ConnectionSnackbarHandlerState extends State<ConnectionSnackbarHandler> {
                       child: Text(
                         widget.disconnectedMessage ??
                             state.message ??
-                            'İnternet bağlantısı yok',
+                            widget.texts.disconnectedMessage,
                         style: widget.textStyle ??
                             const TextStyle(color: Colors.white),
                       ),
@@ -104,7 +107,7 @@ class _ConnectionSnackbarHandlerState extends State<ConnectionSnackbarHandler> {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 action: SnackBarAction(
-                  label: 'Yeniden Dene',
+                  label: widget.texts.retryActionLabel,
                   textColor: Colors.white,
                   onPressed: () {
                     context.read<ConnectionCubit>().manualCheck();
@@ -130,7 +133,7 @@ class _ConnectionSnackbarHandlerState extends State<ConnectionSnackbarHandler> {
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        state.message ?? 'Bağlantı kontrol ediliyor...',
+                        state.message ?? widget.texts.checkingMessage,
                         style: widget.textStyle ??
                             const TextStyle(color: Colors.white),
                       ),

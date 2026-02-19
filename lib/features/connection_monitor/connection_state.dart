@@ -1,22 +1,22 @@
 enum ConnectionStatus { connected, disconnected, checking }
 
-class MyConnectionState {
+class ConnectionMonitorState {
   final ConnectionStatus status;
   final String? message;
   final DateTime? lastChecked;
 
-  const MyConnectionState({
+  const ConnectionMonitorState({
     required this.status,
     this.message,
     this.lastChecked,
   });
 
-  MyConnectionState copyWith({
+  ConnectionMonitorState copyWith({
     ConnectionStatus? status,
     String? message,
     DateTime? lastChecked,
   }) {
-    return MyConnectionState(
+    return ConnectionMonitorState(
       status: status ?? this.status,
       message: message ?? this.message,
       lastChecked: lastChecked ?? this.lastChecked,
@@ -26,7 +26,7 @@ class MyConnectionState {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is MyConnectionState &&
+      other is ConnectionMonitorState &&
           runtimeType == other.runtimeType &&
           status == other.status &&
           message == other.message &&
@@ -37,5 +37,7 @@ class MyConnectionState {
 
   @override
   String toString() =>
-      'MyConnectionState(status: $status, message: $message, lastChecked: $lastChecked)';
+      'ConnectionMonitorState(status: $status, message: $message, lastChecked: $lastChecked)';
 }
+
+/// Deprecated old type alias for backward compatibility.
