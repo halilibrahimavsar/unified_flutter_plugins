@@ -70,42 +70,56 @@ class SliderKnob extends StatelessWidget {
       onVerticalDragUpdate: onVerticalDrag,
       onVerticalDragEnd: onVerticalDragEnd,
       onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        height: SliderConfig.knobHeight,
+      behavior: HitTestBehavior.translucent,
+      child: SizedBox(
+        height: SliderConfig.sliderHeight,
         width: SliderConfig.knobWidth,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(SliderConfig.knobHeight / 2),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [activeColor, activeColor.withOpacity(0.8)],
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: activeColor.withOpacity(0.6),
-              blurRadius: isDragging ? 20 : 10,
-              offset: const Offset(0, 6),
-            ),
-          ],
-        ),
         child: Stack(
           clipBehavior: Clip.none,
+          alignment: Alignment.center,
           children: [
-            // Glass background
-            _buildGlassBackground(),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              height: SliderConfig.knobHeight,
+              width: SliderConfig.knobWidth,
+              decoration: BoxDecoration(
+                borderRadius:
+                    BorderRadius.circular(SliderConfig.knobHeight / 2),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [activeColor, activeColor.withOpacity(0.8)],
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: activeColor.withOpacity(0.6),
+                    blurRadius: isDragging ? 20 : 10,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
+              ),
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  // Glass background
+                  _buildGlassBackground(),
 
+                  // Static label (if no sub menu)
+                  if (!hasSubMenu) _buildStaticLabel(label),
+
+                  // Plus icon
+                  _buildPlusIcon(),
+
+                  // Direction arrows
+                  _buildArrows(),
+                ],
+              ),
+            ),
             // Carousel (if has sub menu)
-            if (hasSubMenu) _buildCarousel(carouselItems),
-
-            // Static label (if no sub menu)
-            if (!hasSubMenu) _buildStaticLabel(label),
-
-            // Plus icon
-            _buildPlusIcon(),
-
-            // Direction arrows
-            _buildArrows(),
+            if (hasSubMenu)
+              Positioned.fill(
+                child: _buildCarousel(carouselItems),
+              ),
           ],
         ),
       ),
@@ -132,63 +146,56 @@ class SliderKnob extends StatelessWidget {
   }
 
   Widget _buildCarousel(List<SubMenuItem> items) {
-    return Positioned(
-      top: (SliderConfig.knobHeight - SliderConfig.carouselTotalHeight) / 2,
-      height: SliderConfig.carouselTotalHeight,
-      left: 0,
-      right: 0,
-      child: Opacity(
-        opacity: transitionProgress,
-        child: Transform.scale(
-          scale: 0.5 + (0.5 * transitionProgress),
-          child: IgnorePointer(
-            child: ShaderMask(
-              shaderCallback: (rect) {
-                return LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    activeColor,
-                    activeColor,
-                    Colors.white,
-                    Colors.white,
-                    activeColor,
-                    activeColor,
-                  ],
-                  stops: const [0.0, 0.35, 0.42, 0.58, 0.65, 1.0],
-                ).createShader(rect);
-              },
-              blendMode: BlendMode.srcIn,
-              child: VerticalCarousel(
-                controller: carouselController,
-                physics: const NeverScrollableScrollPhysics(),
-                onItemTapped: (index) {
-                  if (index == 0) {
-                    onMainTitleTap?.call();
-                    HapticFeedback.lightImpact();
-                    return;
-                  }
-                  if (index < items.length) {
-                    items[index].onTap();
-                    HapticFeedback.lightImpact();
-                  }
-                },
-                children: items.map((item) {
-                  return Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Text(
-                        item.label,
-                        textAlign: TextAlign.center,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: SliderConfig.knobLabelStyle,
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ),
-            ),
+    return Opacity(
+      opacity: transitionProgress,
+      child: Transform.scale(
+        scale: 0.5 + (0.5 * transitionProgress),
+        child: ShaderMask(
+          shaderCallback: (rect) {
+            return LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                activeColor,
+                activeColor,
+                Colors.white,
+                Colors.white,
+                activeColor,
+                activeColor,
+              ],
+              stops: const [0.0, 0.35, 0.42, 0.58, 0.65, 1.0],
+            ).createShader(rect);
+          },
+          blendMode: BlendMode.srcIn,
+          child: VerticalCarousel(
+            controller: carouselController,
+            physics: const NeverScrollableScrollPhysics(),
+            onItemTapped: (index) {
+              if (index == 0) {
+                onTap();
+                onMainTitleTap?.call();
+                HapticFeedback.lightImpact();
+                return;
+              }
+              if (index < items.length) {
+                items[index].onTap();
+                HapticFeedback.lightImpact();
+              }
+            },
+            children: items.map((item) {
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text(
+                    item.label,
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: SliderConfig.knobLabelStyle,
+                  ),
+                ),
+              );
+            }).toList(),
           ),
         ),
       ),

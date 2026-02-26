@@ -400,7 +400,8 @@ class _DynamicSliderState extends State<DynamicSlider> {
                   // Knob
                   Positioned(
                     left: knobPosition,
-                    top: SliderConfig.trackPadding,
+                    top: 0,
+                    bottom: 0,
                     child: SliderKnob(
                       knobKey: _knobKey,
                       currentState: state,
@@ -490,8 +491,8 @@ class _DynamicSliderState extends State<DynamicSlider> {
 
   Widget _buildTrack(Color activeColor) {
     return Positioned(
-      top: SliderConfig.trackPadding,
-      bottom: SliderConfig.trackPadding,
+      top: SliderConfig.trackPaddingVertical,
+      bottom: SliderConfig.trackPaddingVertical,
       left: 0,
       right: 0,
       child: AnimatedContainer(

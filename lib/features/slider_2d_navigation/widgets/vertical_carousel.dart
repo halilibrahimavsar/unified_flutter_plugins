@@ -29,6 +29,7 @@ class VerticalCarousel extends StatelessWidget {
           childCount: children.length,
           builder: (context, index) {
             return GestureDetector(
+              behavior: HitTestBehavior.opaque,
               onTap: () {
                 controller.animateToItem(
                   index,
@@ -40,6 +41,7 @@ class VerticalCarousel extends StatelessWidget {
               child: Center(
                 child: SizedBox(
                   height: SliderConfig.carouselItemHeight,
+                  width: double.infinity,
                   child: children[index],
                 ),
               ),

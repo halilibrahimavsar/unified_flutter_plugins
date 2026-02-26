@@ -6,10 +6,11 @@ class SliderConfig {
   static const animationCurve = Curves.easeOutCubic;
 
   // Dimensions
-  static const sliderHeight = 70.0;
+  static const sliderHeight = 168.0;
   static const knobHeight = 50.0;
   static const knobWidth = 130.0;
   static const trackPadding = 10.0;
+  static const trackPaddingVertical = 59.0;
   static const trackRadius = 42.0;
 
   // Carousel
