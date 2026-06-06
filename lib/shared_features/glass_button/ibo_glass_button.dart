@@ -230,7 +230,7 @@ class _IboGlassButtonState extends State<IboGlassButton> {
         duration: resolvedStyle.animationDuration,
         curve: resolvedStyle.animationCurve,
         opacity: isEnabled ? 1 : 0.6,
-        child: Container(
+        child: SizedBox(
           width: widget.width,
           height: widget.height,
           child: Material(

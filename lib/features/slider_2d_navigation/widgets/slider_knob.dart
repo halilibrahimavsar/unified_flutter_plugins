@@ -16,6 +16,10 @@ class SliderKnob extends StatelessWidget {
   final double transitionProgress;
   final bool showUpArrow;
   final bool showDownArrow;
+
+  /// Whether the add ('+') affordance should be shown. Only true when the main
+  /// title is centered in the carousel (i.e. tapping opens the mini buttons).
+  final bool showAddButton;
   final VoidCallback onTap;
   final VoidCallback? onMainTitleTap;
   final VoidCallback onHorizontalDragStart;
@@ -35,6 +39,7 @@ class SliderKnob extends StatelessWidget {
     required this.transitionProgress,
     required this.showUpArrow,
     required this.showDownArrow,
+    this.showAddButton = true,
     required this.onTap,
     this.onMainTitleTap,
     required this.onHorizontalDragStart,
@@ -107,8 +112,8 @@ class SliderKnob extends StatelessWidget {
                   // Static label (if no sub menu)
                   if (!hasSubMenu) _buildStaticLabel(label),
 
-                  // Plus icon
-                  _buildPlusIcon(),
+                  // Plus icon (only when adding is available, i.e. main title)
+                  if (showAddButton) _buildPlusIcon(),
 
                   // Direction arrows
                   _buildArrows(),
@@ -156,12 +161,12 @@ class SliderKnob extends StatelessWidget {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                activeColor,
-                activeColor,
+                Colors.white.withOpacity(0.3),
+                Colors.white.withOpacity(0.3),
                 Colors.white,
                 Colors.white,
-                activeColor,
-                activeColor,
+                Colors.white.withOpacity(0.3),
+                Colors.white.withOpacity(0.3),
               ],
               stops: const [0.0, 0.35, 0.42, 0.58, 0.65, 1.0],
             ).createShader(rect);
@@ -255,7 +260,7 @@ class SliderKnob extends StatelessWidget {
         Align(
           alignment: Alignment.centerLeft,
           child: Transform.translate(
-            offset: Offset(-SliderConfig.arrowOffsetHorizontal, 0),
+            offset: const Offset(-SliderConfig.arrowOffsetHorizontal, 0),
             child: _Arrow(
               icon: Icons.arrow_back_ios,
               color: activeColor,
@@ -267,7 +272,7 @@ class SliderKnob extends StatelessWidget {
         Align(
           alignment: Alignment.centerRight,
           child: Transform.translate(
-            offset: Offset(SliderConfig.arrowOffsetHorizontal, 0),
+            offset: const Offset(SliderConfig.arrowOffsetHorizontal, 0),
             child: _Arrow(
               icon: Icons.arrow_forward_ios,
               color: activeColor,
@@ -279,7 +284,7 @@ class SliderKnob extends StatelessWidget {
         Align(
           alignment: Alignment.topCenter,
           child: Transform.translate(
-            offset: Offset(0, -SliderConfig.arrowOffsetUp),
+            offset: const Offset(0, -SliderConfig.arrowOffsetUp),
             child: _Arrow(
               icon: Icons.keyboard_arrow_up,
               color: activeColor,
@@ -292,7 +297,7 @@ class SliderKnob extends StatelessWidget {
         Align(
           alignment: Alignment.bottomCenter,
           child: Transform.translate(
-            offset: Offset(0, SliderConfig.arrowOffsetDown),
+            offset: const Offset(0, SliderConfig.arrowOffsetDown),
             child: _Arrow(
               icon: Icons.keyboard_arrow_down,
               color: activeColor,

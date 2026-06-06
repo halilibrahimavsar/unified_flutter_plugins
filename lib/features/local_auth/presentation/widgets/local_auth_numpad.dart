@@ -36,7 +36,7 @@ class LocalAuthNumpad extends StatelessWidget {
                   ),
               ],
             ),
-            SizedBox(height: LocalAuthConstants.numpadSpacing),
+            const SizedBox(height: LocalAuthConstants.numpadSpacing),
           ],
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -78,7 +78,7 @@ class _NumberButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final size = LocalAuthConstants.numpadButtonSize;
+    const size = LocalAuthConstants.numpadButtonSize;
     final radius = BorderRadius.circular(size / 2);
     final isEnabled = !isLockedOut;
 
@@ -141,11 +141,11 @@ class _ActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final size = LocalAuthConstants.numpadButtonSize;
+    const size = LocalAuthConstants.numpadButtonSize;
     final radius = BorderRadius.circular(size / 2);
     final isEnabled = !isLockedOut;
 
-    if (icon == null) return SizedBox(width: size);
+    if (icon == null) return const SizedBox(width: size);
     return InkWell(
       onTap: isEnabled ? onTap : null,
       borderRadius: radius,

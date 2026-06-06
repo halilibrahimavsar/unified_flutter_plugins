@@ -38,7 +38,7 @@ class LocalAuthPinDots extends StatelessWidget {
 
           return AnimatedContainer(
             duration: const Duration(milliseconds: 200),
-            margin: EdgeInsets.symmetric(
+            margin: const EdgeInsets.symmetric(
                 horizontal: LocalAuthConstants.pinDotSpacing),
             width: LocalAuthConstants.pinDotSize.toDouble(),
             height: LocalAuthConstants.pinDotSize.toDouble(),

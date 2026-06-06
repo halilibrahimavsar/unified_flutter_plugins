@@ -36,6 +36,7 @@ class _BiometricAuthPageState extends State<BiometricAuthPage>
   Timer? _lockoutTimer;
   int _remainingSeconds = 0;
   late AnimationController _shakeController;
+  bool _hasAutoTriggeredBiometric = false;
 
   @override
   void initState() {
@@ -133,7 +134,9 @@ class _BiometricAuthPageState extends State<BiometricAuthPage>
         if (state.loadStatus == LoginLoadStatus.success &&
             state.isBiometricAvailable &&
             state.isBiometricEnabled &&
-            state.authStatus == AuthStatus.initial) {
+            state.authStatus == AuthStatus.initial &&
+            !_hasAutoTriggeredBiometric) {
+          _hasAutoTriggeredBiometric = true;
           context.read<LocalAuthLoginBloc>().add(BiometricAuthLoginEvent());
         }
       },

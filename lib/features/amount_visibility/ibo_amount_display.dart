@@ -207,12 +207,12 @@ class AmountDisplay extends StatelessWidget {
       animationDuration: animationDuration,
       animationCurve: animationCurve,
       alignment: alignment,
-      child: Text(
-        visibleText,
-        style: style,
-      ),
       hiddenChild: Text(
         hiddenTextValue,
+        style: style,
+      ),
+      child: Text(
+        visibleText,
         style: style,
       ),
     );
@@ -304,12 +304,12 @@ class SignedAmountDisplay extends StatelessWidget {
       blurSigma: blurSigma,
       animationDuration: animationDuration,
       animationCurve: animationCurve,
-      child: Text(
-        visibleText,
-        style: style,
-      ),
       hiddenChild: Text(
         hiddenTextValue,
+        style: style,
+      ),
+      child: Text(
+        visibleText,
         style: style,
       ),
     );

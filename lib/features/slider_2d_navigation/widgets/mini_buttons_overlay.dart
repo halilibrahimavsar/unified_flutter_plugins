@@ -68,7 +68,7 @@ class _MiniButtonsOverlayState extends State<MiniButtonsOverlay>
             final angle = baseAngle +
                 (index - (widget.buttons.length - 1) / 2) *
                     SliderConfig.miniButtonSpread;
-            final distance = SliderConfig.miniButtonDistance;
+            const distance = SliderConfig.miniButtonDistance;
             const extraUp = 6.0;
 
             final offsetX = math.cos(angle) * distance;

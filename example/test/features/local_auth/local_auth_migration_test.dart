@@ -62,7 +62,7 @@ void main() {
 
     final prefs = await SharedPreferences.getInstance();
 
-    const secureStorage = const FlutterSecureStorage();
+    const secureStorage = FlutterSecureStorage();
     final migrated =
         await LocalAuthMigration.migratePinFromSharedPreferencesToSecureStorage(
       prefs: prefs,
@@ -87,7 +87,7 @@ void main() {
 
     final prefs = await SharedPreferences.getInstance();
 
-    const secureStorage = const FlutterSecureStorage();
+    const secureStorage = FlutterSecureStorage();
     final migrated =
         await LocalAuthMigration.migratePinFromSharedPreferencesToSecureStorage(
       prefs: prefs,
@@ -106,7 +106,7 @@ void main() {
 
     final prefs = await SharedPreferences.getInstance();
 
-    const secureStorage = const FlutterSecureStorage();
+    const secureStorage = FlutterSecureStorage();
     final migrated =
         await LocalAuthMigration.migratePinFromSharedPreferencesToSecureStorage(
       prefs: prefs,

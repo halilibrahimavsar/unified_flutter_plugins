@@ -98,6 +98,11 @@ class _DynamicSliderState extends State<DynamicSlider> {
   bool _showUpArrow = false;
   bool _showDownArrow = false;
 
+  /// Whether the centered carousel item is the main title (index 0). Drives the
+  /// add ('+') affordance and mini-button availability. Tracked in state so it
+  /// refreshes on every carousel settle, not only when arrow visibility flips.
+  bool _isMainSelected = true;
+
   // Mini buttons overlay state
   bool _showMiniButtons = false;
   OverlayEntry? _overlayEntry;
@@ -303,20 +308,22 @@ class _DynamicSliderState extends State<DynamicSlider> {
     final subItems = widget.subMenuItems[state] ?? [];
 
     if (subItems.isEmpty) {
-      if (mounted && (_showUpArrow || _showDownArrow)) {
+      if (mounted && (_showUpArrow || _showDownArrow || !_isMainSelected)) {
         setState(() {
           _showUpArrow = false;
           _showDownArrow = false;
+          _isMainSelected = true;
         });
       }
       return;
     }
 
     if (!_carouselController.hasClients) {
-      if (mounted) {
+      if (mounted && (_showUpArrow || !_showDownArrow || !_isMainSelected)) {
         setState(() {
           _showUpArrow = false;
           _showDownArrow = true;
+          _isMainSelected = true;
         });
       }
       return;
@@ -325,12 +332,16 @@ class _DynamicSliderState extends State<DynamicSlider> {
     final position = _carouselController.position;
     final canScrollUp = position.pixels > position.minScrollExtent + 0.1;
     final canScrollDown = position.pixels < position.maxScrollExtent - 0.1;
+    final isMainSelected = _carouselController.selectedItem == 0;
 
     if (mounted &&
-        (_showUpArrow != canScrollUp || _showDownArrow != canScrollDown)) {
+        (_showUpArrow != canScrollUp ||
+            _showDownArrow != canScrollDown ||
+            _isMainSelected != isMainSelected)) {
       setState(() {
         _showUpArrow = canScrollUp;
         _showDownArrow = canScrollDown;
+        _isMainSelected = isMainSelected;
       });
     }
   }
@@ -374,6 +385,12 @@ class _DynamicSliderState extends State<DynamicSlider> {
             final state = _getCurrentState();
             final activeColor = SliderStateHelper.getColorForState(state);
             final subItems = widget.subMenuItems[state] ?? [];
+            // The add ('+') affordance and the mini-button tap are only valid
+            // when the main title (carousel index 0) is centered. In subviews
+            // the centered item is a submenu entry, so hide/disable them.
+            // Tracked in state (see _updateArrowVisibility) so it stays in sync
+            // on every carousel settle.
+            final isMainSelected = _isMainSelected;
             final sectionWidth = _widgetWidth / SliderState.values.length;
             final knobPosition = SliderConfig.trackPadding +
                 (value * (_widgetWidth - SliderConfig.knobWidth)) -
@@ -412,9 +429,12 @@ class _DynamicSliderState extends State<DynamicSlider> {
                       transitionProgress: transitionProgress,
                       showUpArrow: _showUpArrow,
                       showDownArrow: _showDownArrow,
-                      onTap: () {
-                        _toggleMiniButtons();
-                      },
+                      showAddButton: isMainSelected,
+                      onTap: isMainSelected
+                          ? () {
+                              _toggleMiniButtons();
+                            }
+                          : () {},
                       onMainTitleTap: () => widget.onStateTap?.call(state),
                       onHorizontalDragStart: () =>
                           setState(() => _isDragging = true),
@@ -449,7 +469,7 @@ class _DynamicSliderState extends State<DynamicSlider> {
                           : null,
                       onVerticalDragEnd: subItems.isNotEmpty
                           ? (details) {
-                              final itemHeight =
+                              const itemHeight =
                                   SliderConfig.carouselItemHeight;
                               int targetIndex =
                                   (_carouselController.offset / itemHeight)
