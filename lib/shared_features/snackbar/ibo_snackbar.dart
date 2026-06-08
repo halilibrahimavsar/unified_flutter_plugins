@@ -159,8 +159,8 @@ class IboSnackbar {
     final resolvedGradient = resolvedStyle.gradient ??
         LinearGradient(
           colors: [
-            baseBackground.withOpacity(0.85),
-            baseBackground.withOpacity(0.65),
+            baseBackground.withValues(alpha: 0.85),
+            baseBackground.withValues(alpha: 0.65),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -168,7 +168,7 @@ class IboSnackbar {
     final resolvedShadows = resolvedStyle.shadows ??
         [
           BoxShadow(
-            color: baseBackground.withOpacity(0.25),
+            color: baseBackground.withValues(alpha: 0.25),
             blurRadius: 18,
             offset: const Offset(0, 10),
           ),
@@ -178,7 +178,8 @@ class IboSnackbar {
       gradient: resolvedGradient,
       backgroundColor: baseBackground,
       borderRadius: resolvedStyle.borderRadius,
-      borderColor: resolvedStyle.borderColor ?? baseBackground.withOpacity(0.5),
+      borderColor:
+          resolvedStyle.borderColor ?? baseBackground.withValues(alpha: 0.5),
       borderWidth: resolvedStyle.borderWidth,
       shadows: resolvedShadows,
       padding: resolvedStyle.padding,
@@ -266,7 +267,7 @@ class IboSnackbar {
     final subtitleStyle = resolvedStyle.messageStyle ??
         baseTextStyle.copyWith(
           fontSize: 12,
-          color: baseTextStyle.color?.withOpacity(0.82),
+          color: baseTextStyle.color?.withValues(alpha: 0.82),
         );
 
     if (title == null && subtitle == null) {

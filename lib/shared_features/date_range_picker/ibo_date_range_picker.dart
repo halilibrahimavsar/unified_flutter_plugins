@@ -114,7 +114,7 @@ class IboDateRangePicker {
                         height: 4,
                         margin: const EdgeInsets.only(bottom: 10),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.35),
+                          color: Colors.white.withValues(alpha: 0.35),
                           borderRadius: BorderRadius.circular(999),
                         ),
                       ),

@@ -25,7 +25,7 @@ class LocalAuthSettingsHeader extends StatelessWidget {
         theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700);
     final headerSubtitleStyle = style.headerSubtitleStyle ??
         theme.textTheme.bodyMedium?.copyWith(
-          color: theme.colorScheme.onSurface.withOpacity(0.7),
+          color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
         );
 
     return Container(
@@ -33,14 +33,14 @@ class LocalAuthSettingsHeader extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            primary.withOpacity(0.18),
-            primary.withOpacity(0.05),
+            primary.withValues(alpha: 0.18),
+            primary.withValues(alpha: 0.05),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: primary.withOpacity(0.2)),
+        border: Border.all(color: primary.withValues(alpha: 0.2)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,9 +51,9 @@ class LocalAuthSettingsHeader extends StatelessWidget {
                 width: 52,
                 height: 52,
                 decoration: BoxDecoration(
-                  color: primary.withOpacity(0.16),
+                  color: primary.withValues(alpha: 0.16),
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: primary.withOpacity(0.25)),
+                  border: Border.all(color: primary.withValues(alpha: 0.25)),
                 ),
                 child: Icon(
                   Icons.security,

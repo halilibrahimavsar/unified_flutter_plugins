@@ -93,11 +93,11 @@ class SliderKnob extends StatelessWidget {
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [activeColor, activeColor.withOpacity(0.8)],
+                  colors: [activeColor, activeColor.withValues(alpha: 0.8)],
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: activeColor.withOpacity(0.6),
+                    color: activeColor.withValues(alpha: 0.6),
                     blurRadius: isDragging ? 20 : 10,
                     offset: const Offset(0, 6),
                   ),
@@ -139,9 +139,9 @@ class SliderKnob extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(SliderConfig.knobHeight / 2),
-            color: Colors.white.withOpacity(0.2),
+            color: Colors.white.withValues(alpha: 0.2),
             border: Border.all(
-              color: Colors.white.withOpacity(0.3),
+              color: Colors.white.withValues(alpha: 0.3),
               width: 1.5,
             ),
           ),
@@ -161,12 +161,12 @@ class SliderKnob extends StatelessWidget {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                Colors.white.withOpacity(0.3),
-                Colors.white.withOpacity(0.3),
+                Colors.white.withValues(alpha: 0.3),
+                Colors.white.withValues(alpha: 0.3),
                 Colors.white,
                 Colors.white,
-                Colors.white.withOpacity(0.3),
-                Colors.white.withOpacity(0.3),
+                Colors.white.withValues(alpha: 0.3),
+                Colors.white.withValues(alpha: 0.3),
               ],
               stops: const [0.0, 0.35, 0.42, 0.58, 0.65, 1.0],
             ).createShader(rect);
@@ -233,7 +233,7 @@ class SliderKnob extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.15),
+                color: Colors.black.withValues(alpha: 0.15),
                 blurRadius: 4,
                 offset: const Offset(0, 2),
               )
@@ -331,7 +331,7 @@ class _Arrow extends StatelessWidget {
       opacity: isVisible ? 1.0 : 0.0,
       child: Icon(
         icon,
-        color: color.withOpacity(SliderConfig.arrowAlpha),
+        color: color.withValues(alpha: SliderConfig.arrowAlpha),
         size: size,
       ),
     );

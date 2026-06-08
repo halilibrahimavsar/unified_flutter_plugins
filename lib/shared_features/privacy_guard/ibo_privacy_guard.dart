@@ -225,7 +225,7 @@ class _PrivacyGuardOverlay extends StatelessWidget {
         );
     final subtitleStyle = style.subtitleStyle ??
         theme.textTheme.bodyMedium?.copyWith(
-          color: style.iconColor.withOpacity(0.8),
+          color: style.iconColor.withValues(alpha: 0.8),
         );
 
     return AbsorbPointer(
@@ -243,10 +243,10 @@ class _PrivacyGuardOverlay extends StatelessWidget {
                   Container(
                     padding: style.padding,
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.surface.withOpacity(0.2),
+                      color: theme.colorScheme.surface.withValues(alpha: 0.2),
                       borderRadius: style.borderRadius,
                       border: Border.all(
-                        color: style.iconColor.withOpacity(0.2),
+                        color: style.iconColor.withValues(alpha: 0.2),
                       ),
                     ),
                     child: Column(

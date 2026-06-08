@@ -519,10 +519,10 @@ class _DynamicSliderState extends State<DynamicSlider> {
         duration: const Duration(milliseconds: 300),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(SliderConfig.trackRadius),
-          color: activeColor.withOpacity(0.08),
+          color: activeColor.withValues(alpha: 0.08),
           boxShadow: [
             BoxShadow(
-              color: activeColor.withOpacity(0.15),
+              color: activeColor.withValues(alpha: 0.15),
               blurRadius: 20,
               spreadRadius: 2,
             )
@@ -563,7 +563,7 @@ class _DynamicSliderState extends State<DynamicSlider> {
               children: [
                 Icon(
                   icon,
-                  color: isActive ? color : color.withOpacity(0.9),
+                  color: isActive ? color : color.withValues(alpha: 0.9),
                   size: isActive ? 24 : 20,
                 ),
                 const SizedBox(height: 4),
@@ -572,7 +572,7 @@ class _DynamicSliderState extends State<DynamicSlider> {
                   style: TextStyle(
                     fontSize: isActive ? 13 : 12,
                     fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
-                    color: isActive ? color : color.withOpacity(0.4),
+                    color: isActive ? color : color.withValues(alpha: 0.4),
                     letterSpacing: 0.5,
                   ),
                 ),

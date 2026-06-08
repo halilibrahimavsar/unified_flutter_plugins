@@ -23,10 +23,12 @@ class LocalAuthStatusChip extends StatelessWidget {
     final primary = theme.colorScheme.primary;
     final active = activeColor ?? primary;
     final inactive = inactiveColor ?? Colors.grey;
-    final bgColor =
-        enabled ? active.withOpacity(0.12) : inactive.withOpacity(0.08);
-    final borderColor =
-        enabled ? active.withOpacity(0.45) : inactive.withOpacity(0.25);
+    final bgColor = enabled
+        ? active.withValues(alpha: 0.12)
+        : inactive.withValues(alpha: 0.08);
+    final borderColor = enabled
+        ? active.withValues(alpha: 0.45)
+        : inactive.withValues(alpha: 0.25);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -106,7 +108,7 @@ class LocalAuthSectionCard extends StatelessWidget {
             height: 1,
             thickness: dividerStyle.thickness,
             color: dividerStyle.color ??
-                theme.colorScheme.primary.withOpacity(0.12),
+                theme.colorScheme.primary.withValues(alpha: 0.12),
             indent: dividerStyle.indent,
             endIndent: dividerStyle.endIndent,
           ),
@@ -142,7 +144,7 @@ class LocalAuthSwitchTile extends StatelessWidget {
     final enabled = onChanged != null;
     final activeColor = style.switchActiveColor ?? theme.colorScheme.primary;
     final highlight =
-        value ? activeColor.withOpacity(0.08) : Colors.transparent;
+        value ? activeColor.withValues(alpha: 0.08) : Colors.transparent;
 
     return AnimatedContainer(
       duration: style.animationDuration,
@@ -151,7 +153,8 @@ class LocalAuthSwitchTile extends StatelessWidget {
         color: highlight,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: value ? activeColor.withOpacity(0.18) : Colors.transparent,
+          color:
+              value ? activeColor.withValues(alpha: 0.18) : Colors.transparent,
         ),
       ),
       child: InkWell(
@@ -169,9 +172,10 @@ class LocalAuthSwitchTile extends StatelessWidget {
                   icon: icon,
                   size: 40,
                   backgroundColor:
-                      activeColor.withOpacity(enabled ? 0.12 : 0.06),
-                  iconColor:
-                      enabled ? activeColor : activeColor.withOpacity(0.5),
+                      activeColor.withValues(alpha: enabled ? 0.12 : 0.06),
+                  iconColor: enabled
+                      ? activeColor
+                      : activeColor.withValues(alpha: 0.5),
                 ),
                 SizedBox(width: style.tileSpacing),
                 Expanded(
@@ -239,7 +243,7 @@ class LocalAuthActionButton extends StatelessWidget {
         height: style.buttonHeight,
         padding: style.buttonPadding,
         foregroundColor: color,
-        borderColor: isDestructive ? Colors.red.withOpacity(0.3) : null,
+        borderColor: isDestructive ? Colors.red.withValues(alpha: 0.3) : null,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -277,14 +281,14 @@ class LocalAuthInfoBanner extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            resolvedColor.withOpacity(0.12),
-            resolvedColor.withOpacity(0.04),
+            resolvedColor.withValues(alpha: 0.12),
+            resolvedColor.withValues(alpha: 0.04),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: resolvedColor.withOpacity(0.2)),
+        border: Border.all(color: resolvedColor.withValues(alpha: 0.2)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -296,7 +300,7 @@ class LocalAuthInfoBanner extends StatelessWidget {
             message,
             textAlign: TextAlign.center,
             style: theme.textTheme.bodySmall?.copyWith(
-              color: resolvedColor.withOpacity(0.9),
+              color: resolvedColor.withValues(alpha: 0.9),
             ),
           ),
         ],
@@ -323,15 +327,16 @@ class LocalAuthChoiceChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final primary = theme.colorScheme.primary;
-    final borderColor =
-        selected ? primary.withOpacity(0.6) : Colors.grey.withOpacity(0.35);
+    final borderColor = selected
+        ? primary.withValues(alpha: 0.6)
+        : Colors.grey.withValues(alpha: 0.35);
 
     return ChoiceChip(
       label: Text(label),
       selected: selected,
       onSelected: enabled ? (_) => onSelected?.call() : null,
       backgroundColor: Colors.transparent,
-      selectedColor: primary.withOpacity(0.15),
+      selectedColor: primary.withValues(alpha: 0.15),
       labelStyle: theme.textTheme.labelLarge?.copyWith(
         color: selected ? primary : Colors.grey[600],
         fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
@@ -359,7 +364,7 @@ class _IconBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final resolvedBackground =
-        backgroundColor ?? theme.colorScheme.primary.withOpacity(0.12);
+        backgroundColor ?? theme.colorScheme.primary.withValues(alpha: 0.12);
     final resolvedIconColor = iconColor ?? theme.colorScheme.primary;
 
     return Container(
@@ -369,7 +374,7 @@ class _IconBadge extends StatelessWidget {
         color: resolvedBackground,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: resolvedIconColor.withOpacity(0.25),
+          color: resolvedIconColor.withValues(alpha: 0.25),
         ),
       ),
       child: Icon(icon, color: resolvedIconColor, size: size * 0.5),

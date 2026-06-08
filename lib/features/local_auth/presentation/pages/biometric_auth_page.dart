@@ -185,11 +185,12 @@ class _BiometricAuthPageState extends State<BiometricAuthPage>
                           width: 72,
                           height: 72,
                           decoration: BoxDecoration(
-                            color: theme.colorScheme.primary.withOpacity(0.12),
+                            color: theme.colorScheme.primary
+                                .withValues(alpha: 0.12),
                             borderRadius: BorderRadius.circular(22),
                             border: Border.all(
-                              color:
-                                  theme.colorScheme.primary.withOpacity(0.22),
+                              color: theme.colorScheme.primary
+                                  .withValues(alpha: 0.22),
                             ),
                           ),
                           child: Icon(
@@ -217,7 +218,7 @@ class _BiometricAuthPageState extends State<BiometricAuthPage>
                                           _enteredPin.isEmpty))
                                   ? theme.colorScheme.error
                                   : theme.textTheme.bodyMedium?.color
-                                      ?.withOpacity(0.7),
+                                      ?.withValues(alpha: 0.7),
                               fontWeight: isLockedOut
                                   ? FontWeight.bold
                                   : FontWeight.normal,
@@ -235,7 +236,7 @@ class _BiometricAuthPageState extends State<BiometricAuthPage>
                   isError: _isPinError(state),
                   shake: _shakeController,
                   activeColor: theme.primaryColor,
-                  inactiveColor: Colors.grey.withOpacity(0.2),
+                  inactiveColor: Colors.grey.withValues(alpha: 0.2),
                   errorColor: theme.colorScheme.error,
                 ),
                 const Spacer(),

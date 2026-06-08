@@ -119,7 +119,7 @@ class IboDialog {
           message,
           style: resolvedStyle.contentStyle ??
               TextStyle(
-                color: AppColors.onSurface.withOpacity(0.9),
+                color: AppColors.onSurface.withValues(alpha: 0.9),
                 fontSize: 14,
               ),
         ),
@@ -171,7 +171,7 @@ class IboDialog {
           message,
           style: resolvedStyle.contentStyle ??
               TextStyle(
-                color: AppColors.onSurface.withOpacity(0.9),
+                color: AppColors.onSurface.withValues(alpha: 0.9),
                 fontSize: 14,
               ),
         ),
@@ -232,17 +232,17 @@ class IboDialog {
             decoration: InputDecoration(
               hintText: hintText,
               filled: true,
-              fillColor: AppColors.surface.withOpacity(0.12),
+              fillColor: AppColors.surface.withValues(alpha: 0.12),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
                 borderSide: BorderSide(
-                  color: AppColors.primary.withOpacity(0.4),
+                  color: AppColors.primary.withValues(alpha: 0.4),
                 ),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
                 borderSide: BorderSide(
-                  color: AppColors.primary.withOpacity(0.35),
+                  color: AppColors.primary.withValues(alpha: 0.35),
                 ),
               ),
               focusedBorder: OutlineInputBorder(
@@ -342,7 +342,7 @@ class IboDialog {
                   message ?? texts.loadingMessage,
                   style: resolvedStyle.contentStyle ??
                       TextStyle(
-                        color: AppColors.onSurface.withOpacity(0.9),
+                        color: AppColors.onSurface.withValues(alpha: 0.9),
                         fontSize: 14,
                       ),
                 ),
@@ -399,7 +399,7 @@ class IboDialog {
       barrierDismissible: barrierDismissible,
       useRootNavigator: useRootNavigator,
       barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-      barrierColor: Colors.black.withOpacity(0.5),
+      barrierColor: Colors.black.withValues(alpha: 0.5),
       transitionDuration: style.transitionDuration,
       pageBuilder: (context, animation, secondaryAnimation) {
         onDialogContext?.call(context);
@@ -473,7 +473,7 @@ class IboDialog {
           child: DefaultTextStyle(
             style: style.contentStyle ??
                 TextStyle(
-                  color: AppColors.onSurface.withOpacity(0.9),
+                  color: AppColors.onSurface.withValues(alpha: 0.9),
                   fontSize: 14,
                 ),
             child: content,
