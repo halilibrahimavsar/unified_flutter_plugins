@@ -60,6 +60,10 @@ class IboDateRangePicker {
       }
     }
 
+    if (!context.mounted) {
+      return null;
+    }
+
     final selected = await showDateRangePicker(
       context: context,
       initialDateRange: initialDateRange ??

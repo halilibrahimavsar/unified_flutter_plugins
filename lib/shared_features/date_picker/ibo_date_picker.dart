@@ -95,6 +95,10 @@ class IboDatePicker {
       }
     }
 
+    if (!context.mounted) {
+      return null;
+    }
+
     final selected = await showDatePicker(
       context: context,
       initialDate: initialDate ?? DateTime.now(),
@@ -167,6 +171,10 @@ class IboDatePicker {
         }
         return normalizeToStartOfDay ? _startOfDay(selected) : selected;
       }
+    }
+
+    if (!context.mounted) {
+      return null;
     }
 
     final selected = await showDatePicker(
